@@ -1,13 +1,19 @@
 package com.example.SpringbootTest.dao;
 
 import com.example.SpringbootTest.entity.User;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
-@Repository
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
+
+@Mapper
 public interface UserDao {
-    int addUser(User user);
+    @Select("select * from users")
+    List<User> getAllUser();
 
-    User getUserByUserId(int userId);
+    @Select("select * from users where userId = #{userId}")
+    User getUser(@Param("id") int userId);
 
-    User getUserByUserNameAndPassword(@Param("userName") String userName, @Param("userPassword") String userPassword);
+    @Delete("delete from users where userId = #{userId}")
+    int deleteUser(@Param("userId") int userId);
+
 }

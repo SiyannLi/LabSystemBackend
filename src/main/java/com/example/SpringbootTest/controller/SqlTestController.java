@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/hello")
 public class SqlTestController {
 
     @Autowired
@@ -15,11 +17,7 @@ public class SqlTestController {
 
     @GetMapping("/hello")
     public String index() {
-        String sql = "SELECT userName FROM user WHERE userName= ?";
-
-        String users = (String) jdbcTemplate.queryForObject(sql,
-                new Object[]{"apple"}, String.class);
-        return "Hello " + users;
+        return "hello";
     }
 
 
