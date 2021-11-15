@@ -17,15 +17,10 @@ public class Swagger2Config {
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                // 指定构建api文档的详细信息的方法：apiInfo()
                 .apiInfo(apiInfo())
                 .select()
-                // 指定要生成api接口的包路径
-                .apis(RequestHandlerSelectors.basePackage("com.example.demoswagger.controller"))
-                //使用了 @ApiOperation 注解的方法生成api接口文档
-                //.apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
-                //可以根据url路径设置哪些请求加入文档，忽略哪些请求
                 .build();
     }
 
@@ -34,13 +29,10 @@ public class Swagger2Config {
      */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                // 标题
-                .title("Spring Boot集成Swagger2")
-                // 接口描述
+                .title("Spring Boot Swagger2")
                 .description("swagger")
-                // 版本信息
+                .termsOfServiceUrl("http://localhost:8086/users")
                 .version("1.0")
-                // 构建
                 .build();
     }
 }

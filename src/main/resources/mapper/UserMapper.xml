@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.SpringbootTest.dao.UserDao">
+
+    <insert id="insertUser" parameterType="com.example.SpringbootTest.entity.User">
+        insert into users(userId, userName, Email, userRole, userPassword, realName)
+        values (null , #{user.userName}, #{user.email}, #{user.userRole},
+                #{user.userPassword}, #{user.realName})
+    </insert>
+
+    <select id="getUserByUserNameAndPassword" resultType="com.example.SpringbootTest.entity.User">
+        select *
+        from users
+        where userName = #{userName}
+          and userPassword = #{userPassword}
+        ORDER BY userId DESC limit 1
+    </select>
+
+    <select id="getUser" resultType="com.example.SpringbootTest.entity.User">
+        select *
+        from users
+        where userId = #{userId}
+        ORDER BY userId DESC limit 1
+    </select>
+
+    <select id="getAllUser" resultType="com.example.SpringbootTest.entity.User">
+        select *
+        from users
+        limit 10
+    </select>
+</mapper>

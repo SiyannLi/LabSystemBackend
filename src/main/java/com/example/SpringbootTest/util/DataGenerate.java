@@ -2,17 +2,17 @@ package com.example.SpringbootTest.util;
 
 import com.example.SpringbootTest.entity.User;
 import com.github.javafaker.Faker;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
-import java.util.Locale;
+
 import java.util.Random;
 
 
 public class DataGenerate {
 
-    Faker faker = new Faker();
+    private static final Faker faker = new Faker();
 
-    public User generateUser() {
+    public  static User generateUser() {
         User user = new User();
         user.setUserName(faker.harryPotter().character().toLowerCase());
         user.setUserPassword(faker.internet().password());

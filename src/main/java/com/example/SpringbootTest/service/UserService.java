@@ -10,6 +10,7 @@ public interface UserService {
 
     User getUser(int userId);
 
-    boolean deleteUser(int userId);
+    int deleteUser(int userId);
 
+    int insertUser(User user);
 }

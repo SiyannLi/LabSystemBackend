@@ -19,8 +19,6 @@ public class User implements Serializable {
 
     private String userRole;
 
-    private int newsBoxId;
-
     private String userPassword;
 
     private String realName;
@@ -34,7 +32,6 @@ public class User implements Serializable {
                 "userName=" + userName + "\n" +
                 "email=" + email + "\n" +
                 "userRole=" + userRole + "\n" +
-                "newsBoxId=" + newsBoxId + "\n" +
                 "userPassword=" + userPassword + "\n" +
                 "realName=" + realName + "\n" +
                 "verifyCode=" + verifyCode +
