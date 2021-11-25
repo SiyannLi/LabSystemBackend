@@ -2,11 +2,11 @@ package com.example.SpringbootTest.common;
 
 import java.io.Serializable;
 
-public class Result<T> implements Serializable {
+public class Result<Object> implements Serializable {
     private static final long serialVersionUID = 1L;
     private int resultCode;
     private String message;
-    private T data;
+    private Object data;
 
     public Result() {
     }
@@ -32,16 +32,16 @@ public class Result<T> implements Serializable {
         this.message = message;
     }
 
-    public T getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(T data) {
+    public void setData(Object data) {
         this.data = data;
     }
 
-    public Result failure(String code) {
-        return new Result(500, "服务错误");
+    public Result<Object> failure(String code) {
+        return new Result<>(500, "server error");
     }
 
     @Override
