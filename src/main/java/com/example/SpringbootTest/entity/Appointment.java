@@ -11,16 +11,17 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class Appointment implements Serializable {
 
-    private Integer userId;
+    private User user;
 
     private TimeSlot startTime;
 
     private TimeSlot entTime;
 
+    private AppointmentStatus appointmentStatus;
     @Override
     public String toString() {
         return "Appointment{" +
-                "user=" + userId + "\n" +
+                "user=" + user.getUserId() + "\n" +
                 ", startTime=" + startTime + "\n" +
                 ", entTime=" + entTime +
                 '}';

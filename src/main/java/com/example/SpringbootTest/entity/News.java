@@ -11,15 +11,15 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class News implements Serializable {
 
-    private Integer senderId;
-    private Integer recipientId;
+    private User sender;
+    private User recipient;
     private String content;
 
     @Override
     public String toString() {
         return "News{" +
-                "sender=" + senderId + '\'' +
-                ", recipient=" + recipientId + '\'' +
+                "sender=" + sender + '\'' +
+                ", recipient=" + recipient + '\'' +
                 ", content='" + content +
                 '}';
     }
