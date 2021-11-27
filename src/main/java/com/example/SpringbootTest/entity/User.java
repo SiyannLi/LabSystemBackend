@@ -11,7 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Serializable {
-    private int userId;
+    private Integer userId;
 
     private String userName;
 
@@ -23,7 +23,7 @@ public class User implements Serializable {
 
     private String realName;
 
-    private int verifyCode;
+    private Integer verifyCode;
 
     @Override
     public String toString() {

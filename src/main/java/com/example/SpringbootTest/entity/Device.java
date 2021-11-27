@@ -11,11 +11,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class Device implements Serializable {
 
-    private int deviceId;
+    private Integer deviceId;
 
     private String deviceName;
 
-    private int amount;
+    private Integer amount;
 
     private String link;
 
@@ -25,7 +25,7 @@ public class Device implements Serializable {
                 "deviceId=" + deviceId + '\'' +
                 ", deviceName='" + deviceName + '\'' +
                 ", amount=" + amount + '\'' +
-                ", link='" + link + '\'' +
+                ", link='" + link +
                 '}';
     }
 }

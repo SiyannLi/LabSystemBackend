@@ -11,7 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class Appointment implements Serializable {
 
-    private User user;
+    private Integer userId;
 
     private TimeSlot startTime;
 
@@ -20,9 +20,9 @@ public class Appointment implements Serializable {
     @Override
     public String toString() {
         return "Appointment{" +
-                "user=" + user.getUserId() + "\n" +
+                "user=" + userId + "\n" +
                 ", startTime=" + startTime + "\n" +
-                ", entTime=" + entTime + "\n" +
+                ", entTime=" + entTime +
                 '}';
     }
 }

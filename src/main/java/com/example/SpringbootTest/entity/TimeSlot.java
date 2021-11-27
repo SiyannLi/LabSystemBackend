@@ -7,7 +7,7 @@ public class TimeSlot implements Serializable {
 
     private Date date;
 
-    private int slot;
+    private Integer slot;
 
     private TimeSlotStatus timeSlotStatus;
 
@@ -16,7 +16,7 @@ public class TimeSlot implements Serializable {
         return "TimeSlot{" +
                 "date=" + date + '\'' +
                 ", slot=" + slot + '\'' +
-                ", timeSlotStatus=" + timeSlotStatus + '\'' +
+                ", timeSlotStatus=" + timeSlotStatus +
                 '}';
     }
 }
