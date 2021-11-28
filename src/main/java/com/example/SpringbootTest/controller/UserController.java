@@ -11,10 +11,11 @@ import io.swagger.annotations.ApiParam;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
+
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -38,6 +39,8 @@ public class UserController {
     //不需要用到数据库
     public Result<Object> getUserTest() {
         User user = DataGenerate.generateUser();
+
+        System.out.println(user);
         return ResultGenerator.genSuccessResult(user);
 
     }
@@ -63,6 +66,8 @@ public class UserController {
         users.add(DataGenerate.generateUser());
         users.add(DataGenerate.generateUser());
 
+        System.out.println(users);
+
         return ResultGenerator.genSuccessResult(users);
     }
 
@@ -80,6 +85,7 @@ public class UserController {
     @PostMapping("/insertUserTest")
     //不需要用到数据库
     public Result<Object> insertUserTest(@ApiParam(name = "user", value = "user", required = true) @Param("user") @RequestBody User user) {
+        System.out.println(user);
         return ResultGenerator.genSuccessResult(user);
     }
 
