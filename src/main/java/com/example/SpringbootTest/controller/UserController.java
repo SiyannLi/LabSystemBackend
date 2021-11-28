@@ -4,6 +4,7 @@ package com.example.SpringbootTest.controller;
 import com.example.SpringbootTest.common.Result;
 import com.example.SpringbootTest.common.ResultGenerator;
 import com.example.SpringbootTest.entity.User;
+import com.example.SpringbootTest.entity.UserRole;
 import com.example.SpringbootTest.service.UserService;
 import com.example.SpringbootTest.util.DataGenerate;
 import io.swagger.annotations.ApiOperation;
@@ -85,6 +86,7 @@ public class UserController {
     @PostMapping("/insertUserTest")
     //不需要用到数据库
     public Result<Object> insertUserTest(@ApiParam(name = "user", value = "user", required = true) @Param("user") @RequestBody User user) {
+        user.setUserRole(UserRole.VISITOR);
         System.out.println(user);
         return ResultGenerator.genSuccessResult(user);
     }
