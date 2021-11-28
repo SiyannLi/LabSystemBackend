@@ -1,6 +1,7 @@
 package com.example.SpringbootTest.util;
 
 import com.example.SpringbootTest.entity.User;
+import com.example.SpringbootTest.entity.UserRole;
 import com.github.javafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,7 +20,7 @@ public class DataGenerate {
         user.setRealName(faker.name().name());
         String[] role = {"visitor", "admin"};
         Random random = new Random();
-        user.setUserRole(role[random.nextInt(2)]);
+        user.setUserRole(UserRole.VISITOR);
         user.setEmail(faker.internet().emailAddress(user.getRealName().replaceAll(" ","").toLowerCase()));
         return user;
     }

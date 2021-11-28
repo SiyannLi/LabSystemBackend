@@ -17,7 +17,7 @@ public class User implements Serializable {
 
     private String email;
 
-    private String userRole;
+    private UserRole userRole;
 
     private String userPassword;
 
@@ -31,7 +31,7 @@ public class User implements Serializable {
                 "userid=" + userId + "\n" +
                 "userName=" + userName + "\n" +
                 "email=" + email + "\n" +
-                "userRole=" + userRole + "\n" +
+                "userRole=" + userRole.toString() + "\n" +
                 "userPassword=" + userPassword + "\n" +
                 "realName=" + realName + "\n" +
                 "verifyCode=" + verifyCode +
