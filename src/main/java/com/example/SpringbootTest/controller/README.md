@@ -5,49 +5,49 @@
 private Userservice userService;
 
 @RequestMapping("/users")
-//获取某一个用户的所有信息
+//Get all info of one user
 @GetMapping("get")
 public Result getUsers(int userId);
 
-//登陆
+//login
 @PostMapping("login")
 public Result login(String email, String password, boolean isAdmin);
 
-//登出
+//log out
 @PostMapping("logout")
 public Result logout(String email);
 
-//注册一个用户
+//register one account
 @PostMapping("register")
 public Result register(String email, String password, String name, String vertificationCode);
 
-//重置密码
+//reset password
 @PostMapping("resetPassword")
 public Result resetPassword(String email, String newPassword, String vertificationCode);
 
-//同意用户的申请
+//confirm the application of user to create a new account
 @PostMapping("confirmUserApplication")
 public Result confirmUserApplication(int userId);
 
-//拒绝用户申请
+//reject the application of user to create a new account
 @PostMappin("rejectUserApplication")
 public Result rejectUserApplication(int userId);
 
-//更改用户姓名
+//change username
 @PostMappin("changeUserName")
 public Result changeUserName(int userId, String newName);
 
-//更改用户活跃状态
-@PostMappin("deactiveUser")
+//activate or deactivate account
+@PostMappin("deactivateUser")
 public Result deactiveUser(int userId);
-@PostMappin("activeUser")
+@PostMappin("activateUser")
 public Result activeUser(int userId);
 
-//获取所有用户列表
+//get a list of all users
 @GetMapping("getAllUsers")
 public Result getAllUsers();
 
-//获取所有管理员列表
+//get a list of all admins
 @GetMapping("getAllAdministrator")
 public Result getAllAdministrator();
 ```
@@ -60,23 +60,23 @@ public Result getAllAdministrator();
 @RequestMapping("/devices")
 private Userservice userService;
 
-//获取所有设备和数量
+//get a list of all devices and their amounts
 @GetMapping("getAlldevicesAndAmount")
 public Result getAlldevicesAndAmount();
 
-//新增一个设备
+//add a new device
 @PostMapping("addDevice")
 public Result addDevice(String deviceName, int Amount, String links);
 
-//删除一个设备
+//delete a device from database
 @DeleteMapping("deleteDevice")
 public Result deleteDevice(int deviceId);
 
-//修改设备数量
+//change the amount of one device
 @PostMapping("changeDeviceAmount")
 public Result changeDeviceAmount(int deviceId, int newAmount);
 
-//合并设备列表
+//merge two device and sum the amounts
 @PostMapping("mergeDevice")
 public Result mergeDevice(String deviceName, String link, int submitterId, String targetdevice);
 ```
@@ -89,28 +89,28 @@ public Result mergeDevice(String deviceName, String link, int submitterId, Strin
 
 private Userservice userService;
 
-//获取此用户的所有orders
+//get a list of all orders of this user
 public Result getUserOrders(int userId);
 
-//获取此用户的active orders
+//get all active orders of this user
 public Result getUserActiveOrders(int userId);
 
-//删除order
+//delete one order
 public Result deleteOrder(int orderId);
 
-//获取此用户的 past orders
+//get all past orders of this user
 public Result getUserPastOrders(int userId);
 
-//提交一个 order
-public Result submitOrder(String article, int amount, String link, String contact);
+//submit an order with user account
+public Result submitOrder(int userId, String article, int amount, String link, String contact);
 
-//获取所有的 active orders
+//get all active orders
 public Result getAllActiveOrders();
 
-//同意 order
+//confirm order application
 public Result confirmOrder(int orderId);
 
-//拒绝 order
+//reject one order application
 public Result rejectOrder(int orderId);
 ```
 
@@ -122,13 +122,13 @@ public Result rejectOrder(int orderId);
 
 private Userservice userService;
 
-//新建一个消息
+//create a news
 public Result addNews(int senderId, int receiverId, String content);
 
-//获取所有消息
+//get list of all news
 public Result getAllNews();
 
-//获取当前按用户所有收到的消息
+//get list of all news of this user
 public Result getUserAllNews(int receiverId);
 ```
 
@@ -141,21 +141,21 @@ public Result getUserAllNews(int receiverId);
 
 private Userservice userService;
 
-//获取此用户的所有预约
+//get list of all appointments of this user
 public Result getUserAppointments(String userId);
 
-//返回从 startDate 开始所用的空闲时间.
+//get a list of all available Time slots from start date.
 public Result getAvailableTimeSlots(Date startDate);
 
-//设置可预约时间段
+//set one available time slot
 public Result setAvailableTimeSlots(Date availableDate, int TimeSlot, int endRepeatAfter);
 
-//查询所有预约
+//get list of all appointments
 public Result getAllAppointments();
 
-//删除一个预约
+//delete one appointment
 public Result deleteAppointment(int appointmentId);
 
-//用户新建一个预约
+//User create one new appointment
 public Result addAppointment(int userId, int TimeSlot, String email);
 ```

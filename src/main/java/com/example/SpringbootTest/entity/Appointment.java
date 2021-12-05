@@ -17,7 +17,6 @@ public class Appointment implements Serializable {
 
     private TimeSlot entTime;
 
-    private AppointmentStatus appointmentStatus;
     @Override
     public String toString() {
         return "Appointment{" +

@@ -7,38 +7,38 @@
 private UserDao userDao;
 
 //methods
-//获取某一个用户的所有信息
+//Get all info of one user
 public User getUser(int userId);
 
-//登陆
+//login
 public User login(String email, String password, boolean isAdmin);
 
-//登出
+//log out
 public User logout(String email);
 
-//注册一个用户
+//register one account
 public User register(String email, String password, String name, String vertificationCode);
 
-//重置密码
+//reset password
 public User resetPassword(String email, String newPassword, String vertificationCode);
 
-//同意用户的申请
+//confirm the application of user to create a new account
 public User confirmUserApplication(int userId);
 
-//拒绝用户申请
+//reject the application of user to create a new account
 public boolean rejectUserApplication(int userId);//拒绝用户申请后，直接在数据库里清除用户的信息
 
-//更改用户姓名
+//change username
 public User changeUserName(int userId, String newName);
 
-//更改用户活跃状态
-public User deactiveUser(int userId);
-public User activeUser(int userId);
+//activate or deactivate account
+public User deactivateUser(int userId);
+public User activateUser(int userId);
 
-//获取所有用户列表
+//get a list of all users
 public List<User> getAllUsers();
 
-//获取所有管理员列表
+//get a list of all admins
 public List<User> getAllAdministrator();
 
 ```
