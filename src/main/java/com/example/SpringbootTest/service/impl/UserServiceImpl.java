@@ -33,4 +33,59 @@ public class UserServiceImpl implements UserService {
     public int insertUser(User user) {
         return userDao.insertUser(user);
     }
+
+    @Override
+    public User login(String email, String password, boolean isAdmin) {
+        return null;
+    }
+
+    @Override
+    public User logout(String email) {
+        return null;
+    }
+
+    @Override
+    public User register(String email, String password, String name, String vertificationCode) {
+        return null;
+    }
+
+    @Override
+    public User resetPassword(String email, String newPassword, String vertificationCode) {
+        return null;
+    }
+
+    @Override
+    public User confirmUserApplication(int userId) {
+        return null;
+    }
+
+    @Override
+    public boolean rejectUserApplication(int userId) {
+        return false;
+    }
+
+    @Override
+    public User changeUserName(int userId, String newName) {
+        return null;
+    }
+
+    @Override
+    public User deactivateUser(int userId) {
+        return null;
+    }
+
+    @Override
+    public User activateUser(int userId) {
+        return null;
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return null;
+    }
+
+    @Override
+    public List<User> getAllAdministrator() {
+        return null;
+    }
 }
