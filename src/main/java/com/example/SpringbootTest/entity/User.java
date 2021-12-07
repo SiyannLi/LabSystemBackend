@@ -24,6 +24,8 @@ public class User implements Serializable {
 
     private Integer verifyCode;
 
+    private UserAccountStatus userAccountStatus;
+
     @Override
     public String toString() {
         return "User{" +
