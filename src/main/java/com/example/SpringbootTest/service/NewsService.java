@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface NewsService {
     //新建一个消息
-    News addNews(int senderId, int receiverId, String content);
+    int addNews(int senderId, int receiverId, String content);
 
     //获取所有消息
     List<News> getAllNews();

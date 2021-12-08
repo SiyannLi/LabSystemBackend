@@ -15,7 +15,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getUserOrders(int userId) {
-        return null;
+        return orderDao.getUserOrders(userId);
     }
 
     @Override

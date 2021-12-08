@@ -14,7 +14,7 @@ public class DeviceServiceImpl implements DeviceService {
     private DeviceDao deviceDao;
     @Override
     public List<Device> getAllDevicesAndAmount() {
-        return null;
+        return deviceDao.getAllDevices();
     }
 
     @Override

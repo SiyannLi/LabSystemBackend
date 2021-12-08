@@ -25,10 +25,10 @@ public interface UserService {
     User resetPassword(String email, String newPassword, String vertificationCode);
 
     //confirm the application of user to create a new account
-    User confirmUserApplication(int userId);
+    User confirmUserRegistration(int userId);
 
     //reject the application of user to create a new account
-    boolean rejectUserApplication(int userId);//拒绝用户申请后，直接在数据库里清除用户的信息
+    boolean rejectUserRegistration(int userId);//拒绝用户申请后，直接在数据库里清除用户的信息
 
     //change username
     User changeUserName(int userId, String newName);

@@ -17,7 +17,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<Appointment> getUserAppointments(String userId) {
-        return null;
+        return appointmentDao.getUserAppointments(userId);
     }
 
     @Override

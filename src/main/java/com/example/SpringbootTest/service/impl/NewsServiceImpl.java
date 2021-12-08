@@ -14,8 +14,8 @@ public class NewsServiceImpl implements NewsService {
     private NewsDao newsDao;
 
     @Override
-    public News addNews(int senderId, int receiverId, String content) {
-        return null;
+    public int addNews(int senderId, int receiverId, String content) {
+        return newsDao.insertNews(new News());
     }
 
     @Override

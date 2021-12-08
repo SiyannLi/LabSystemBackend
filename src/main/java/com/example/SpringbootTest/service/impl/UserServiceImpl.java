@@ -55,12 +55,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User confirmUserApplication(int userId) {
+    public User confirmUserRegistration(int userId) {
         return null;
     }
 
     @Override
-    public boolean rejectUserApplication(int userId) {
+    public boolean rejectUserRegistration(int userId) {
         return false;
     }
 
