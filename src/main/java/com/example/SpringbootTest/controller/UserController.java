@@ -43,6 +43,7 @@ public class UserController {
         User user = DataGenerate.generateUser();
 
         System.out.println(user);
+        System.out.println("\n");
         System.out.println(new Date());
         return ResponseGenerator.genSuccessResult(user);
 
@@ -70,6 +71,7 @@ public class UserController {
         users.add(DataGenerate.generateUser());
 
         System.out.println(users);
+        System.out.println("\n");
         System.out.println(new Date());
 
         return ResponseGenerator.genSuccessResult(users);
@@ -91,6 +93,7 @@ public class UserController {
     public Response<Object> insertUserTest(@ApiParam(name = "user", value = "user", required = true) @Param("user") @RequestBody User user) {
         user.setUserRole(UserRole.VISITOR);
         System.out.println(user);
+        System.out.println("\n");
         System.out.println(new Date());
 
         return ResponseGenerator.genSuccessResult(user);
