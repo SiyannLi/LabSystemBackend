@@ -10,4 +10,4 @@ spring:
     #password: Asdlkj987.
 mybatis:
   mapper-locations: classpath*:mapper/*Mapper.xml
-  type-aliases-package: com.example.SpringbootTest.entity
+  type-aliases-package: com.example.LabSystemBackend.entity
