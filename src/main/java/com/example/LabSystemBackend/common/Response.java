@@ -2,11 +2,11 @@ package com.example.LabSystemBackend.common;
 
 import java.io.Serializable;
 
-public class Response<Object> implements Serializable {
+public class Response<T> implements Serializable {
     private static final long serialVersionUID = 1L;
     private int resultCode;
     private String message;
-    private Object data;
+    private T data;
 
     public Response() {
     }
@@ -36,11 +36,11 @@ public class Response<Object> implements Serializable {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(T data) {
         this.data = data;
     }
 
-    public Response<Object> failure(String code) {
+    public Response<T> failure(String code) {
         return new Response<>(500, "server error");
     }
 

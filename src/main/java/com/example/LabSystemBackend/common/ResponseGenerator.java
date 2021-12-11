@@ -4,21 +4,21 @@ import org.springframework.util.StringUtils;
 public class ResponseGenerator {
     private static final String DEFAULT_SUCCESS_MESSAGE = "SUCCESS";
     private static final String DEFAULT_FAIL_MESSAGE = "FAIL";
-    public static Response<Object> genSuccessResult() {
-        Response<Object> response = new Response<>();
+    public static Response genSuccessResult() {
+        Response response = new Response<>();
         response.setResultCode(Constants.RESULT_CODE_SUCCESS);
         response.setMessage(DEFAULT_SUCCESS_MESSAGE);
         return response;
     }
 
-    public static Response<Object> genSuccessResult(String message) {
+    public static Response genSuccessResult(String message) {
         Response<Object> response = new Response<>();
         response.setResultCode(Constants.RESULT_CODE_SUCCESS);
         response.setMessage(message);
         return response;
     }
 
-    public static Response<Object> genSuccessResult(Object data) {
+    public static Response genSuccessResult(Object data) {
         Response<Object> response = new Response<>();
         response.setResultCode(Constants.RESULT_CODE_SUCCESS);
         response.setMessage(DEFAULT_SUCCESS_MESSAGE);
@@ -26,7 +26,7 @@ public class ResponseGenerator {
         return response;
     }
 
-    public static Response<Object> genFailResult(String message) {
+    public static Response genFailResult(String message) {
         Response<Object> response = new Response<>();
         response.setResultCode(Constants.RESULT_CODE_SERVER_ERROR);
         if (StringUtils.isEmpty(message)) {
@@ -37,15 +37,15 @@ public class ResponseGenerator {
         return response;
     }
 
-    public static Response<Object> genNullResult(String message) {
+    public static Response genNullResult(String message) {
         Response<Object> response = new Response<>();
         response.setResultCode(Constants.RESULT_CODE_BAD_REQUEST);
         response.setMessage(message);
         return response;
     }
 
-    public static Response<Object> genErrorResult(int code, String message) {
-        Response<Object> response = new Response<>();
+    public static Response genErrorResult(int code, String message) {
+        Response response = new Response<>();
         response.setResultCode(code);
         response.setMessage(message);
         return response;

@@ -28,7 +28,7 @@ public class UserController {
 
     @ApiOperation("get one user")
     @GetMapping("get/{userId}")
-    public Response<Object> getUser(@ApiParam(name = "userId", value = "userId", required = true) @PathVariable int userId) {
+    public Response getUser(@ApiParam(name = "userId", value = "userId", required = true) @PathVariable int userId) {
         User user = userService.getUser(userId);
         if (null != user) {
             return ResponseGenerator.genSuccessResult(user);
@@ -40,7 +40,7 @@ public class UserController {
     @ApiOperation("get one test user")
     @GetMapping("getTestUser")
     //不需要用到数据库
-    public Response<Object> getUserTest() {
+    public Response getUserTest() {
         User user = DataGenerate.generateUser();
 
         System.out.println(user);
@@ -52,7 +52,7 @@ public class UserController {
 
     @ApiOperation("get all users")
     @GetMapping("getAllUsers")
-    public Response<Object> getAllUsers() {
+    public Response getAllUsers() {
         List<User> users = userService.getAllUser();
         if (!users.isEmpty()) {
             return ResponseGenerator.genSuccessResult(users);
@@ -65,7 +65,7 @@ public class UserController {
     @ApiOperation("get all test users")
     @GetMapping("getAllTest")
     //不需要用到数据库
-    public Response<Object> getAllTest() {
+    public Response getAllTest() {
         List<User> users = new ArrayList<>();
         users.add(DataGenerate.generateUser());
         users.add(DataGenerate.generateUser());
@@ -80,7 +80,7 @@ public class UserController {
 
     @ApiOperation("insert one user")
     @PostMapping("/insertUser")
-    public Response<Object> insertUser(@ApiParam(name = "user", value = "user", required = true) @Param("user") @RequestBody User user) {
+    public Response insertUser(@ApiParam(name = "user", value = "user", required = true) @Param("user") @RequestBody User user) {
         if (userService.insertUser(user) > 0) {
             return ResponseGenerator.genSuccessResult();
         } else {
@@ -91,7 +91,7 @@ public class UserController {
     @ApiOperation("insert one user")
     @PostMapping("/insertUserTest")
     //不需要用到数据库
-    public Response<Object> insertUserTest(@ApiParam(name = "user", value = "user", required = true) @Param("user") @RequestBody User user) {
+    public Response insertUserTest(@ApiParam(name = "user", value = "user", required = true) @Param("user") @RequestBody User user) {
         user.setUserRole(UserRole.VISITOR);
         System.out.println(user);
         System.out.println("\n");
@@ -102,63 +102,63 @@ public class UserController {
 
     @ApiOperation("login")
     @PostMapping("login")
-    public Response<Object> login(String email, String password, boolean isAdmin) {
+    public Response login(String email, String password, boolean isAdmin) {
         return null;
     }
 
     @ApiOperation("log out")
     @PostMapping("logout")
-    public Response<Object> logout(String email) {
+    public Response logout(String email) {
         return null;
     }
 
     @ApiOperation("register one account")
     @PostMapping("register")
-    public Response<Object> register(String email, String password, String firstName, String lastName, String vertificationCode){
+    public Response register(String email, String password, String firstName, String lastName, String vertificationCode){
         return null;
     }
 
 
     @ApiOperation("reset password")
     @PostMapping("resetPassword")
-    public  Response<Object> resetPassword(String email, String newPassword, String vertificationCode){
+    public  Response resetPassword(String email, String newPassword, String vertificationCode){
         return null;
     }
 
 
     @ApiOperation("confirm the registration of user to create a new account")
     @PostMapping("confirmUserRegistration")
-    public Response<Object> confirmUserRegistration(int userId){
+    public Response confirmUserRegistration(int userId){
         return null;
     }
 
     @ApiOperation("reject the application of user to create a new account")
     @PostMapping("rejectUserRegistration")
-    public Response<Object> rejectUserRegistration(int userId){
+    public Response rejectUserRegistration(int userId){
         return null;
     }
 
     @ApiOperation("change username")
     @PostMapping("changeUserName")
-    public Response<Object> changeUserName(int userId, String newFirstName,String newLastName){
+    public Response changeUserName(int userId, String newFirstName,String newLastName){
         return null;
     }
 
     @ApiOperation("deactivate account")
     @PostMapping("deactivateUser")
-    public Response<Object> deactiveUser(int userId){
+    public Response deactiveUser(int userId){
         return null;
     }
     @ApiOperation("activate account")
     @PostMapping("activateUser")
-    public Response<Object> activeUser(int userId){
+    public Response activeUser(int userId){
         return null;
     }
 
 
     @ApiOperation("get a list of all admins")
     @GetMapping("getAllAdministrator")
-    public Response<Object> getAllAdministrator(){
+    public Response getAllAdministrator(){
         return null;
     }
 

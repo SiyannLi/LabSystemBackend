@@ -8,9 +8,9 @@ public interface ItemService {
 
     List<Item> getAllItemsAndAmount();
 
-    Item addItem(String deviceName, int Amount, String link, String description);
+    Item addItem(String itemName, int Amount, String link, String description);
 
-    Item deleteItem(int deviceId);
+    Item deleteItem(int itemId);
 
     Item changeItemAmount(int itemId, int newAmount);
 
