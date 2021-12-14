@@ -118,17 +118,17 @@ public Result rejectOrder(int orderId);
 ---
 ## _NewsController_
 ```java
-@RequestMapping("/news")
+@RequestMapping("/notification")
 
 private Userservice userService;
 
-//create a news
+//create a notification
 public Result addNews(int senderId, int receiverId, String content);
 
-//get list of all news
+//get list of all notification
 public Result getAllNews();
 
-//get list of all news of this user
+//get list of all notification of this user
 public Result getUserAllNews(int receiverId);
 ```
 

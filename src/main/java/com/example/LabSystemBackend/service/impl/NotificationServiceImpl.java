@@ -1,30 +1,30 @@
 package com.example.LabSystemBackend.service.impl;
 
-import com.example.LabSystemBackend.dao.NewsDao;
-import com.example.LabSystemBackend.entity.News;
-import com.example.LabSystemBackend.service.NewsService;
+import com.example.LabSystemBackend.dao.NotificationDao;
+import com.example.LabSystemBackend.entity.Notification;
+import com.example.LabSystemBackend.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class NewsServiceImpl implements NewsService {
+public class NotificationServiceImpl implements NotificationService {
     @Autowired
-    private NewsDao newsDao;
+    private NotificationDao notificationDao;
 
     @Override
     public int sendNews(int senderId, int receiverId, String content) {
-        return newsDao.insertNews(new News());
+        return notificationDao.insertNews(new Notification());
     }
 
     @Override
-    public List<News> getAllNews() {
+    public List<Notification> getAllNews() {
         return null;
     }
 
     @Override
-    public News getUserAllNews(int receiverId) {
+    public Notification getUserAllNews(int receiverId) {
         return null;
     }
 

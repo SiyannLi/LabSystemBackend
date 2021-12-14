@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class News implements Serializable {
+public class Notification implements Serializable {
 
     private User sender;
     private User recipient;
@@ -17,7 +17,7 @@ public class News implements Serializable {
 
     @Override
     public String toString() {
-        return "News{" +
+        return "Notification{" +
                 "sender=" + sender + '\'' +
                 ", recipient=" + recipient + '\'' +
                 ", content='" + content +
