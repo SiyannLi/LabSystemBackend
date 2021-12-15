@@ -103,63 +103,65 @@ public class UserController {
     @ApiOperation("login")
     @PostMapping("login")
     public Response login(String email, String password, boolean isAdmin) {
-        return null;
+        return ResponseGenerator.genSuccessResult(userService.login(email,password,isAdmin));
     }
 
     @ApiOperation("log out")
     @PostMapping("logout")
     public Response logout(String email) {
-        return null;
+        return ResponseGenerator.genSuccessResult(userService.logout(email));
     }
 
     @ApiOperation("register one account")
     @PostMapping("register")
-    public Response register(String email, String password, String firstName, String lastName, String vertificationCode){
-        return null;
-    }
+    public Response register(String email, String password, String firstName, String lastName, String verificationCode) {
+        return ResponseGenerator.genSuccessResult(userService.register(email,password,firstName,lastName,verificationCode));    }
 
 
     @ApiOperation("reset password")
     @PostMapping("resetPassword")
-    public  Response resetPassword(String email, String newPassword, String vertificationCode){
-        return null;
+    public Response resetPassword(String email, String newPassword, String verificationCode) {
+        return ResponseGenerator.genSuccessResult(userService.resetPassword(email, newPassword, verificationCode));
     }
 
 
     @ApiOperation("confirm the registration of user to create a new account")
     @PostMapping("confirmUserRegistration")
-    public Response confirmUserRegistration(int userId){
-        return null;
+    public Response confirmUserRegistration(int userId) {
+        return ResponseGenerator.genSuccessResult(userService.confirmUserRegistration(userId));
     }
 
     @ApiOperation("reject the application of user to create a new account")
     @PostMapping("rejectUserRegistration")
-    public Response rejectUserRegistration(int userId){
-        return null;
+    public Response rejectUserRegistration(int userId) {
+        return ResponseGenerator.genSuccessResult(userService.rejectUserRegistration(userId));
+
     }
 
     @ApiOperation("change username")
     @PostMapping("changeUserName")
-    public Response changeUserName(int userId, String newFirstName,String newLastName){
-        return null;
+    public Response changeUserName(int userId, String newFirstName, String newLastName) {
+        return ResponseGenerator.genSuccessResult(userService.changeUserName(userId,newFirstName,newLastName));
+
     }
 
     @ApiOperation("deactivate account")
     @PostMapping("deactivateUser")
-    public Response deactiveUser(int userId){
-        return null;
+    public Response deactivateUser(int userId) {
+        return ResponseGenerator.genSuccessResult(userService.deactivateUser(userId));
     }
+
     @ApiOperation("activate account")
     @PostMapping("activateUser")
-    public Response activeUser(int userId){
-        return null;
+    public Response activeUser(int userId) {
+        return ResponseGenerator.genSuccessResult(userService.activateUser(userId));
     }
 
 
     @ApiOperation("get a list of all admins")
     @GetMapping("getAllAdministrator")
-    public Response getAllAdministrator(){
-        return null;
+    public Response getAllAdministrator() {
+        return ResponseGenerator.genSuccessResult(userService.getAllAdministrator());
     }
 
 

@@ -6,13 +6,12 @@ import java.util.List;
 
 public interface NotificationService {
     //新建一个消息
-    int sendNews(int senderId, int receiverId, String content);
+    int sendNotification(int receiverId, String content);
 
-    //获取所有消息
-    List<Notification> getAllNews();
+    List<Notification> getAllNotification();
 
-    //获取当前按用户所有收到的消息
-    Notification getUserAllNews(int receiverId);
+    List<Notification> getUserAllNotification(int receiverId);
 
     int sendToAllAdmin(String content);
+
 }

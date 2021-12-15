@@ -18,22 +18,21 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item addItem(String deviceName, int Amount, String links, String description) {
-        return null;
+    public int addItem(String deviceName, int Amount, String links, String description) {
+        return itemDao.addItem(new Item());
     }
 
     @Override
-    public Item deleteItem(int deviceId) {
-        return null;
+    public int deleteItem(int deviceId) {
+        return itemDao.deleteItem(deviceId);    }
+
+    @Override
+    public int changeItemAmount(int deviceId, int newAmount) {
+        return itemDao.changeItemAmount(deviceId,newAmount);
     }
 
     @Override
-    public Item changeItemAmount(int deviceId, int newAmount) {
-        return null;
-    }
-
-    @Override
-    public List<Item> mergeItem(int itemId, int targetItemId) {
-        return null;
+    public int mergeItem(int itemId, int targetItemId) {
+        return itemDao.mergeItem(itemId,targetItemId);
     }
 }

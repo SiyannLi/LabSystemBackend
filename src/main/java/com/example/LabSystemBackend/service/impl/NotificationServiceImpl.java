@@ -14,18 +14,18 @@ public class NotificationServiceImpl implements NotificationService {
     private NotificationDao notificationDao;
 
     @Override
-    public int sendNews(int senderId, int receiverId, String content) {
-        return notificationDao.insertNews(new Notification());
+    public int sendNotification(int receiverId, String content) {
+        return notificationDao.insertNotification(new Notification());
     }
 
     @Override
-    public List<Notification> getAllNews() {
-        return null;
+    public List<Notification> getAllNotification() {
+        return notificationDao.getAllNotification();
     }
 
     @Override
-    public Notification getUserAllNews(int receiverId) {
-        return null;
+    public List<Notification> getUserAllNotification(int receiverId) {
+        return notificationDao.getUserAllNotification(receiverId);
     }
 
     @Override

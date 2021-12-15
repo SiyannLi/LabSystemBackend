@@ -2,6 +2,7 @@ package com.example.LabSystemBackend.service.impl;
 
 import com.example.LabSystemBackend.dao.OrderDao;
 import com.example.LabSystemBackend.entity.Order;
+import com.example.LabSystemBackend.entity.OrderStatus;
 import com.example.LabSystemBackend.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,36 +21,36 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getUserActiveOrders(int userId) {
-        return null;
+        return orderDao.getUserActiveOrders(userId);
     }
 
     @Override
-    public Order deleteOrder(int orderId) {
-        return null;
+    public int deleteOrder(int orderId) {
+        return orderDao.deleteOrder(orderId);
     }
 
     @Override
     public List<Order> getUserPastOrders(int userId) {
-        return null;
+        return orderDao.getUserPastOrders(userId);
     }
 
     @Override
-    public Order submitOrder(int userId, String item, int amount, String link) {
-        return null;
+    public int submitOrder(int userId, String item, int amount, String link) {
+        return orderDao.insertOrder(new Order());
     }
 
     @Override
     public List<Order> getAllActiveOrders() {
-        return null;
+        return orderDao.getAllActiveOrders();
     }
 
     @Override
-    public Order confirmOrder(int orderId) {
-        return null;
+    public int confirmOrder(int orderId) {
+        return orderDao.changeOrderStatus(orderId, OrderStatus.APPROVED);
     }
 
     @Override
-    public Order rejectOrder(int orderId) {
-        return null;
+    public int rejectOrder(int orderId) {
+        return orderDao.changeOrderStatus(orderId, OrderStatus.REJECTED);
     }
 }

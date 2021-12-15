@@ -24,7 +24,7 @@ public interface UserDao {
 
     int updateUserAccountStatus(@Param("userAccountStatus")UserAccountStatus userAccountStatus,@Param("userId") int userId);
 
-    int updateRealName(@Param("userId")int userId, @Param("realName") String realName);
+    int updateName(@Param("userId")int userId, @Param("firstName") String firstName, @Param("lastName") String lastName);
 
 
 }

@@ -8,11 +8,11 @@ import java.util.List;
 
 @Mapper
 public interface NotificationDao {
-    int insertNews(@Param("notification") Notification notification);
+    int insertNotification(@Param("notification") Notification notification);
 
-    List<Notification> getAllNews();
+    List<Notification> getAllNotification();
 
-    Notification getUserAllNews(@Param("receiverId") int receiverId);
+    List<Notification> getUserAllNotification(@Param("receiverId") int receiverId);
 
 
 }

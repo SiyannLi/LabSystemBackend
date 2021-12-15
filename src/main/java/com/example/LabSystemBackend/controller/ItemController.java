@@ -26,25 +26,27 @@ public class ItemController {
 
     @ApiOperation("add a new device")
     @PostMapping("addItem")
-    public Response addItem(String itemName, int Amount, String link, String description) {
-        return null;
+    public Response addItem(String itemName, int amount, String link, String description) {
+        return ResponseGenerator.genSuccessResult(itemService.addItem(itemName,amount,link,description));
     }
 
     @ApiOperation("delete a device from database")
     @DeleteMapping("deleteItem")
     public Response deleteItem(int itemId) {
-        return null;
+        return ResponseGenerator.genSuccessResult(itemService.deleteItem(itemId));
+
     }
 
     @ApiOperation("change the amount of one item")
     @PostMapping("changeItemAmount")
     public Response changeItemAmount(int itemId, int newAmount) {
-        return null;
+        return ResponseGenerator.genSuccessResult(itemService.changeItemAmount(itemId,newAmount));
+
     }
 
     @ApiOperation("merge two Items and sum the amounts")
     @PostMapping("mergeItem")
     public Response mergeItem(int itemId, int targetItemId) {
-        return null;
+        return ResponseGenerator.genSuccessResult(itemService.mergeItem(itemId,targetItemId));
     }
 }

@@ -14,14 +14,14 @@ public interface AppointmentService {
     List<TimeFrame> getAvailableTimeFrames(Date startDate);
 
     //设置可预约时间段
-    List<TimeFrame> setAvailableTimeFrames(Date availableDate, int TimeFrame, int endRepeatAfter);
+    int setAvailableTimeFrames(Date availableDate, int TimeFrame, int endRepeatAfter);
 
     //查询所有预约
     List<Appointment> getAllAppointments();
 
     //删除一个预约
-    Appointment deleteAppointment(int appointmentId);
+    int deleteAppointment(int appointmentId);
 
     //用户新建一个预约
-    Appointment addAppointment(int userId,TimeFrame TimeFrame, String email);
+    int addAppointment(int userId, TimeFrame timeFrame, String email);
 }

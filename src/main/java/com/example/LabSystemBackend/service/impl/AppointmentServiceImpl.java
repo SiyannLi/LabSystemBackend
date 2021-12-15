@@ -23,26 +23,26 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<Appointment> getAllAppointments() {
-        return null;
+        return appointmentDao.getAllAppointments();
     }
 
     @Override
-    public Appointment deleteAppointment(int appointmentId) {
-        return null;
+    public int deleteAppointment(int appointmentId) {
+        return appointmentDao.deleteAppointmentById(appointmentId);
     }
 
     @Override
     public List<TimeFrame> getAvailableTimeFrames(Date startDate) {
-        return null;
+        return appointmentDao.getAvailableTimeFrames(startDate);
     }
 
     @Override
-    public List<TimeFrame> setAvailableTimeFrames(Date availableDate, int TimeFrame, int endRepeatAfter) {
-        return null;
+    public int setAvailableTimeFrames(Date availableDate, int timeFrame, int endRepeatAfter) {
+        return appointmentDao.setAvailableTimeFrame(new TimeFrame());
     }
 
     @Override
-    public Appointment addAppointment(int userId, TimeFrame TimeFrame, String email) {
-        return null;
+    public int addAppointment(int userId, TimeFrame timeFrame, String email) {
+        return appointmentDao.addAppointment(new Appointment());
     }
 }

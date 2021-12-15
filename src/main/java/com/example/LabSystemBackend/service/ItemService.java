@@ -8,11 +8,11 @@ public interface ItemService {
 
     List<Item> getAllItemsAndAmount();
 
-    Item addItem(String itemName, int Amount, String link, String description);
+    int addItem(String itemName, int Amount, String link, String description);
 
-    Item deleteItem(int itemId);
+    int deleteItem(int itemId);
 
-    Item changeItemAmount(int itemId, int newAmount);
+    int changeItemAmount(int itemId, int newAmount);
 
-    List<Item> mergeItem(int itemId, int targetItemId);
+    int mergeItem(int itemId, int targetItemId);
 }

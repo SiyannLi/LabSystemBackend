@@ -15,7 +15,7 @@ public interface AppointmentDao {
 
     List<TimeFrame> getAvailableTimeFrames(@Param("startDate")Date startDate);
 
-    List<TimeFrame> setAvailableTimeFrame(@Param("timeFrame") TimeFrame timeFrame);
+    int setAvailableTimeFrame(@Param("timeFrame") TimeFrame timeFrame);
 
     List<Appointment> getAllAppointments();
 

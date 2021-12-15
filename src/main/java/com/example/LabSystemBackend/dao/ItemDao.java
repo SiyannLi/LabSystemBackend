@@ -14,6 +14,8 @@ public interface ItemDao {
 
     Item getItemById(@Param("itemId") int itemId);
 
+    int addItem(@Param("item") Item item);
+
     int deleteItem(@Param("itemId") int itemId);
 
     int changeItemAmount(@Param("itemId") int itemId, @Param("amount") int amount);

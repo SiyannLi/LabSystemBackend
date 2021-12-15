@@ -23,43 +23,45 @@ public class OrderController {
     @ApiOperation("get all active orders of this user")
     @GetMapping("getUserActiveOrders")
     public Response getUserActiveOrders(int userId){
-        return null;
+        return ResponseGenerator.genSuccessResult(orderService.getUserActiveOrders(userId));
     }
 
     @ApiOperation("delete one order")
     @PostMapping("deleteOrder")
     public Response deleteOrder(int orderId){
-        return null;
+        return ResponseGenerator.genSuccessResult(orderService.deleteOrder(orderId));
     }
 
     @ApiOperation("get all past orders of this user")
     @GetMapping("getUserPastOrders")
     public Response getUserPastOrders(int userId){
-        return null;
+        return ResponseGenerator.genSuccessResult(orderService.getUserPastOrders(userId));
     }
 
     @ApiOperation("submit an order with user account")
     @PostMapping("submitOrder")
     public Response submitOrder(int userId, String item, int amount, String link){
-        return null;
+        return ResponseGenerator.genSuccessResult(orderService.submitOrder(userId,item,amount,link));
     }
 
     @ApiOperation("get all active orders")
     @GetMapping("getAllActiveOrders")
     public Response getAllActiveOrders(){
-        return null;
+        return ResponseGenerator.genSuccessResult(orderService.getAllActiveOrders());
+
     }
 
     @ApiOperation("confirm order application")
     @PostMapping("confirmOrder")
     public Response confirmOrder(int orderId){
-        return null;
+        return ResponseGenerator.genSuccessResult(orderService.confirmOrder(orderId));
     }
 
     @ApiOperation("reject one order application")
     @PostMapping("rejectOrder")
     public Response rejectOrder(int orderId){
-        return null;
+        return ResponseGenerator.genSuccessResult(orderService.rejectOrder(orderId));
+
     }
 
 }

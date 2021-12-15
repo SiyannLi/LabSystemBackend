@@ -1,6 +1,7 @@
 package com.example.LabSystemBackend.dao;
 
 import com.example.LabSystemBackend.entity.Order;
+import com.example.LabSystemBackend.entity.OrderStatus;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,10 +17,10 @@ public interface OrderDao {
 
     int deleteOrder(@Param("orderId") int orderId);
 
-    int createOrder(@Param("order") Order order);
+    int insertOrder(@Param("order") Order order);
 
     List<Order> getAllActiveOrders();
 
-    int changeOrderStatus();
+    int changeOrderStatus(@Param("orderId") int orderId,@Param("orderStatus") OrderStatus orderStatus);
 
 }

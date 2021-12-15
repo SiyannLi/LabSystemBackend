@@ -19,10 +19,10 @@ public interface UserService {
     User logout(String email);
 
     //register one account
-    User register(String email, String password, String name, String vertificationCode);
+    int register(String email, String password, String firstName, String lastName, String vertificationCode);
 
     //reset password
-    User resetPassword(String email, String newPassword, String vertificationCode);
+    int resetPassword(String email, String newPassword, String vertificationCode);
 
     //confirm the application of user to create a new account
     User confirmUserRegistration(int userId);
@@ -31,12 +31,12 @@ public interface UserService {
     boolean rejectUserRegistration(int userId);//拒绝用户申请后，直接在数据库里清除用户的信息
 
     //change username
-    User changeUserName(int userId, String newName);
+    int changeUserName(int userId, String newFirstName, String newLastName);
 
     //activate or deactivate account
-    User deactivateUser(int userId);
+    int deactivateUser(int userId);
 
-    User activateUser(int userId);
+    int activateUser(int userId);
 
     //get a list of all users
     List<User> getAllUsers();

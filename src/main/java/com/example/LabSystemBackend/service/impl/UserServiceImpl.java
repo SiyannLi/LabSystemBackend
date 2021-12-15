@@ -2,6 +2,7 @@ package com.example.LabSystemBackend.service.impl;
 
 import com.example.LabSystemBackend.dao.UserDao;
 import com.example.LabSystemBackend.entity.User;
+import com.example.LabSystemBackend.entity.UserAccountStatus;
 import com.example.LabSystemBackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,13 +46,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(String email, String password, String name, String vertificationCode) {
-        return null;
-    }
-
-    @Override
-    public User resetPassword(String email, String newPassword, String vertificationCode) {
-        return null;
+    public int resetPassword(String email, String newPassword, String verificationCode) {
+        return userDao.updatePassword(1,newPassword);
     }
 
     @Override
@@ -65,27 +61,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User changeUserName(int userId, String newName) {
-        return null;
+    public int register(String email, String password, String firstName, String lastName, String verificationCode) {
+        return userDao.insertUser(new User());
     }
 
     @Override
-    public User deactivateUser(int userId) {
-        return null;
+    public int changeUserName(int userId, String newFirstName, String newLastName) {
+        return userDao.updateName(userId,newFirstName,newLastName);
     }
 
     @Override
-    public User activateUser(int userId) {
-        return null;
+    public int deactivateUser(int userId) {
+        return userDao.updateUserAccountStatus(UserAccountStatus.ACTIVE,userId);
+    }
+
+    @Override
+    public int activateUser(int userId) {
+        return userDao.updateUserAccountStatus(UserAccountStatus.ACTIVE,userId);
     }
 
     @Override
     public List<User> getAllUsers() {
-        return null;
+        return userDao.getAllUser();
     }
 
     @Override
     public List<User> getAllAdministrator() {
-        return null;
+        return userDao.getAllAdministrators();
     }
 }

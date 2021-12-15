@@ -12,20 +12,20 @@ public interface OrderService {
     List<Order> getUserActiveOrders(int userId);
 
     //删除order
-    Order deleteOrder(int orderId);
+    int deleteOrder(int orderId);
 
     //获取此用户的 past orders
     List<Order> getUserPastOrders(int userId);
 
     //提交一个 order
-    Order submitOrder(int userId, String item, int amount, String link);
+    int submitOrder(int userId, String item, int amount, String link);
 
     //获取所有的 active orders
     List<Order> getAllActiveOrders();
 
     //同意 order
-    Order confirmOrder(int orderId);
+    int confirmOrder(int orderId);
 
     //拒绝 order
-    Order rejectOrder(int orderId);//拒绝订单后订单直接在数据库里清除
+    int rejectOrder(int orderId);//拒绝订单后订单直接在数据库里清除
 }
