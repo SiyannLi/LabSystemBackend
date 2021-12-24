@@ -9,11 +9,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order implements Serializable {
-    private User user;
+    private Integer userId;
 
     private Integer orderId;
 
-    private Item item;
+    private Integer itemId;
 
     private Integer amount;
 
@@ -22,9 +22,9 @@ public class Order implements Serializable {
     @Override
     public String toString() {
         return "Order{" +
-                "user=" + user.getFirstName() +
+                "user=" + userId+
                 ", orderId=" + orderId +
-                ", item=" + item +
+                ", item=" + itemId +
                 ", amount=" + amount +
                 ", orderStatus=" + orderStatus +
                 '}';

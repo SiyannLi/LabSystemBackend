@@ -20,10 +20,10 @@ public interface UserDao {
 
     int updatePassword(@Param("userId") int userId, @Param("password") String password);
 
-    int updateUserAccountStatus(@Param("userAccountStatus")String userAccountStatus,@Param("userId") int userId);
+    int updateUserAccountStatus(@Param("userId") int userId, @Param("userAccountStatus")String userAccountStatus);
 
     int updateName(@Param("userId")int userId, @Param("firstName") String firstName, @Param("lastName") String lastName);
 
-
+    User getLastUser();
 }
 

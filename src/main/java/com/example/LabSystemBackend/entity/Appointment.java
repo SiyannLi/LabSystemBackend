@@ -12,18 +12,18 @@ import java.io.Serializable;
 
 public class Appointment implements Serializable {
 
-    private int appointmentId;
+    private Integer appointmentId;
 
-    private User user;
+    private Integer userId;
 
-    private TimeSlot timeSlot;
+    private Integer timeSlotId;
 
 
     @Override
     public String toString() {
         return "Appointment{" +
-                "user=" + user.getUserId() +
-                ", timeSlot=" + timeSlot +
+                "user=" + userId +
+                ", timeSlot=" + timeSlotId +
                 '}';
     }
 }

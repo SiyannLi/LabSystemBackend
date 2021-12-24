@@ -19,7 +19,7 @@ public class Item implements Serializable {
 
     private String link;
 
-    private String description;
+    private String itemDescri;
 
 
     @Override
@@ -29,7 +29,7 @@ public class Item implements Serializable {
                 ", itemName='" + itemName + '\'' +
                 ", amount=" + amount +
                 ", link='" + link + '\'' +
-                ", description='" + description + '\'' +
+                ", description='" + itemDescri + '\'' +
                 '}';
     }
 }

@@ -20,7 +20,7 @@ public class AppointmentController {
 
     @ApiOperation("get list of all appointments of this user")
     @GetMapping("getUserAppointments")
-    public Response getUserAppointments(String userId){
+    public Response getUserAppointments(int userId){
 
         return ResponseGenerator.genSuccessResult(appointmentService.getUserAppointments(userId));
     }

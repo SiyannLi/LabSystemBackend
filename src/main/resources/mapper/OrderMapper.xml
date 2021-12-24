@@ -13,7 +13,7 @@
         select *
         from orders
         where userId = #{userId}
-          and orderStatus = 'ACTIVE'
+          and (orderStatus = 'PENDING' or orderStatus = 'APPROVED')
     </select>
 
     <delete id="deleteOrder">
@@ -30,7 +30,7 @@
     <select id="getAllActiveOrders" resultType="com.example.LabSystemBackend.entity.Order">
         select *
         from orders
-        where orderStatus = 'ACTIVE'
+        where orderStatus = 'PENDING' or orderStatus = 'APPROVED'
     </select>
 
     <update id="changeOrderStatus">
@@ -38,4 +38,11 @@
         set orderStatus = #{orderStatus}
         where orderId = #{orderId}
     </update>
+    <select id="getLastOrder" resultType="com.example.LabSystemBackend.entity.Order">
+        select * from orders order by orderId desc limit 1
+    </select>
+
+    <select id="getOrder" resultType="com.example.LabSystemBackend.entity.Order">
+        select * from orders where orderId = #{orderId}
+    </select>
 </mapper>

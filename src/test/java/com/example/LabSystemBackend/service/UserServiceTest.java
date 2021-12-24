@@ -2,8 +2,6 @@ package com.example.LabSystemBackend.service;
 
 import com.example.LabSystemBackend.entity.User;
 import com.example.LabSystemBackend.util.DataGenerate;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

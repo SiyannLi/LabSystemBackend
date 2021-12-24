@@ -5,17 +5,25 @@
 <mapper namespace="com.example.LabSystemBackend.dao.NotificationDao">
 
     <insert id="insertNotification" parameterType="com.example.LabSystemBackend.entity.Notification"
-            useGeneratedKeys="true" keyProperty="notiId">
+            useGeneratedKeys="true" keyProperty="notificationId">
         insert into noti (senderId, recipientId, content)
-        values (#{noti.senderId},#{noti.recipientId},#{noti.content})
+        values (#{noti.senderId}, #{noti.recipientId}, #{noti.content})
     </insert>
 
     <select id="getAllNotification" resultType="com.example.LabSystemBackend.entity.Notification">
-        select * from noti
+        select *
+        from noti
     </select>
 
     <select id="getUserAllNotification" resultType="com.example.LabSystemBackend.entity.Notification">
-        select * from noti
+        select *
+        from noti
         where recipientId = #{recipientId}
+    </select>
+    <select id="getLastNotification" resultType="com.example.LabSystemBackend.entity.Notification">
+        select *
+        from noti
+        order by notiId desc
+        limit 1
     </select>
 </mapper>

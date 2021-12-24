@@ -8,13 +8,13 @@ import java.util.List;
 
 public interface AppointmentService {
     //获取此用户的所有预约
-    List<Appointment> getUserAppointments(String userId);
+    List<Appointment> getUserAppointments(int userId);
 
     //返回从 startDate 开始所有的空闲时间.
     List<TimeSlot> getAvailableTimeSlots(Date startDate);
 
     //设置可预约时间段
-    int setAvailableTimeSlots(Date availableDate, int TimeFrame, int endRepeatAfter);
+    int setAvailableTimeSlots(Date availableDate, int TimeSlot, int endRepeatAfter);
 
     //查询所有预约
     List<Appointment> getAllAppointments();

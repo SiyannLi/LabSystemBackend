@@ -11,16 +11,16 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class Notification implements Serializable {
 
-    private int notificationId;
-    private User sender;
-    private User recipient;
+    private Integer notificationId;
+    private Integer senderId;
+    private Integer recipientId;
     private String content;
 
     @Override
     public String toString() {
         return "Notification{" +
-                "sender=" + sender + '\'' +
-                ", recipient=" + recipient + '\'' +
+                "sender=" + senderId + '\'' +
+                ", recipient=" + recipientId + '\'' +
                 ", content='" + content +
                 '}';
     }

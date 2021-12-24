@@ -72,12 +72,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int deactivateUser(int userId) {
-        return userDao.updateUserAccountStatus(UserAccountStatus.ACTIVE.toString(),userId);
+        return userDao.updateUserAccountStatus(userId, UserAccountStatus.ACTIVE.toString());
     }
 
     @Override
     public int activateUser(int userId) {
-        return userDao.updateUserAccountStatus(UserAccountStatus.ACTIVE.toString(),userId);
+        return userDao.updateUserAccountStatus(userId, UserAccountStatus.ACTIVE.toString());
     }
 
     @Override

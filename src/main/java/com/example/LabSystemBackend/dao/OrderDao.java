@@ -23,4 +23,7 @@ public interface OrderDao {
 
     int changeOrderStatus(@Param("orderId") int orderId,@Param("orderStatus") OrderStatus orderStatus);
 
+    Order getLastOrder();
+
+    Order getOrder(@Param("orderId") int orderId);
 }

@@ -14,5 +14,5 @@ public interface NotificationDao {
 
     List<Notification> getUserAllNotification(@Param("recipientId") int recipientId);
 
-
+    Notification getLastNotification();
 }
