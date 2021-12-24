@@ -18,11 +18,9 @@ public interface UserDao {
 
     int insertUser(@Param("user") User user);
 
-    int updateUser(@Param("user") User user);
-
     int updatePassword(@Param("userId") int userId, @Param("password") String password);
 
-    int updateUserAccountStatus(@Param("userAccountStatus")UserAccountStatus userAccountStatus,@Param("userId") int userId);
+    int updateUserAccountStatus(@Param("userAccountStatus")String userAccountStatus,@Param("userId") int userId);
 
     int updateName(@Param("userId")int userId, @Param("firstName") String firstName, @Param("lastName") String lastName);
 

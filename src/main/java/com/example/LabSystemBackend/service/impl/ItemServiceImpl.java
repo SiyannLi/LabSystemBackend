@@ -33,6 +33,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public int mergeItem(int itemId, int targetItemId) {
-        return itemDao.mergeItem(itemId,targetItemId);
+        return 0;
     }
 }

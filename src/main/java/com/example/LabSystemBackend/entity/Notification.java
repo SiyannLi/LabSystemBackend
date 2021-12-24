@@ -11,6 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class Notification implements Serializable {
 
+    private int notificationId;
     private User sender;
     private User recipient;
     private String content;

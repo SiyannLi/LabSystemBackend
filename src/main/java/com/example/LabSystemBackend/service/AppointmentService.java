@@ -1,7 +1,7 @@
 package com.example.LabSystemBackend.service;
 
 import com.example.LabSystemBackend.entity.Appointment;
-import com.example.LabSystemBackend.entity.TimeFrame;
+import com.example.LabSystemBackend.entity.TimeSlot;
 
 import java.util.Date;
 import java.util.List;
@@ -11,10 +11,10 @@ public interface AppointmentService {
     List<Appointment> getUserAppointments(String userId);
 
     //返回从 startDate 开始所有的空闲时间.
-    List<TimeFrame> getAvailableTimeFrames(Date startDate);
+    List<TimeSlot> getAvailableTimeSlots(Date startDate);
 
     //设置可预约时间段
-    int setAvailableTimeFrames(Date availableDate, int TimeFrame, int endRepeatAfter);
+    int setAvailableTimeSlots(Date availableDate, int TimeFrame, int endRepeatAfter);
 
     //查询所有预约
     List<Appointment> getAllAppointments();
@@ -23,5 +23,5 @@ public interface AppointmentService {
     int deleteAppointment(int appointmentId);
 
     //用户新建一个预约
-    int addAppointment(int userId, TimeFrame timeFrame, String email);
+    int addAppointment(int userId, TimeSlot timeSlot, String email);
 }

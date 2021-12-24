@@ -4,31 +4,59 @@
 
 <mapper namespace="com.example.LabSystemBackend.dao.UserDao">
 
-    <insert id="insertUser" parameterType="com.example.LabSystemBackend.entity.User">
-        insert into users(userId, userName, Email, userRole, userPassword, realName)
-        values (null , #{user.userName}, #{user.email}, #{user.userRole},
-                #{user.userPassword}, #{user.realName})
+    <select id="getAllUser" resultType="com.example.LabSystemBackend.entity.User">
+        select *
+        from user
+    </select>
+
+    <select id="getAllAdministrators" resultType="com.example.LabSystemBackend.entity.User">
+        select * from user where userRole = "ADMIN"
+    </select>
+
+    <select id="getUser" resultType="com.example.LabSystemBackend.entity.User">
+        select *
+        from user
+        where userId = #{userId}
+        ORDER BY userId DESC limit 1
+    </select>
+
+    <delete id="deleteUser">
+        delete from user where userId = #{userId}
+    </delete>
+
+    <insert id="insertUser" parameterType="com.example.LabSystemBackend.entity.User"
+    useGeneratedKeys="true" keyProperty="userId">
+        insert into user(firstName, lastName, email, userRole, userPassword, userAccountStatus)
+        values (#{user.firstName},#{user.lastName}, #{user.email}, #{user.userRole},
+                #{user.userPassword}, #{user.userAccountStatus})
     </insert>
 
+    <update id="updatePassword">
+        update user
+        set userPassword = #{password}
+        where userId = #{userId}
+    </update>
+
+    <update id="updateUserAccountStatus">
+        update user
+        set userAccountStatus = #{userAccountStatus}
+        where userId = #{userId}
+    </update>
+
+    <update id="updateName">
+        update user
+        set firstName = #{firstName}
+        lastName = #{lastName}
+        where userId = #{userId}
+
+    </update>
     <select id="getUserByUserNameAndPassword" resultType="com.example.LabSystemBackend.entity.User">
         select *
-        from users
+        from user
         where userName = #{userName}
           and userPassword = #{userPassword}
         ORDER BY userId DESC limit 1
     </select>
 
-    <select id="getUser" resultType="com.example.LabSystemBackend.entity.User">
-        select *
-        from users
-        where userId = #{userId}
-        ORDER BY userId DESC limit 1
-    </select>
-
-    <select id="getAllUser" resultType="com.example.LabSystemBackend.entity.User">
-        select *
-        from users
-        limit 10
-    </select>
     
 </mapper>

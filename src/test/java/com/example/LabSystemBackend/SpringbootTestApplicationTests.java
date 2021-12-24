@@ -6,6 +6,9 @@ import com.example.LabSystemBackend.util.DataGenerate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @SpringBootTest
 class SpringbootTestApplicationTests {
 
@@ -13,9 +16,8 @@ class SpringbootTestApplicationTests {
     private UserService userService;
     @Test
     void insertUsersTest() {
-        DataGenerate dataGenerate = new DataGenerate();
         for (int i = 0; i < 10; i++) {
-            User user = dataGenerate.generateUser();
+            User user = DataGenerate.generateUser();
             userService.insertUser(user);
         }
 
@@ -24,14 +26,12 @@ class SpringbootTestApplicationTests {
 
     @Test
     void insertOneUserTest() {
-        DataGenerate dataGenerate = new DataGenerate();
-
-            User user = dataGenerate.generateUser();
+            User user = DataGenerate.generateUser();
 
             System.out.println(user);
 
 
-        //assertEquals(user, userService.getUser(user.getUserId()));
+        assertEquals(user, userService.getUser(user.getUserId()));
     }
 
 }

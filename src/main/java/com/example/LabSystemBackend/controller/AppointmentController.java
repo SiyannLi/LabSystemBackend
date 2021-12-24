@@ -2,8 +2,8 @@ package com.example.LabSystemBackend.controller;
 
 import com.example.LabSystemBackend.common.Response;
 import com.example.LabSystemBackend.common.ResponseGenerator;
-import com.example.LabSystemBackend.entity.TimeFrame;
-import com.example.LabSystemBackend.entity.TimeFrameStatus;
+import com.example.LabSystemBackend.entity.TimeSlot;
+import com.example.LabSystemBackend.entity.TimeSlotStatus;
 import com.example.LabSystemBackend.service.AppointmentService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +28,12 @@ public class AppointmentController {
     @ApiOperation("get a list of all available Time slots from start date")
     @GetMapping("getAvailableTimeSlots")
     public Response getAvailableTimeFrames(Date startDate){
-        return ResponseGenerator.genSuccessResult(appointmentService.getAvailableTimeFrames(startDate));    }
+        return ResponseGenerator.genSuccessResult(appointmentService.getAvailableTimeSlots(startDate));    }
 
     @ApiOperation("set one available time slot")
     @PostMapping("setAvailableTimeSlots")
     public Response setAvailableTimeFrames(Date availableDate, int TimeFrame, int endRepeatAfter){
-        return ResponseGenerator.genSuccessResult(appointmentService.setAvailableTimeFrames(availableDate,TimeFrame,endRepeatAfter));    }
+        return ResponseGenerator.genSuccessResult(appointmentService.setAvailableTimeSlots(availableDate,TimeFrame,endRepeatAfter));    }
 
     @ApiOperation("get list of all appointments")
     @GetMapping("getAllAppointments")
@@ -51,8 +51,8 @@ public class AppointmentController {
     @ApiOperation("User create one new appointment")
     @PostMapping("addAppointment")
     public Response addAppointment(int userId,Date date, int TimeFrame, String email){
-        TimeFrame timeFrame = new TimeFrame(date,TimeFrame, TimeFrameStatus.AVAILABLE);
-        return ResponseGenerator.genSuccessResult(appointmentService.addAppointment(userId,timeFrame,email));
+        TimeSlot timeSlot = new TimeSlot();
+        return ResponseGenerator.genSuccessResult(appointmentService.addAppointment(userId, timeSlot,email));
 
     }
 }

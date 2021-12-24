@@ -1,7 +1,7 @@
 package com.example.LabSystemBackend.dao;
 
 import com.example.LabSystemBackend.entity.Appointment;
-import com.example.LabSystemBackend.entity.TimeFrame;
+import com.example.LabSystemBackend.entity.TimeSlot;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,11 +13,11 @@ import java.util.List;
 public interface AppointmentDao {
     List<Appointment> getUserAppointments(@Param("userId") String userId);
 
-    List<TimeFrame> getAvailableTimeFrames(@Param("startDate")Date startDate);
-
-    int setAvailableTimeFrame(@Param("timeFrame") TimeFrame timeFrame);
+    List<TimeSlot> getAvailableTimeSlots(@Param("startDate")Date startDate);
 
     List<Appointment> getAllAppointments();
+
+    int setAvailableTimeSlot(@Param("timeSlot") TimeSlot timeSlot);
 
     int deleteAppointmentById(@Param("appointmentId") int appointmentId);
 

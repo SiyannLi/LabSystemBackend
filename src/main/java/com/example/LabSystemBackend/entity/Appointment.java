@@ -9,18 +9,21 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class Appointment implements Serializable {
+
+    private int appointmentId;
 
     private User user;
 
-    private TimeFrame timeFrame;
+    private TimeSlot timeSlot;
 
 
     @Override
     public String toString() {
         return "Appointment{" +
                 "user=" + user.getUserId() +
-                ", timeFrame=" + timeFrame +
+                ", timeSlot=" + timeSlot +
                 '}';
     }
 }

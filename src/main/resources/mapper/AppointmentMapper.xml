@@ -3,4 +3,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.LabSystemBackend.dao.AppointmentDao">
+
+
+    <select id="getUserAppointments" resultType="com.example.LabSystemBackend.entity.Appointment">
+        select * from appointment
+        where userId = #{userId}
+    </select>
+
+    <select id="getAvailableTimeSlots" resultType="com.example.LabSystemBackend.entity.TimeSlot">
+        select * from appointment left join timeslot t on appointment.timeSlotId = t.timeSlotId
+        where timeSlotDate > #{startDate}
+        and t.timeSlotStatus = 'AVAILABLE'
+
+    </select>
+
+    <select id="getAllAppointments" resultType="com.example.LabSystemBackend.entity.Appointment">
+        select * from appointment
+
+    </select>
+
+    <insert id="setAvailableTimeSlot" parameterType="com.example.LabSystemBackend.entity.TimeSlot">
+        insert into timeslot(timeSlotId, timeSlotDate, slot, timeSlotStatus)
+        values (null, #{timeSlot.date},#{timeSlot.slot}, #{timeSlot.timeSlotStatus})
+    </insert>
+
+    <delete id="deleteAppointmentById" >
+        delete from appointment where appointmentId = #{appointmentId}
+    </delete>
+
+    <insert id="addAppointment" parameterType="com.example.LabSystemBackend.entity.Appointment"
+    useGeneratedKeys="true" keyProperty="appointmentId">
+        insert into appointment(userId, timeSlotId)
+        values (#{appointment.userId},#{appointment.timeSlot.timeSlotId})
+
+    </insert>
 </mapper>

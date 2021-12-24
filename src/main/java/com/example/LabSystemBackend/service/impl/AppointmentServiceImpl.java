@@ -2,7 +2,7 @@ package com.example.LabSystemBackend.service.impl;
 
 import com.example.LabSystemBackend.dao.AppointmentDao;
 import com.example.LabSystemBackend.entity.Appointment;
-import com.example.LabSystemBackend.entity.TimeFrame;
+import com.example.LabSystemBackend.entity.TimeSlot;
 import com.example.LabSystemBackend.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,16 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentDao.getUserAppointments(userId);
     }
 
+    @Override
+    public List<TimeSlot> getAvailableTimeSlots(Date startDate) {
+        return null;
+    }
+
+    @Override
+    public int setAvailableTimeSlots(Date availableDate, int TimeFrame, int endRepeatAfter) {
+        return 0;
+    }
+
 
     @Override
     public List<Appointment> getAllAppointments() {
@@ -32,17 +42,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<TimeFrame> getAvailableTimeFrames(Date startDate) {
-        return appointmentDao.getAvailableTimeFrames(startDate);
-    }
-
-    @Override
-    public int setAvailableTimeFrames(Date availableDate, int timeFrame, int endRepeatAfter) {
-        return appointmentDao.setAvailableTimeFrame(new TimeFrame());
-    }
-
-    @Override
-    public int addAppointment(int userId, TimeFrame timeFrame, String email) {
+    public int addAppointment(int userId, TimeSlot timeSlot, String email) {
         return appointmentDao.addAppointment(new Appointment());
     }
 }

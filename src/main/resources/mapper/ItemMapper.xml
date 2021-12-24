@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.LabSystemBackend.dao.ItemDao">
+    <select id="getAllItems" resultType="com.example.LabSystemBackend.entity.Item">
+        select *
+        from item
+
+    </select>
+
+    <select id="getItemByName" resultType="com.example.LabSystemBackend.entity.Item">
+        select *
+        from item
+        where itemName = #{itemName}
+    </select>
+
+    <select id="getItemById" resultType="com.example.LabSystemBackend.entity.Item">
+        select *
+        from item
+        where itemId = #{itemId}
+    </select>
+
+    <insert id="addItem" parameterType="com.example.LabSystemBackend.entity.Item"
+            useGeneratedKeys="true" keyProperty="itemId">
+        insert into item(itemName, amount, link, itemDescri)
+        values (#{item.itemName}, #{item.amount}, #{item.link}, #{item.description})
+    </insert>
+
+    <delete id="deleteItem">
+        delete
+        from item
+        where itemId = #{itemId}
+    </delete>
+    
+    <update id="changeItemAmount" >
+        update item
+        set amount =  #{amount}
+        where itemId = #{itemId}
+    </update>
+</mapper>

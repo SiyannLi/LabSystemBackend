@@ -20,7 +20,4 @@ public interface ItemDao {
 
     int changeItemAmount(@Param("itemId") int itemId, @Param("amount") int amount);
 
-    int mergeItem(@Param("itemId") int itemId, @Param("targetId") int targetId);
-
-
 }

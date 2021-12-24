@@ -10,20 +10,21 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TimeFrame implements Serializable {
+public class TimeSlot implements Serializable {
 
+    private int timeSlotId;
     private Date date;
 
-    private Integer frame;
+    private Integer slot;
 
-    private TimeFrameStatus timeFrameStatus;
+    private TimeSlotStatus timeSlotStatus;
 
     @Override
     public String toString() {
-        return "TimeFrame{" +
+        return "TimeSlot{" +
                 "date=" + date +
-                ", frame=" + frame +
-                ", timeFrameStatus=" + timeFrameStatus +
+                ", frame=" + slot +
+                ", timeSlotStatus=" + timeSlotStatus +
                 '}';
     }
 }
