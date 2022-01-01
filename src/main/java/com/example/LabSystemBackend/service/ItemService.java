@@ -8,7 +8,7 @@ public interface ItemService {
 
     List<Item> getAllItemsAndAmount();
 
-    int addItem(String itemName, int Amount, String link, String description);
+    int addItem(String itemName, int amount, String link, String description);
 
     int deleteItem(int itemId);
 

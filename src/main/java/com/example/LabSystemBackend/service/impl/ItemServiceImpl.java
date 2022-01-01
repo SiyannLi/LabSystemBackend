@@ -12,27 +12,43 @@ import java.util.List;
 public class ItemServiceImpl implements ItemService {
     @Autowired
     private ItemDao itemDao;
+
     @Override
     public List<Item> getAllItemsAndAmount() {
         return itemDao.getAllItems();
     }
 
     @Override
-    public int addItem(String deviceName, int Amount, String links, String description) {
-        return itemDao.addItem(new Item());
+    public int addItem(String itemName, int amount, String link, String description) {
+        Item item = new Item();
+        item.setItemName(itemName);
+        item.setAmount(amount);
+        item.setItemDescri(description);
+        item.setLink(link);
+        return itemDao.addItem(item);
     }
 
     @Override
-    public int deleteItem(int deviceId) {
-        return itemDao.deleteItem(deviceId);    }
+    public int deleteItem(int itemId) {
+        return itemDao.deleteItem(itemId);
+    }
 
     @Override
-    public int changeItemAmount(int deviceId, int newAmount) {
-        return itemDao.changeItemAmount(deviceId,newAmount);
+    public int changeItemAmount(int itemId, int newAmount) {
+        return itemDao.changeItemAmount(itemId, newAmount);
     }
 
     @Override
     public int mergeItem(int itemId, int targetItemId) {
-        return 0;
+        Item item = itemDao.getItemById(itemId);
+        Item target = itemDao.getItemById(targetItemId);
+        int amount = item.getAmount() + target.getAmount();
+        if (itemDao.changeItemAmount(targetItemId, amount) == 1 &&
+                itemDao.deleteItem(itemId) == 1) {
+            return 1;
+        } else {
+            return 0;
+        }
+
     }
 }

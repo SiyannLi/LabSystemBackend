@@ -14,7 +14,7 @@
 
     <insert id="setAvailableTimeSlot" parameterType="com.example.LabSystemBackend.entity.TimeSlot">
         insert into timeslot(timeSlotId, timeSlotDate, slot, timeSlotStatus)
-        values (null, #{timeSlot.date}, #{timeSlot.slot}, #{timeSlot.timeSlotStatus})
+        values (null, #{timeSlot.timeSlotDate}, #{timeSlot.slot}, #{timeSlot.timeSlotStatus})
     </insert>
 
     <select id="getLastTimeSlot" resultType="com.example.LabSystemBackend.entity.TimeSlot">

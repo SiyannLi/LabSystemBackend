@@ -40,8 +40,8 @@ public class OrderController {
 
     @ApiOperation("submit an order with user account")
     @PostMapping("submitOrder")
-    public Response submitOrder(int userId, String item, int amount, String link){
-        return ResponseGenerator.genSuccessResult(orderService.submitOrder(userId,item,amount,link));
+    public Response submitOrder(int userId, int itemId, int amount){
+        return ResponseGenerator.genSuccessResult(orderService.submitOrder(userId,itemId,amount));
     }
 
     @ApiOperation("get all active orders")

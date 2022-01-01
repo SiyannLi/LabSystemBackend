@@ -23,7 +23,7 @@ class UserDaoTest {
 
     @Test
     void getAllUser() {
-        List<User> users = userDao.getAllUser();
+        List<User> users = userDao.getAllUsers();
         assertNotNull(users);
     }
 
@@ -75,7 +75,7 @@ class UserDaoTest {
     void updateUserAccountStatus() {
         User user = DataGenerate.generateUser();
         userDao.insertUser(user);
-        userDao.updateUserAccountStatus(user.getUserId(), UserAccountStatus.INACTIVE.toString());
+        userDao.updateUserAccountStatus(user.getUserId(), UserAccountStatus.INACTIVE);
         User get = userDao.getUser(user.getUserId());
         assertEquals(UserAccountStatus.INACTIVE, get.getUserAccountStatus());
         userDao.deleteUser(user.getUserId());
@@ -96,5 +96,13 @@ class UserDaoTest {
     void getLastUser() {
         User user = userDao.getLastUser();
         assertNotNull(user);
+    }
+
+    @Test
+    void addData(){
+        for (int i = 0;i<10;i++){
+            User user = DataGenerate.generateUser();
+            userDao.insertUser(user);
+        }
     }
 }

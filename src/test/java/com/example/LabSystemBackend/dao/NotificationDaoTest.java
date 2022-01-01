@@ -4,8 +4,11 @@ import com.example.LabSystemBackend.entity.Notification;
 import com.example.LabSystemBackend.util.DataGenerate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.core.AutoConfigureCache;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.List;
 
@@ -43,4 +46,5 @@ class NotificationDaoTest {
             notificationDao.insertNotification(notification);
         }
     }
+
 }

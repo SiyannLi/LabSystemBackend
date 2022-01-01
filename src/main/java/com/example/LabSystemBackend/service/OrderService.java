@@ -18,7 +18,7 @@ public interface OrderService {
     List<Order> getUserPastOrders(int userId);
 
     //提交一个 order
-    int submitOrder(int userId, String item, int amount, String link);
+    int submitOrder(int userId, int itemId, int amount);
 
     //获取所有的 active orders
     List<Order> getAllActiveOrders();

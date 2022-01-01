@@ -8,11 +8,15 @@ import java.util.List;
 
 @Mapper
 public interface UserDao {
-    List<User> getAllUser();
+    List<User> getAllUsers();
 
     List<User> getAllAdministrators();
 
     User getUser(@Param("userId") int userId);
+
+    User getUserByEmailAndPassword(@Param("email") String email, @Param("password") String password);
+
+    User getUserByEmail(@Param("email") String email);
 
     int deleteUser(@Param("userId") int userId);
 
@@ -20,9 +24,9 @@ public interface UserDao {
 
     int updatePassword(@Param("userId") int userId, @Param("password") String password);
 
-    int updateUserAccountStatus(@Param("userId") int userId, @Param("userAccountStatus")String userAccountStatus);
+    int updateUserAccountStatus(@Param("userId") int userId, @Param("userAccountStatus") UserAccountStatus userAccountStatus);
 
-    int updateName(@Param("userId")int userId, @Param("firstName") String firstName, @Param("lastName") String lastName);
+    int updateName(@Param("userId") int userId, @Param("firstName") String firstName, @Param("lastName") String lastName);
 
     User getLastUser();
 }

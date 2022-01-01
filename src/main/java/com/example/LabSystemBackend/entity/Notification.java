@@ -14,6 +14,7 @@ public class Notification implements Serializable {
     private Integer notificationId;
     private Integer senderId;
     private Integer recipientId;
+    private String subject;
     private String content;
 
     @Override

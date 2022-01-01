@@ -48,7 +48,7 @@ public class DataGenerate {
         TimeSlot timeSlot = new TimeSlot();
         timeSlot.setSlot(faker.random().nextInt(1, 6));
 
-        timeSlot.setDate(sdf.parse(faker.business().creditCardExpiry()));
+        timeSlot.setTimeSlotDate(sdf.parse(faker.business().creditCardExpiry()));
         int status = new Random().nextInt(TimeSlotStatus.values().length);
         timeSlot.setTimeSlotStatus(TimeSlotStatus.values()[status]);
         return timeSlot;
@@ -74,6 +74,7 @@ public class DataGenerate {
     public static Notification generateNotification() {
     Notification notification = new Notification();
         notification.setContent(faker.harryPotter().quote());
+        notification.setSubject(faker.aquaTeenHungerForce().character());
         notification.setRecipientId(faker.random().nextInt(1,100));
         notification.setSenderId(faker.random().nextInt(1,100));
         return notification;

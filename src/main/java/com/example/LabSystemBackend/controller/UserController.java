@@ -10,6 +10,8 @@ import com.example.LabSystemBackend.util.DataGenerate;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.ibatis.annotations.Param;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserService userService;
@@ -42,10 +46,7 @@ public class UserController {
     //不需要用到数据库
     public Response getUserTest() {
         User user = DataGenerate.generateUser();
-
-        System.out.println(user);
-        System.out.println("\n");
-        System.out.println(new Date());
+        logger.info(user.toString());
         return ResponseGenerator.genSuccessResult(user);
 
     }
@@ -53,7 +54,7 @@ public class UserController {
     @ApiOperation("get all users")
     @GetMapping("getAllUsers")
     public Response getAllUsers() {
-        List<User> users = userService.getAllUser();
+        List<User> users = userService.getAllUsers();
         if (!users.isEmpty()) {
             return ResponseGenerator.genSuccessResult(users);
         } else {
@@ -71,9 +72,9 @@ public class UserController {
         users.add(DataGenerate.generateUser());
         users.add(DataGenerate.generateUser());
 
-        System.out.println(users);
-        System.out.println("\n");
-        System.out.println(new Date());
+        for (User user : users) {
+            logger.info(user.toString());
+        }
 
         return ResponseGenerator.genSuccessResult(users);
     }
@@ -93,9 +94,7 @@ public class UserController {
     //不需要用到数据库
     public Response insertUserTest(@ApiParam(name = "user", value = "user", required = true) @Param("user") @RequestBody User user) {
         user.setUserRole(UserRole.VISITOR);
-        System.out.println(user);
-        System.out.println("\n");
-        System.out.println(new Date());
+        logger.info(user.toString());
 
         return ResponseGenerator.genSuccessResult(user);
     }
@@ -103,25 +102,26 @@ public class UserController {
     @ApiOperation("login")
     @PostMapping("login")
     public Response login(String email, String password, boolean isAdmin) {
-        return ResponseGenerator.genSuccessResult(userService.login(email,password,isAdmin));
+        return ResponseGenerator.genSuccessResult();
     }
 
     @ApiOperation("log out")
     @PostMapping("logout")
     public Response logout(String email) {
-        return ResponseGenerator.genSuccessResult(userService.logout(email));
+        return ResponseGenerator.genSuccessResult();
     }
 
     @ApiOperation("register one account")
     @PostMapping("register")
-    public Response register(String email, String password, String firstName, String lastName, String verificationCode) {
-        return ResponseGenerator.genSuccessResult(userService.register(email,password,firstName,lastName,verificationCode));    }
+    public Response register(String email, String password, String firstName, String lastName, int verificationCode, boolean isAdmin) {
+        return ResponseGenerator.genSuccessResult(userService.register(email, password, firstName, lastName, verificationCode, isAdmin));
+    }
 
 
     @ApiOperation("reset password")
     @PostMapping("resetPassword")
     public Response resetPassword(String email, String newPassword, String verificationCode) {
-        return ResponseGenerator.genSuccessResult(userService.resetPassword(email, newPassword, verificationCode));
+        return ResponseGenerator.genSuccessResult(userService.resetPassword(email, newPassword));
     }
 
 
@@ -141,7 +141,7 @@ public class UserController {
     @ApiOperation("change username")
     @PostMapping("changeUserName")
     public Response changeUserName(int userId, String newFirstName, String newLastName) {
-        return ResponseGenerator.genSuccessResult(userService.changeUserName(userId,newFirstName,newLastName));
+        return ResponseGenerator.genSuccessResult(userService.changeUserName(userId, newFirstName, newLastName));
 
     }
 
@@ -161,7 +161,7 @@ public class UserController {
     @ApiOperation("get a list of all admins")
     @GetMapping("getAllAdministrator")
     public Response getAllAdministrator() {
-        return ResponseGenerator.genSuccessResult(userService.getAllAdministrator());
+        return ResponseGenerator.genSuccessResult(userService.getAllAdministrators());
     }
 
 

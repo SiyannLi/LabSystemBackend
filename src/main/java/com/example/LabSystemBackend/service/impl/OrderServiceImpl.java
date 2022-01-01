@@ -35,8 +35,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public int submitOrder(int userId, String item, int amount, String link) {
-        return orderDao.insertOrder(new Order());
+    public int submitOrder(int userId, int itemId, int amount) {
+        Order order = new Order();
+        order.setUserId(userId);
+        order.setItemId(itemId);
+        order.setAmount(amount);
+        order.setOrderStatus(OrderStatus.PENDING);
+        //TODO 添加消息发送功能
+        return orderDao.insertOrder(order);
     }
 
     @Override

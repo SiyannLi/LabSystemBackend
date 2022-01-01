@@ -5,13 +5,13 @@ import com.example.LabSystemBackend.entity.Notification;
 import java.util.List;
 
 public interface NotificationService {
-    //新建一个消息
-    int sendNotification(int receiverId, String content);
+
+    int sendNotification(Notification notification);
 
     List<Notification> getAllNotification();
 
-    List<Notification> getUserAllNotification(int receiverId);
+    List<Notification> getUserAllNotification(int recipientId);
 
-    int sendToAllAdmin(String content);
+    int sendToAllAdmin(String subject, String content);
 
 }

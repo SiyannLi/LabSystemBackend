@@ -1,6 +1,7 @@
-package com.example.LabSystemBackend.service;
+package com.example.LabSystemBackend.service.impl;
 
 import com.example.LabSystemBackend.entity.User;
+import com.example.LabSystemBackend.service.UserService;
 import com.example.LabSystemBackend.util.DataGenerate;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -12,19 +13,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
 @SpringBootTest
-class UserServiceTest {
+class UserServiceImplTest {
     @Autowired
     private UserService userService;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImplTest.class);
 
 
 
     @Test
     void getAllUser() {
-        List<User> a = userService.getAllUser();
+        List<User> a = userService.getAllUsers();
         for (User user : a) {
-            System.out.println(user + "\n");
+            logger.info(user.toString());
         }
     }
 

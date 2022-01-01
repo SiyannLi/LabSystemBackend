@@ -3,6 +3,7 @@ package com.example.LabSystemBackend.service.impl;
 import com.example.LabSystemBackend.dao.UserDao;
 import com.example.LabSystemBackend.entity.User;
 import com.example.LabSystemBackend.entity.UserAccountStatus;
+import com.example.LabSystemBackend.entity.UserRole;
 import com.example.LabSystemBackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
-
-    @Override
-    public List<User> getAllUser() {
-        return userDao.getAllUser();
-    }
 
     @Override
     public User getUser(int userId) {
@@ -35,58 +31,58 @@ public class UserServiceImpl implements UserService {
         return userDao.insertUser(user);
     }
 
+
     @Override
-    public User login(String email, String password, boolean isAdmin) {
-        return null;
+    public int resetPassword(String email, String newPassword) {
+        User user = userDao.getUserByEmail(email);
+        return userDao.updatePassword(user.getUserId(), newPassword);
     }
 
     @Override
-    public User logout(String email) {
-        return null;
+    public int confirmUserRegistration(int userId) {
+        return userDao.updateUserAccountStatus(userId, UserAccountStatus.ACTIVE);
     }
 
     @Override
-    public int resetPassword(String email, String newPassword, String verificationCode) {
-        return userDao.updatePassword(1,newPassword);
+    public int rejectUserRegistration(int userId) {
+        return userDao.deleteUser(userId);
     }
 
     @Override
-    public User confirmUserRegistration(int userId) {
-        return null;
-    }
-
-    @Override
-    public boolean rejectUserRegistration(int userId) {
-        return false;
-    }
-
-    @Override
-    public int register(String email, String password, String firstName, String lastName, String verificationCode) {
-        return userDao.insertUser(new User());
+    public int register(String email, String password, String firstName, String lastName, int verificationCode, boolean isAdmin) {
+        User user = new User();
+        user.setUserRole(isAdmin ? UserRole.ADMIN : UserRole.VISITOR);
+        user.setUserPassword(password);
+        user.setEmail(email);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setVerifyCode(verificationCode);
+        user.setUserAccountStatus(UserAccountStatus.CONFIRMING);
+        return userDao.insertUser(user);
     }
 
     @Override
     public int changeUserName(int userId, String newFirstName, String newLastName) {
-        return userDao.updateName(userId,newFirstName,newLastName);
+        return userDao.updateName(userId, newFirstName, newLastName);
     }
 
     @Override
     public int deactivateUser(int userId) {
-        return userDao.updateUserAccountStatus(userId, UserAccountStatus.ACTIVE.toString());
+        return userDao.updateUserAccountStatus(userId, UserAccountStatus.INACTIVE);
     }
 
     @Override
     public int activateUser(int userId) {
-        return userDao.updateUserAccountStatus(userId, UserAccountStatus.ACTIVE.toString());
+        return userDao.updateUserAccountStatus(userId, UserAccountStatus.ACTIVE);
     }
 
     @Override
     public List<User> getAllUsers() {
-        return userDao.getAllUser();
+        return userDao.getAllUsers();
     }
 
     @Override
-    public List<User> getAllAdministrator() {
+    public List<User> getAllAdministrators() {
         return userDao.getAllAdministrators();
     }
 }

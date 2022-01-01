@@ -4,13 +4,13 @@
 
 <mapper namespace="com.example.LabSystemBackend.dao.UserDao">
 
-    <select id="getAllUser" resultType="com.example.LabSystemBackend.entity.User">
+    <select id="getAllUsers" resultType="com.example.LabSystemBackend.entity.User">
         select *
         from user
     </select>
 
     <select id="getAllAdministrators" resultType="com.example.LabSystemBackend.entity.User">
-        select * from user where userRole = 'ADMIN'
+        select * from user where userRole = 'ADMIN' or userRole = 'SUPER_ADMIN'
     </select>
 
     <select id="getUser" resultType="com.example.LabSystemBackend.entity.User">
@@ -51,11 +51,18 @@
 
     </update>
 
-    <select id="getUserByUserNameAndPassword" resultType="com.example.LabSystemBackend.entity.User">
+    <select id="getUserByEmailAndPassword" resultType="com.example.LabSystemBackend.entity.User">
         select *
         from user
-        where userName = #{userName}
-          and userPassword = #{userPassword}
+        where email = #{email}
+          and userPassword = #{password}
+        ORDER BY userId DESC limit 1
+    </select>
+
+    <select id="getUserByEmail" resultType="com.example.LabSystemBackend.entity.User">
+        select *
+        from user
+        where email = #{email}
         ORDER BY userId DESC limit 1
     </select>
 

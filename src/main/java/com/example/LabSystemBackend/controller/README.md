@@ -48,7 +48,7 @@ public Result activeUser(int userId);
 public Result getAllUsers();
 
 //get a list of all admins
-@GetMapping("getAllAdministrator")
+@GetMapping("getAllAdministrators")
 public Result getAllAdministrator();
 ```
 

@@ -20,16 +20,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentDao.getUserAppointments(userId);
     }
 
-    @Override
-    public List<TimeSlot> getAvailableTimeSlots(Date startDate) {
-        return null;
-    }
-
-    @Override
-    public int setAvailableTimeSlots(Date availableDate, int TimeFrame, int endRepeatAfter) {
-        return 0;
-    }
-
 
     @Override
     public List<Appointment> getAllAppointments() {
@@ -42,7 +32,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public int addAppointment(int userId, TimeSlot timeSlot, String email) {
-        return appointmentDao.addAppointment(new Appointment());
+    public int addAppointment(int userId, int timeSlotId) {
+        Appointment appointment = new Appointment();
+        appointment.setUserId(userId);
+        appointment.setTimeSlotId(timeSlotId);
+
+        return appointmentDao.addAppointment(appointment);
     }
 }

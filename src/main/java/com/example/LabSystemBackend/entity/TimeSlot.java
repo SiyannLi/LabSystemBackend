@@ -13,7 +13,7 @@ import java.util.Date;
 public class TimeSlot implements Serializable {
 
     private int timeSlotId;
-    private Date date;
+    private Date timeSlotDate;
 
     private Integer slot;
 
@@ -22,7 +22,7 @@ public class TimeSlot implements Serializable {
     @Override
     public String toString() {
         return "TimeSlot{" +
-                "date=" + date +
+                "date=" + timeSlotDate +
                 ", frame=" + slot +
                 ", timeSlotStatus=" + timeSlotStatus +
                 '}';

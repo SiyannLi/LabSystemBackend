@@ -10,12 +10,6 @@ public interface AppointmentService {
     //获取此用户的所有预约
     List<Appointment> getUserAppointments(int userId);
 
-    //返回从 startDate 开始所有的空闲时间.
-    List<TimeSlot> getAvailableTimeSlots(Date startDate);
-
-    //设置可预约时间段
-    int setAvailableTimeSlots(Date availableDate, int TimeSlot, int endRepeatAfter);
-
     //查询所有预约
     List<Appointment> getAllAppointments();
 
@@ -23,5 +17,5 @@ public interface AppointmentService {
     int deleteAppointment(int appointmentId);
 
     //用户新建一个预约
-    int addAppointment(int userId, TimeSlot timeSlot, String email);
+    int addAppointment(int userId, int timeSlot);
 }

@@ -6,8 +6,8 @@
 
     <insert id="insertNotification" parameterType="com.example.LabSystemBackend.entity.Notification"
             useGeneratedKeys="true" keyProperty="notificationId">
-        insert into noti (senderId, recipientId, content)
-        values (#{noti.senderId}, #{noti.recipientId}, #{noti.content})
+        insert into noti (senderId, recipientId, subject, content)
+        values (#{noti.senderId}, #{noti.recipientId}, #{noti.subject}, #{noti.content})
     </insert>
 
     <select id="getAllNotification" resultType="com.example.LabSystemBackend.entity.Notification">

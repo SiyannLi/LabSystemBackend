@@ -4,7 +4,6 @@ import com.example.LabSystemBackend.entity.User;
 import java.util.List;
 
 public interface UserService {
-    List<User> getAllUser();
 
     User getUser(int userId);
 
@@ -12,23 +11,18 @@ public interface UserService {
 
     int insertUser(User user);
 
-    //login
-    User login(String email, String password, boolean isAdmin);
-
-    //log out
-    User logout(String email);
 
     //register one account
-    int register(String email, String password, String firstName, String lastName, String vertificationCode);
+    int register(String email, String password, String firstName, String lastName, int verificationCode, boolean isAdmin);
 
     //reset password
-    int resetPassword(String email, String newPassword, String vertificationCode);
+    int resetPassword(String email, String newPassword);
 
     //confirm the application of user to create a new account
-    User confirmUserRegistration(int userId);
+    int confirmUserRegistration(int userId);
 
     //reject the application of user to create a new account
-    boolean rejectUserRegistration(int userId);//拒绝用户申请后，直接在数据库里清除用户的信息
+    int rejectUserRegistration(int userId);//拒绝用户申请后，直接在数据库里清除用户的信息
 
     //change username
     int changeUserName(int userId, String newFirstName, String newLastName);
@@ -42,5 +36,5 @@ public interface UserService {
     List<User> getAllUsers();
 
     //get a list of all admins
-    List<User> getAllAdministrator();
+    List<User> getAllAdministrators();
 }
