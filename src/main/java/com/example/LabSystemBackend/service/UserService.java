@@ -37,4 +37,8 @@ public interface UserService {
 
     //get a list of all admins
     List<User> getAllAdministrators();
+
+    User getUserByEmail(String email);
+
+    Boolean emailExists(String email);
 }
