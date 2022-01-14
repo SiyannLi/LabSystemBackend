@@ -43,7 +43,7 @@ class NotificationServiceImplTest {
         SimpleMailMessage message = new SimpleMailMessage();
 
         message.setFrom("tecolabsystem@outlook.com");
-        message.setTo("keyi.li@student.kit.edu");
+        message.setTo("tecolabsystem@outlook.com");
         message.setSubject("subject");
         message.setText("text");
         mailSender.send(message);
