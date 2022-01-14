@@ -85,4 +85,14 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllAdministrators() {
         return userDao.getAllAdministrators();
     }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userDao.getUserByEmail(email);
+    }
+
+    @Override
+    public Boolean emailExists(String email) {
+        return userDao.getUserByEmail(email) != null;
+    }
 }
