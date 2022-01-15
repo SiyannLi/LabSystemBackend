@@ -31,7 +31,8 @@ class UserDaoTest {
     void getAllAdministrators() {
         List<User> ads = userDao.getAllAdministrators();
         for (User ad : ads) {
-            assertEquals("ADMIN", ad.getUserRole().toString());
+            assertTrue( ad.getUserRole().toString() =="ADMIN" ||
+                    ad.getUserRole().toString() =="SUPER_ADMIN");
         }
 
     }
