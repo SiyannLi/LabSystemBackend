@@ -3,8 +3,11 @@ package com.example.LabSystemBackend.controller;
 
 import com.example.LabSystemBackend.common.Response;
 import com.example.LabSystemBackend.common.ResponseGenerator;
+import com.example.LabSystemBackend.entity.Notification;
 import com.example.LabSystemBackend.entity.User;
+import com.example.LabSystemBackend.entity.UserAccountStatus;
 import com.example.LabSystemBackend.entity.UserRole;
+import com.example.LabSystemBackend.service.NotificationService;
 import com.example.LabSystemBackend.service.UserService;
 import com.example.LabSystemBackend.util.DataGenerate;
 import io.swagger.annotations.ApiOperation;
@@ -15,9 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @CrossOrigin("*")
@@ -29,7 +30,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private NotificationService notificationService;
     @ApiOperation("get one user")
     @GetMapping("get/{userId}")
     public Response getUser(@ApiParam(name = "userId", value = "userId", required = true) @PathVariable int userId) {
@@ -39,6 +41,35 @@ public class UserController {
         } else {
             return ResponseGenerator.genFailResult("user dont exist");
         }
+    }
+
+    @ApiOperation("send verification code")
+    @PostMapping("sendVerificationCode")
+    public Response sendVerificationCode(@ApiParam(name = "email", value = "email", required = true)
+                                             @Param("email") @RequestBody Map<String, String> email) {
+        User user = new User();
+        user.setUserRole(UserRole.VISITOR);
+        user.setUserAccountStatus(UserAccountStatus.CONFIRMING);
+        user.setEmail(email.get("email"));
+        user.setFirstName("firstName");
+        user.setLastName("lastName");
+        user.setUserPassword("abcd");
+        Random random = new Random();
+        String verificationCode = "";
+        for (int i = 0; i< 6; i++) {
+            verificationCode += random.nextInt(10);
+        }
+        user.setVerifyCode(Integer.parseInt(verificationCode));
+        userService.insertUser(user);
+        Notification notification = new Notification();
+        notification.setSenderId(0);
+        notification.setRecipientId(user.getUserId());
+        notification.setContent(verificationCode);
+        notification.setSubject("verification code");
+        notificationService.sendNotification(notification);
+        logger.info(user.toString());
+        logger.info(notification.toString());
+        return ResponseGenerator.genSuccessResult();
     }
 
     @ApiOperation("get one test user")
@@ -81,7 +112,7 @@ public class UserController {
 
     @ApiOperation("insert one user")
     @PostMapping("/insertUser")
-    public Response insertUser(@ApiParam(name = "user", value = "user", required = true) @Param("user") @RequestBody User user) {
+    public Response insertUser(@ApiParam(name = "user", value = "user", required = true) @Param("user") @RequestParam User user) {
         if (userService.insertUser(user) > 0) {
             return ResponseGenerator.genSuccessResult();
         } else {
