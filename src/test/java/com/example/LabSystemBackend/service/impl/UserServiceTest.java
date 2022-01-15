@@ -30,12 +30,6 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getUser() {
-        User user = userService.getUser(1);
-        assertEquals(user.getUserId(),1);
-    }
-
-    @Test
     void deleteUser() {
         userService.deleteUser(1);
         assertNull(userService.getUser(1));

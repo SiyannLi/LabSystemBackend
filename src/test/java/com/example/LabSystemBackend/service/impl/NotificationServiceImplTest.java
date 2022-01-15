@@ -26,28 +26,28 @@ class NotificationServiceImplTest {
     @Autowired
     NotificationDao notificationDao;
 
-    @Test
-    void sendNotification() {
-        User recipient = userService.getAllUsers().get(0);
-        User sender = userService.getAllUsers().get(1);
-        Notification notification = DataGenerate.generateNotification();
-        notification.setRecipientId(recipient.getUserId());
-        notification.setSenderId(sender.getUserId());
-        notificationService.sendNotification(notification);
-        assertNotNull(notification.getNotificationId());
-    }
+//    @Test
+//    void sendNotification() {
+//        User recipient = userService.getAllUsers().get(0);
+//        User sender = userService.getAllUsers().get(1);
+//        Notification notification = DataGenerate.generateNotification();
+//        notification.setRecipientId(recipient.getUserId());
+//        notification.setSenderId(sender.getUserId());
+//        notificationService.sendNotification(notification);
+//        assertNotNull(notification.getNotificationId());
+//    }
     @Autowired
     private JavaMailSender mailSender;
-    @Test
-    void email(){
-        SimpleMailMessage message = new SimpleMailMessage();
-
-        message.setFrom("tecolabsystem@outlook.com");
-        message.setTo("tecolabsystem@outlook.com");
-        message.setSubject("subject");
-        message.setText("text");
-        mailSender.send(message);
-    }
+//    @Test
+//    void email(){
+//        SimpleMailMessage message = new SimpleMailMessage();
+//
+//        message.setFrom("tecolabsystem@outlook.com");
+//        message.setTo("tecolabsystem@outlook.com");
+//        message.setSubject("subject");
+//        message.setText("text");
+//        mailSender.send(message);
+//    }
 
     @Test
     void getAllNotification() {
@@ -55,20 +55,20 @@ class NotificationServiceImplTest {
         assertNotNull(notifications);
     }
 
-    @Test
-    void getUserAllNotification() {
-        int id = notificationDao.getLastNotification().getRecipientId();
-        List<Notification> notifications = notificationService.getUserAllNotification(id);
-        for (Notification no : notifications) {
-            assertEquals(id, no.getRecipientId());
+//    @Test
+//    void getUserAllNotification() {
+//        int id = notificationDao.getLastNotification().getRecipientId();
+//        List<Notification> notifications = notificationService.getUserAllNotification(id);
+//        for (Notification no : notifications) {
+//            assertEquals(id, no.getRecipientId());
+//
+//        }
+//    }
 
-        }
-    }
-
-    @Test
-    void sendToAllAdmin() {
-        Notification noti = DataGenerate.generateNotification();
-        int rows = notificationService.sendToAllAdmin(noti.getSubject(),noti.getContent());
-        assertNotEquals(0,rows);
-    }
+//    @Test
+//    void sendToAllAdmin() {
+//        Notification noti = DataGenerate.generateNotification();
+//        int rows = notificationService.sendToAllAdmin(noti.getSubject(),noti.getContent());
+//        assertNotEquals(0,rows);
+//    }
 }
