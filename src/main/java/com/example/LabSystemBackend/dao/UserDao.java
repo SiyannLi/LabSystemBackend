@@ -2,6 +2,8 @@ package com.example.LabSystemBackend.dao;
 
 import com.example.LabSystemBackend.entity.User;
 import com.example.LabSystemBackend.entity.UserAccountStatus;
+import com.example.LabSystemBackend.entity.UserRole;
+
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -27,6 +29,8 @@ public interface UserDao {
     int updateUserAccountStatus(@Param("userId") int userId, @Param("userAccountStatus") UserAccountStatus userAccountStatus);
 
     int updateName(@Param("userId") int userId, @Param("firstName") String firstName, @Param("lastName") String lastName);
+
+    int updateUserRole(@Param("userId") int userId, @Param("userRole") UserRole userRole);
 
     User getLastUser();
 }

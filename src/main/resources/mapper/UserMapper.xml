@@ -24,8 +24,7 @@
         delete from user where userId = #{userId}
     </delete>
 
-    <insert id="insertUser" parameterType="com.example.LabSystemBackend.entity.User"
-    useGeneratedKeys="true" keyProperty="userId">
+    <insert id="insertUser" parameterType="com.example.LabSystemBackend.entity.User" useGeneratedKeys="true" keyProperty="userId">
         insert into user(firstName, lastName, email, userRole, userPassword, userAccountStatus)
         values (#{user.firstName},#{user.lastName}, #{user.email}, #{user.userRole},
                 #{user.userPassword}, #{user.userAccountStatus})
@@ -51,6 +50,12 @@
 
     </update>
 
+    <update id="updateUserRole">
+        update user
+        set userRole = #{userRole},
+        where userId = #{userId}
+    </update>
+
     <select id="getUserByEmailAndPassword" resultType="com.example.LabSystemBackend.entity.User">
         select *
         from user
@@ -69,5 +74,5 @@
     <select id="getLastUser" resultType="com.example.LabSystemBackend.entity.User">
         select * from user order by userId desc limit 1
     </select>
-    
+
 </mapper>
