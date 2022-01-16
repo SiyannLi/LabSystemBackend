@@ -3,10 +3,7 @@ package com.example.LabSystemBackend.controller;
 
 import com.example.LabSystemBackend.common.Response;
 import com.example.LabSystemBackend.common.ResponseGenerator;
-import com.example.LabSystemBackend.entity.Notification;
-import com.example.LabSystemBackend.entity.User;
-import com.example.LabSystemBackend.entity.UserAccountStatus;
-import com.example.LabSystemBackend.entity.UserRole;
+import com.example.LabSystemBackend.entity.*;
 import com.example.LabSystemBackend.service.NotificationService;
 import com.example.LabSystemBackend.service.UserService;
 import com.example.LabSystemBackend.util.DataGenerate;
@@ -43,33 +40,42 @@ public class UserController {
         }
     }
 
+    private int getRandomVerCode() {
+        Random random = new Random();
+        int verificationCode = 0;
+        for (int i = 0; i< 6; i++) {
+            verificationCode = verificationCode * 10 + random.nextInt(10);
+        }
+        return verificationCode;
+    }
+
     @ApiOperation("send verification code")
     @PostMapping("sendVerificationCode")
     public Response sendVerificationCode(@ApiParam(name = "email", value = "email", required = true)
                                              @Param("email") @RequestBody Map<String, String> email) {
-        User user = new User();
-        user.setUserRole(UserRole.VISITOR);
-        user.setUserAccountStatus(UserAccountStatus.CONFIRMING);
-        user.setEmail(email.get("email"));
-        user.setFirstName("firstName");
-        user.setLastName("lastName");
-        user.setUserPassword("abcd");
-        Random random = new Random();
-        String verificationCode = "";
-        for (int i = 0; i< 6; i++) {
-            verificationCode += random.nextInt(10);
+        if(!userService.emailExists(email.get(email))) {
+            User user = new User();
+            user.setUserRole(UserRole.VISITOR);
+            user.setUserAccountStatus(UserAccountStatus.CONFIRMING);
+            user.setEmail(email.get("email"));
+            user.setFirstName("firstName");
+            user.setLastName("lastName");
+            user.setUserPassword("abcd");
+            int verificationCode = getRandomVerCode();
+            user.setVerifyCode(verificationCode);
+            userService.insertUser(user);
+            Notification notification = new Notification();
+            notification.setSenderId(0);
+            notification.setRecipientId(user.getUserId());
+            notification.setContent(String.format(NotificationTemplate.VERIFICATION_CODE.getContent(), verificationCode));
+            notification.setSubject(NotificationTemplate.VERIFICATION_CODE.getSubject());
+            notificationService.sendNotification(notification);
+            logger.info(user.toString());
+            logger.info(notification.toString());
+            return ResponseGenerator.genSuccessResult();
+        } else {
+            return ResponseGenerator.genFailResult("This email has been registered.");
         }
-        user.setVerifyCode(Integer.parseInt(verificationCode));
-        userService.insertUser(user);
-        Notification notification = new Notification();
-        notification.setSenderId(0);
-        notification.setRecipientId(user.getUserId());
-        notification.setContent(verificationCode);
-        notification.setSubject("verification code");
-        notificationService.sendNotification(notification);
-        logger.info(user.toString());
-        logger.info(notification.toString());
-        return ResponseGenerator.genSuccessResult();
     }
 
     @ApiOperation("get one test user")
@@ -136,16 +142,22 @@ public class UserController {
         return ResponseGenerator.genSuccessResult();
     }
 
-    @ApiOperation("log out")
+    /*@ApiOperation("log out")
     @PostMapping("logout")
     public Response logout(String email) {
         return ResponseGenerator.genSuccessResult();
-    }
+    }*////////////////////
 
     @ApiOperation("register one account")
     @PostMapping("register")
-    public Response register(String email, String password, String firstName, String lastName, int verificationCode, boolean isAdmin) {
-        return ResponseGenerator.genSuccessResult(userService.register(email, password, firstName, lastName, verificationCode, isAdmin));
+    public Response register(String email, String password, String firstName, String lastName, int verificationCode) {
+        User user = userService.getUserByEmail(email);
+        if(user.getVerifyCode() == verificationCode) {
+            return ResponseGenerator.genSuccessResult(userService.register(email, password, firstName, lastName, verificationCode));
+        } else {
+            userService.deleteUser(user.getUserId());
+            return ResponseGenerator.genFailResult("Invalid verification code");
+        }
     }
 
 
