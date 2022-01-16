@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int register(String email, String password, String firstName, String lastName, int verificationCode) {
+    public int register(String email, String password, String firstName, String lastName, String verificationCode) {
         User user = getUserByEmail(email);
         user.setUserPassword(password);
         user.setFirstName(firstName);
