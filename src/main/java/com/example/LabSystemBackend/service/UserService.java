@@ -13,7 +13,7 @@ public interface UserService {
 
 
     //register one account
-    int register(String email, String password, String firstName, String lastName, int verificationCode, boolean isAdmin);
+    int register(String email, String password, String firstName, String lastName, int verificationCode);
 
     //reset password
     int resetPassword(String email, String newPassword);
