@@ -40,15 +40,15 @@ public class UserController {
         }
     }
 
-    private int getRandomVerCode() {
+    private String getRandomVerCode() {
         Random random = new Random();
-        int verificationCode = 0;
+        StringBuffer sb = new StringBuffer();
 
         for (int i = 0; i < 6; i++) {
 
-            verificationCode = verificationCode * 10 + random.nextInt(10);
+            sb.append(random.nextInt(10));
         }
-        return verificationCode;
+        return sb.toString();
     }
 
     @ApiOperation("send verification code")
@@ -56,30 +56,30 @@ public class UserController {
     public Response sendVerificationCode(@ApiParam(name = "email", value = "email", required = true)
 
                                          @Param("email") @RequestBody Map<String, String> email) {
-        //if(!userService.emailExists(email.get("email"))) {
-        logger.info(email.get("email"));
-        User user = new User();
-        user.setUserRole(UserRole.VISITOR);
-        user.setUserAccountStatus(UserAccountStatus.CONFIRMING);
-        user.setEmail(email.get("email"));
-        user.setFirstName("firstName");
-        user.setLastName("lastName");
-        user.setUserPassword("abcd");
-        int verificationCode = getRandomVerCode();
-        user.setVerifyCode(String.valueOf(verificationCode));
-        userService.insertUser(user);
-        Notification notification = new Notification();
-        notification.setSenderId(0);
-        notification.setRecipientId(user.getUserId());
-        notification.setContent(String.format(NotificationTemplate.VERIFICATION_CODE.getContent(), verificationCode));
-        notification.setSubject(NotificationTemplate.VERIFICATION_CODE.getSubject());
-        notificationService.sendNotification(notification);
-        logger.info(user.toString());
-        logger.info(notification.toString());
-        return ResponseGenerator.genSuccessResult();
-//        } else {
-//            return ResponseGenerator.genFailResult("This email has been registered.");
-//        }
+        if(!userService.emailExists(email.get("email"))) {
+            logger.info(email.get("email"));
+            User user = new User();
+            user.setUserRole(UserRole.VISITOR);
+            user.setUserAccountStatus(UserAccountStatus.CONFIRMING);
+            user.setEmail(email.get("email"));
+            user.setFirstName("firstName");
+            user.setLastName("lastName");
+            user.setUserPassword("abcd");
+            String verificationCode = getRandomVerCode();
+            user.setVerifyCode(verificationCode);
+            userService.insertUser(user);
+            Notification notification = new Notification();
+            notification.setSenderId(0);
+            notification.setRecipientId(user.getUserId());
+            notification.setContent(String.format(NotificationTemplate.VERIFICATION_CODE.getContent(), verificationCode));
+            notification.setSubject(NotificationTemplate.VERIFICATION_CODE.getSubject());
+            notificationService.sendNotification(notification);
+            logger.info(user.toString());
+            logger.info(notification.toString());
+            return ResponseGenerator.genSuccessResult();
+        } else {
+            return ResponseGenerator.genFailResult("This email has been registered.");
+        }
 
     }
 
@@ -122,10 +122,10 @@ public class UserController {
 
     @ApiOperation("register one account")
     @PostMapping("register")
-    public Response register(String email, String password, String firstName, String lastName, int verificationCode) {
+    public Response register(String email, String password, String firstName, String lastName, String verificationCode) {
         User user = userService.getUserByEmail(email);
 
-        if (user.getVerifyCode() == String.valueOf(verificationCode)) {
+        if (user.getVerifyCode().equals(verificationCode)) {
 
             return ResponseGenerator.genSuccessResult(userService.register(email, password, firstName, lastName, verificationCode));
         } else {
