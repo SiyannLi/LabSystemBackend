@@ -43,7 +43,9 @@ public class UserController {
     private int getRandomVerCode() {
         Random random = new Random();
         int verificationCode = 0;
+
         for (int i = 0; i < 6; i++) {
+
             verificationCode = verificationCode * 10 + random.nextInt(10);
         }
         return verificationCode;
@@ -52,6 +54,7 @@ public class UserController {
     @ApiOperation("send verification code")
     @PostMapping("sendVerificationCode")
     public Response sendVerificationCode(@ApiParam(name = "email", value = "email", required = true)
+
                                          @Param("email") @RequestBody Map<String, String> email) {
         //if(!userService.emailExists(email.get("email"))) {
         logger.info(email.get("email"));
@@ -77,6 +80,7 @@ public class UserController {
 //        } else {
 //            return ResponseGenerator.genFailResult("This email has been registered.");
 //        }
+
     }
 
 
@@ -120,7 +124,9 @@ public class UserController {
     @PostMapping("register")
     public Response register(String email, String password, String firstName, String lastName, int verificationCode) {
         User user = userService.getUserByEmail(email);
+
         if (user.getVerifyCode() == String.valueOf(verificationCode)) {
+
             return ResponseGenerator.genSuccessResult(userService.register(email, password, firstName, lastName, verificationCode));
         } else {
             userService.deleteUser(user.getUserId());
