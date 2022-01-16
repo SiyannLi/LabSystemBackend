@@ -16,8 +16,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
-@EnableWebSecurity
-public class Swagger2Config extends WebSecurityConfigurerAdapter {
+public class Swagger2Config{
+
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -38,16 +38,6 @@ public class Swagger2Config extends WebSecurityConfigurerAdapter {
                 .termsOfServiceUrl("http://localhost:8086/users")
                 .version("1.0")
                 .build();
-    }
-
-    /**
-     * 配置logout
-     * @param http
-     * @throws Exception
-     */
-    @Override
-    protected void configure(final HttpSecurity http) throws Exception {
-        http.logout();
     }
 
 }
