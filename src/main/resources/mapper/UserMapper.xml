@@ -10,7 +10,10 @@
     </select>
 
     <select id="getAllAdministrators" resultType="com.example.LabSystemBackend.entity.User">
-        select * from user where userRole = 'ADMIN' or userRole = 'SUPER_ADMIN'
+        select *
+        from user
+        where userRole = 'ADMIN'
+           or userRole = 'SUPER_ADMIN'
     </select>
 
     <select id="getUser" resultType="com.example.LabSystemBackend.entity.User">
@@ -21,13 +24,16 @@
     </select>
 
     <delete id="deleteUser">
-        delete from user where userId = #{userId}
+        delete
+        from user
+        where userId = #{userId}
     </delete>
 
-    <insert id="insertUser" parameterType="com.example.LabSystemBackend.entity.User" useGeneratedKeys="true" keyProperty="userId">
-        insert into user(firstName, lastName, email, userRole, userPassword, userAccountStatus)
-        values (#{user.firstName},#{user.lastName}, #{user.email}, #{user.userRole},
-                #{user.userPassword}, #{user.userAccountStatus})
+    <insert id="insertUser" parameterType="com.example.LabSystemBackend.entity.User" useGeneratedKeys="true"
+            keyProperty="userId">
+        insert into user(firstName, lastName, email, userRole, userPassword, verifyCode, userAccountStatus)
+        values (#{user.firstName}, #{user.lastName}, #{user.email}, #{user.userRole},
+                #{user.userPassword}, #{user.verifyCode}, #{user.userAccountStatus})
     </insert>
 
     <update id="updatePassword">
@@ -45,7 +51,7 @@
     <update id="updateName">
         update user
         set firstName = #{firstName},
-        lastName = #{lastName}
+            lastName  = #{lastName}
         where userId = #{userId}
 
     </update>
@@ -53,7 +59,7 @@
     <update id="updateUserRole">
         update user
         set userRole = #{userRole},
-        where userId = #{userId}
+            where userId = #{userId}
     </update>
 
     <select id="getUserByEmailAndPassword" resultType="com.example.LabSystemBackend.entity.User">
@@ -72,7 +78,9 @@
     </select>
 
     <select id="getLastUser" resultType="com.example.LabSystemBackend.entity.User">
-        select * from user order by userId desc limit 1
+        select *
+        from user
+        order by userId desc limit 1
     </select>
 
 </mapper>

@@ -8,22 +8,22 @@ spring:
     username: root
     #password: 123456
     password: Asdlkj987.
-#  mail:
-#    host: smtp.mailtrap.io
-#    username: 32f908f3a8d286
-#    password: ca4302891da600
-#    port: 2525
-
   mail:
-    username: tecolabsystem@outlook.com
-    password: labsystem123456
-    port: 587
-    host: smtp.office365.com
-    properties:
-      mail:
-        smtp:
-          starttls:
-            required: true
+    host: smtp.mailtrap.io
+    username: 32f908f3a8d286
+    password: ca4302891da600
+    port: 2525
+
+#  mail:
+#    username: tecolabsystem@outlook.com
+#    password: labsystem123456
+#    port: 587
+#    host: smtp.office365.com
+#    properties:
+#      mail:
+#        smtp:
+#          starttls:
+#            required: true
 
 mybatis:
   mapper-locations: classpath*:mapper/*Mapper.xml

@@ -29,6 +29,7 @@ public class DataGenerate {
         int role = new Random().nextInt(UserRole.values().length);
         user.setUserRole(UserRole.values()[role]);
         user.setEmail(faker.internet().emailAddress(name[0].toLowerCase() + name[1].toLowerCase()));
+        user.setVerifyCode("123456");
         user.setUserAccountStatus(UserAccountStatus.CONFIRMING);
         return user;
     }

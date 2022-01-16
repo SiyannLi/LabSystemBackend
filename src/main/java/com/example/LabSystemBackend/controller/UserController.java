@@ -73,9 +73,9 @@ public class UserController {
             notification.setRecipientId(user.getUserId());
             notification.setContent(String.format(NotificationTemplate.VERIFICATION_CODE.getContent(), verificationCode));
             notification.setSubject(NotificationTemplate.VERIFICATION_CODE.getSubject());
-            notificationService.sendNotification(notification);
             logger.info(user.toString());
             logger.info(notification.toString());
+            notificationService.sendNotification(notification);
             return ResponseGenerator.genSuccessResult();
         } else {
             return ResponseGenerator.genFailResult("This email has been registered.");
@@ -124,7 +124,7 @@ public class UserController {
     @PostMapping("register")
     public Response register(String email, String password, String firstName, String lastName, String verificationCode) {
         User user = userService.getUserByEmail(email);
-
+        logger.info(user.toString());
         if (user.getVerifyCode().equals(verificationCode)) {
 
             return ResponseGenerator.genSuccessResult(userService.register(email, password, firstName, lastName, verificationCode));
