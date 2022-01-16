@@ -62,7 +62,7 @@ public class UserController {
             user.setLastName("lastName");
             user.setUserPassword("abcd");
             int verificationCode = getRandomVerCode();
-            user.setVerifyCode(verificationCode);
+            user.setVerifyCode(String.valueOf(verificationCode));
             userService.insertUser(user);
             Notification notification = new Notification();
             notification.setSenderId(0);
@@ -152,7 +152,7 @@ public class UserController {
     @PostMapping("register")
     public Response register(String email, String password, String firstName, String lastName, int verificationCode) {
         User user = userService.getUserByEmail(email);
-        if(user.getVerifyCode() == verificationCode) {
+        if(user.getVerifyCode() == String.valueOf(verificationCode)) {
             return ResponseGenerator.genSuccessResult(userService.register(email, password, firstName, lastName, verificationCode));
         } else {
             userService.deleteUser(user.getUserId());

@@ -22,7 +22,7 @@ public class User implements Serializable {
 
     private String userPassword;
 
-    private Integer verifyCode;
+    private String verifyCode;
 
     private UserAccountStatus userAccountStatus;
 
