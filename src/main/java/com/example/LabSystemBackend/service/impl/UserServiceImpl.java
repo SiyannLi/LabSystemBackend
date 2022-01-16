@@ -49,15 +49,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int register(String email, String password, String firstName, String lastName, int verificationCode, boolean isAdmin) {
-        User user = new User();
-        user.setUserRole(isAdmin ? UserRole.ADMIN : UserRole.VISITOR);
+    public int register(String email, String password, String firstName, String lastName, int verificationCode) {
+        User user = getUserByEmail(email);
         user.setUserPassword(password);
-        user.setEmail(email);
         user.setFirstName(firstName);
         user.setLastName(lastName);
-        user.setVerifyCode(verificationCode);
-        user.setUserAccountStatus(UserAccountStatus.CONFIRMING);
         return userDao.insertUser(user);
     }
 
