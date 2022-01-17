@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter(filterName="AuthorizationFilter",urlPatterns= {"*"})
+@WebFilter(filterName="AuthorizationFilter",urlPatterns= {"user/login/*"})
 public class AuthorizationFilter implements Filter {
 
 
