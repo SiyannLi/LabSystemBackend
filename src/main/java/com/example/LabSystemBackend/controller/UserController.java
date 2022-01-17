@@ -4,6 +4,7 @@ package com.example.LabSystemBackend.controller;
 import com.example.LabSystemBackend.common.Response;
 import com.example.LabSystemBackend.common.ResponseGenerator;
 import com.example.LabSystemBackend.entity.*;
+import com.example.LabSystemBackend.jwt.JWTUtil;
 import com.example.LabSystemBackend.service.NotificationService;
 import com.example.LabSystemBackend.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -14,6 +15,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 
@@ -108,17 +112,88 @@ public class UserController {
     }
 
 
-    @ApiOperation("login")
-    @PostMapping("login")
-    public Response login(String email, String password, boolean isAdmin) {
-        return ResponseGenerator.genSuccessResult();
+    @ApiOperation("visitor login")
+    @RequestMapping("visitorLogin")
+    public Response visitorLogin(HttpServletRequest request, HttpServletResponse response,
+                                 String email, String password) {
+        String result = (String) request.getAttribute("verification result");
+        switch (result) {
+            case "logged in" -> {
+                return ResponseGenerator.genFailResult("logged in");
+            }
+            case "wrong token" -> {
+                return ResponseGenerator.genFailResult("wrong token");
+            }
+            case "not logged in" -> {
+                if (!userService.emailExists(email)) {
+                    return ResponseGenerator.genFailResult("User does not exist");
+                }
+                User user = userService.getUserByEmail(email);
+                if (!password.equals(user.getUserPassword())) {
+                    return ResponseGenerator.genFailResult("Incorrect password");
+                }
+                String token = JWTUtil.createToken(user);
+                HttpSession session = request.getSession();
+                session.setAttribute("token", token);
+                return ResponseGenerator.genSuccessResult(token);
+            }
+            default -> {
+                return ResponseGenerator.genFailResult("error");
+            }
+
+        }
+    }
+    @ApiOperation("admin login")
+    @RequestMapping("adminLogin")
+    public Response adminLogin(HttpServletRequest request, HttpServletResponse response,
+                                 String email, String password) {
+        String result = (String) request.getAttribute("verification result");
+        switch (result) {
+            case "logged in" -> {
+                return ResponseGenerator.genFailResult("logged in");
+            }
+            case "wrong token" -> {
+                return ResponseGenerator.genFailResult("wrong token");
+            }
+            case "not logged in" -> {
+                if (!userService.emailExists(email)) {
+                    return ResponseGenerator.genFailResult("User does not exist");
+                }
+                User user = userService.getUserByEmail(email);
+                if (!password.equals(user.getUserPassword())) {
+                    return ResponseGenerator.genFailResult("Incorrect password");
+                }
+                if(!user.getUserRole().getRoleValue().equals("admin")) {
+                    return ResponseGenerator.genFailResult("Not an administrator account");
+                }
+                String token = JWTUtil.createToken(user);
+                HttpSession session = request.getSession();
+                session.setAttribute("token", token);
+                return ResponseGenerator.genSuccessResult(token);
+            }
+            default -> {
+                return ResponseGenerator.genFailResult("error");
+            }
+
+        }
     }
 
-    /*@ApiOperation("log out")
-    @PostMapping("logout")
-    public Response logout(String email) {
-        return ResponseGenerator.genSuccessResult();
-    }*////////////////////
+    @RequestMapping("logout")
+    public Response logout(HttpServletRequest request,HttpServletResponse response) {
+
+        String result = (String) request.getAttribute("verification result");
+
+        if(!"logged in".equals(result)) {
+            return ResponseGenerator.genFailResult("No user login or token error, can't log out");
+        }
+
+        HttpSession session = request.getSession();
+
+        session.setAttribute("token", null);
+        session.invalidate();
+        return ResponseGenerator.genSuccessResult("logout");
+
+    }
 
     @ApiOperation("register one account")
     @PostMapping("register")
