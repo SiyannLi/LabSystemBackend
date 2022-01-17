@@ -113,7 +113,7 @@ public class UserController {
 
 
     @ApiOperation("visitor login")
-    @RequestMapping("visitorLogin")
+    @PostMapping("visitorLogin")
     public Response visitorLogin(HttpServletRequest request, HttpServletResponse response,
                                  String email, String password) {
         String result = (String) request.getAttribute("verification result");
@@ -142,7 +142,7 @@ public class UserController {
     }
 
     @ApiOperation("admin login")
-    @RequestMapping("adminLogin")
+    @PostMapping("adminLogin")
     public Response adminLogin(HttpServletRequest request, HttpServletResponse response,
                                String email, String password) {
         String result = (String) request.getAttribute("verification result");
@@ -174,7 +174,7 @@ public class UserController {
         }
     }
 
-    @RequestMapping("logout")
+    @PostMapping("logout")
     public Response logout(HttpServletRequest request, HttpServletResponse response) {
 
         String result = (String) request.getAttribute("verification result");
