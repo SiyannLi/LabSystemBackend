@@ -157,6 +157,12 @@
 			<optional>true</optional> <!-- 可选 -->
 		</dependency>
 
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>30.0-jre</version>
+		</dependency>
+
 
     </dependencies>
 
