@@ -193,7 +193,20 @@ public class UserController {
 
     @ApiOperation("register one account")
     @PostMapping("register")
-    public Response register(String email, String password, String firstName, String lastName, String verificationCode) {
+    public Response register(@ApiParam(name = "email", value = "email", required = true)
+                             @RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        String password = body.get("userPassword");
+        String firstName = body.get("firstName");
+        String lastName = body.get("lastName");
+        String verificationCode = body.get("verifyCode");
+
+        logger.info("email " + email);
+        logger.info("password " + password);
+        logger.info("firstName " + firstName);
+        logger.info("lastName " + lastName);
+        logger.info("verificationCode " + verificationCode);
+
         User user = userService.getUserByEmail(email);
         logger.info(user.toString());
         if (user.getVerifyCode().equals(verificationCode)) {
