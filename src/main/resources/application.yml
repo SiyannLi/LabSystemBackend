@@ -4,21 +4,21 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/labSystem
-    username: root
+    url: ENC(eRx7fbf7jnYch0R9V4YNJdhgYjtci2dha1iGnoZGcKbk1JNl7h09l/gOL2dvw9L1)
+    username: ENC(F07hl0qGxP59JQqF8VpbPA==)
     #password: 123456
-    password: Asdlkj987.
-  mail:
-    host: smtp.mailtrap.io
-    username: 32f908f3a8d286
-    password: ca4302891da600
-    port: 2525
+    password: ENC(4VXOGDlKD/b96TiKNi57XbS+8VtOtkCd)
 
+  mail:
+    host: ENC(4StS78Q8cuX+wLZUgEujZ2YU5f2FucVYJ6WYIH6xXnY=)
+    username: ENC(JrkP+5YDzvkx5jMpGK4VYH/sgssrg4mB)
+    password: ENC(2RUzmzQ9wODEWo7VRgIev2vK+B9lBOt+)
+    port: 2525
 #  mail:
-#    username: tecolabsystem@outlook.com
-#    password: labsystem123456
+#    username: ENC(WTOPYdl6OojDngzb5hmNMsqzlwZJlQDBgu2AOKaUA80/ur+4XCmuNg==)
+#    password: ENC(yijgJRjTj2GnBD+O+G7u/gu4/iedOj/p)
 #    port: 587
-#    host: smtp.office365.com
+#    host: ENC(j/ao6SrKFWZws9CSKmj9J0TjlYjxl307v+Axqpf6ylI=)
 #    properties:
 #      mail:
 #        smtp:
@@ -28,5 +28,7 @@ spring:
 mybatis:
   mapper-locations: classpath*:mapper/*Mapper.xml
   type-aliases-package: com.example.LabSystemBackend.entity
-
+jasypt:
+  encryptor:
+    password: b8NKshK63S3zI8z5y31HlrTx7PHEhsz9CLwREO/BYXo=
 
