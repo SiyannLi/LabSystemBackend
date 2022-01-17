@@ -58,7 +58,7 @@ class UserDaoTest {
         userDao.insertUser(user);
         User get = userDao.getUser(user.getUserId());
         assertEquals(user, get);
-        userDao.deleteUser(user.getUserId());
+        //userDao.deleteUser(user.getUserId());
 
     }
 

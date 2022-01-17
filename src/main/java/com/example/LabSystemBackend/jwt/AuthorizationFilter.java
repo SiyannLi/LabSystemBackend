@@ -36,7 +36,7 @@ public class AuthorizationFilter implements Filter {
             HttpSession session = req.getSession();
             String tokenServer = (String) session.getAttribute("token");
 
-            if (JWTUtil.verify(token) || !token.equals(tokenServer)) {
+            if (JwtUtil.verify(token) || !token.equals(tokenServer)) {
                 req.setAttribute("verification result", "wrong token");
 
                 filterChain.doFilter(req, res);
