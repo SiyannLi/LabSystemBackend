@@ -20,14 +20,6 @@ public class ResponseGenerator {
         return response;
     }
 
-    public static Response genSuccessResult(String token, String firstName) {
-        Response<Object> response = new Response<>();
-        response.setResultCode(Constants.RESULT_CODE_SUCCESS);
-        response.setToken(token);
-        response.setFirstName(firstName);
-
-        return response;
-    }
     public static Response genSuccessResult(Object data) {
         Response<Object> response = new Response<>();
         response.setResultCode(Constants.RESULT_CODE_SUCCESS);
