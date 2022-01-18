@@ -42,6 +42,7 @@ public class JwtUtil {
                     .withClaim("email",user.getEmail())
                     .withClaim("password",user.getUserPassword())
                     .withClaim("role",user.getUserRole().getRoleValue())
+                    .withClaim("firstName",user.getFirstName())
                     .withIssuedAt(nowDate)
                     .withExpiresAt(expireDate)
                     .sign(algorithm);
