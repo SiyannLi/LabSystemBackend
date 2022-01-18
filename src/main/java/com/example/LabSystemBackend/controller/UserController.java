@@ -137,7 +137,7 @@ public class UserController {
             String token = JwtUtil.createToken(user);
             HttpSession session = request.getSession();
             session.setAttribute("token", token);
-            return ResponseGenerator.genSuccessResult(token);
+            return ResponseGenerator.genSuccessResult(token, JwtUtil.getUserInfo(token,"firstName"));
         }
     }
 
@@ -170,7 +170,7 @@ public class UserController {
             String token = JwtUtil.createToken(user);
             HttpSession session = request.getSession();
             session.setAttribute("token", token);
-            return ResponseGenerator.genSuccessResult(token);
+            return ResponseGenerator.genSuccessResult(token, JwtUtil.getUserInfo(token,"firstName"));
         }
     }
 
