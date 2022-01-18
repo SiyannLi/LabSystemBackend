@@ -12,13 +12,10 @@ public interface AppointmentService {
 
     //查询所有预约
     List<Appointment> getAllAppointments();
-    //查询特定时间段预约
-    List<Appointment> getAppointmentbyTimeSlot(int timeSlotId);
 
     //删除一个预约
     int deleteAppointment(int appointmentId);
 
     //用户新建一个预约
-    int addAppointment(int userId, int timeSlotId);
-
+    int addAppointment(int userId, int timeSlot);
 }

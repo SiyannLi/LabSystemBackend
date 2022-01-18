@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-@WebFilter(filterName = "AuthorizationFilter", urlPatterns = {"/**"})
+@WebFilter(filterName="AuthorizationFilter", urlPatterns = {"/**"})
 public class AuthorizationFilter implements Filter {
 
     @Value("${filter.config.excludeUrls}")
@@ -27,8 +27,10 @@ public class AuthorizationFilter implements Filter {
     }
 
 
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+
 
 
         final HttpServletRequest req = (HttpServletRequest) servletRequest;
@@ -64,7 +66,6 @@ public class AuthorizationFilter implements Filter {
         }
         filterChain.doFilter(req, res);
     }
-
     private boolean isExcludesUrl(String path) {
         for (String v : this.excludes) {
             if (path.startsWith(v)) {// 判断请求uri 是否满足配置文件uri要求

@@ -1,7 +1,6 @@
 package com.example.LabSystemBackend.service;
 
 import com.example.LabSystemBackend.entity.TimeSlot;
-import com.example.LabSystemBackend.entity.TimeSlotStatus;
 
 import java.util.Date;
 import java.util.List;
@@ -13,11 +12,5 @@ public interface TimeSlotService {
 
     //设置可预约时间段
     int setAvailableTimeSlots(Date availableDate, int TimeSlot, int endRepeatAfter);
-
-
-    int activateTimeSlotStatus(int timeSlotId);
-
-    int deactivateTimeSlotStatus(int timeSlotId);
-    TimeSlotStatus getTimeSlotStatus(int timeSlotId);
 
 }

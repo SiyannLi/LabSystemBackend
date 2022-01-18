@@ -42,9 +42,7 @@ public List<User> getAllUsers();
 public List<User> getAllAdministrator();
 
 ```
-
 ---
-
 ## DeviceService
 
 ```java
@@ -67,9 +65,7 @@ public Device changeDeviceAmount(int deviceId, int newAmount);
 //合并设备列表
 public List<Device> mergeDevice(String deviceName, String link, int submitterId, String targetdevice);
 ```
-
 ---
-
 ## OrderService
 
 ```java
@@ -102,9 +98,7 @@ public Order confirmOrder(int orderId);
 public Order rejectOrder(int orderId);//拒绝订单后订单直接在数据库里清除
 
 ```
-
 ---
-
 ## NewsService
 
 ```java
@@ -122,11 +116,8 @@ public List<News> getAllNews();
 public News getUserAllNews(int receiverId);
 
 ```
-
 ---
-
 ## AppointmentService
-
 ```java
 //attribute
 private Userservice userService;

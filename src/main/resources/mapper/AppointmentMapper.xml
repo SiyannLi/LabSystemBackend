@@ -18,13 +18,6 @@
 
     </select>
 
-    <select id="getAppointmentbyTimeSlot" resultType="com.example.LabSystemBackend.entity.Appointment">
-        select *
-        from appointment
-        where timeSlotId = #{timeSlotId}
-
-    </select>
-
     <select id="getAppointment" resultType="com.example.LabSystemBackend.entity.Appointment">
         select *
         from appointment

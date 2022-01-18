@@ -21,7 +21,7 @@ public interface OrderDao {
 
     List<Order> getAllActiveOrders();
 
-    int changeOrderStatus(@Param("orderId") int orderId, @Param("orderStatus") OrderStatus orderStatus);
+    int changeOrderStatus(@Param("orderId") int orderId,@Param("orderStatus") OrderStatus orderStatus);
 
     Order getLastOrder();
 

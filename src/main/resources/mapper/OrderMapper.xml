@@ -13,7 +13,7 @@
         select *
         from orders
         where userId = #{userId}
-        and (orderStatus = 'PENDING' or orderStatus = 'APPROVED')
+          and (orderStatus = 'PENDING' or orderStatus = 'APPROVED')
     </select>
 
     <delete id="deleteOrder">
