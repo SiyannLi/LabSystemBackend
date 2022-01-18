@@ -68,7 +68,7 @@ public class UserController {
             user.setEmail(email.get("email"));
             user.setFirstName("firstName");
             user.setLastName("lastName");
-            user.setUserPassword("abcd");
+            user.setUserPassword("****");
             String verificationCode = getRandomVerCode();
             user.setVerifyCode(verificationCode);
             userService.insertUser(user);

@@ -51,10 +51,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public int register(String email, String password, String firstName, String lastName, String verificationCode) {
         User user = getUserByEmail(email);
-        user.setUserPassword(password);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        return userDao.insertUser(user);
+        int id = user.getUserId();
+        userDao.updateName(id, firstName, lastName);
+        userDao.updatePassword(id, password);
+        return userDao.updateUserAccountStatus(id, UserAccountStatus.ACTIVE);
     }
 
     @Override
