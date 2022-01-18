@@ -4,25 +4,25 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/labsystem
-    username: root
-    password: root
+    url: ENC(7j2WfYrGc3yuRVXLBD44z6exCAyqE+jwyiNlfTUh5+Gt6FOhLWiADPWohtCUi2eCKSKwKHK2EyocGwKFbngEDgRXP7KH9wuwUQLcc3/LF3Q=)
+    username: ENC(HOI6gfIfBjIUJ6S6apfIQVHs4d6rXKRnnF9q5kc161TWfpCEvMHmFXAyIiblIymH)
+    password: ENC(PtiNKw/yPHFILhVRldjvywYTvYJ4M0/1qPY7SyGy2HG7he7ZmftYIuSSD3kzQ8m0)
 
-  mail:
-    host: ENC(4StS78Q8cuX+wLZUgEujZ2YU5f2FucVYJ6WYIH6xXnY=)
-    username: ENC(JrkP+5YDzvkx5jMpGK4VYH/sgssrg4mB)
-    password: ENC(2RUzmzQ9wODEWo7VRgIev2vK+B9lBOt+)
-    port: 2525
 #  mail:
-#    username: ENC(WTOPYdl6OojDngzb5hmNMsqzlwZJlQDBgu2AOKaUA80/ur+4XCmuNg==)
-#    password: ENC(yijgJRjTj2GnBD+O+G7u/gu4/iedOj/p)
-#    port: 587
-#    host: ENC(j/ao6SrKFWZws9CSKmj9J0TjlYjxl307v+Axqpf6ylI=)
-#    properties:
-#      mail:
-#        smtp:
-#          starttls:
-#            required: true
+#    host: ENC(C/6wLABfjaW+gW8fzuUfYe/eOZgvJIAQM30uvr1T5e9ll/2z5zj9RP9DPzi2gCK4J8KLLtCAFmZ8xOuRyX1gyA==)
+#    username: ENC(dmdCt3TEcqWo6X16ab2KYfJhmGYjCLBrntpudAtG+jRbcgav0+xT0ohO2Jd58RoY)
+#    password: ENC(83Ruzc4aIwkY6dxd/T6dhsoCj032/4Y1byHRB1P5bSFPWIzBLwuvgGjpfMIx6Sgn)
+#    port: 2525
+  mail:
+    username: ENC(WpprIuAlbziJPKpsMhNooOTPFpy+uHEEH306jrUGNZZkJsKr3yGKcPR8ZAixmxRLk+Uzk+RirjR6zyQV8uCOGQ==)
+    password: ENC(PVHzrEWc4IX0cmOcXLBatq69xcPGAwKtxZQemWxqoTLonj6M2InenT/TOHs348ag)
+    port: 587
+    host: ENC(NkNnXeO3Y2+OgXuci+FKDG2KHjmIIRACr98TnvjXcTqVjLoZGcYtnfimGJdMkTrXqjSMHeooOftv9KYFp7c3zw==)
+    properties:
+      mail:
+        smtp:
+          starttls:
+            required: true
 
 mybatis:
   mapper-locations: classpath*:mapper/*Mapper.xml

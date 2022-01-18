@@ -115,16 +115,16 @@ public class UserController {
     @ApiOperation("visitor login")
     @PostMapping("visitorLogin")
     public Response visitorLogin(HttpServletRequest request, HttpServletResponse response,
-                                 @ApiParam(name = "emailAndPass", value = "emailAndPass", required = true)
                                  @RequestBody Map<String, String> body) {
         String email = body.get("email");
         String password = body.get("password");
-        logger.info(email);
-        logger.info(password);
+        logger.debug("visitorLogin");
+        logger.debug("email " + email);
+        logger.debug("password" + password);
         String result = (String) request.getAttribute("verification result");
-        if (result.equals("logged in")) {
+        if ("logged in".equals(result)) {
             return ResponseGenerator.genFailResult("logged in");
-        } else if (result.equals("wrong token")) {
+        } else if ("wrong token".equals(result)) {
             return ResponseGenerator.genFailResult("wrong token");
         } else {
             if (!userService.emailExists(email)) {
@@ -139,8 +139,6 @@ public class UserController {
             session.setAttribute("token", token);
             return ResponseGenerator.genSuccessResult(token);
         }
-
-
     }
 
     @ApiOperation("admin login")
@@ -152,10 +150,11 @@ public class UserController {
         String password = body.get("password");
         logger.info(email);
         logger.info(password);
+
         String result = (String) request.getAttribute("verification result");
-        if (result.equals("logged in")) {
+        if ("logged in".equals(result)) {
             return ResponseGenerator.genFailResult("logged in");
-        } else if (result.equals("wrong token")) {
+        } else if ("wrong token".equals(result)) {
             return ResponseGenerator.genFailResult("wrong token");
         } else {
             if (!userService.emailExists(email)) {
@@ -173,8 +172,6 @@ public class UserController {
             session.setAttribute("token", token);
             return ResponseGenerator.genSuccessResult(token);
         }
-
-
     }
 
     @PostMapping("logout")

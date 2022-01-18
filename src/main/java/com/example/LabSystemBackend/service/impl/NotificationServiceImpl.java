@@ -21,7 +21,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Autowired
     private JavaMailSender mailSender;
 
-    private final String sysEmail = "tecolabsystem@outlook.com";
+    private final String sysEmail = "Labsystem22@outlook.com";
 
     @Override
     public int sendNotification(Notification notification) {
