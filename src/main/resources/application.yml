@@ -4,10 +4,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ENC(eRx7fbf7jnYch0R9V4YNJdhgYjtci2dha1iGnoZGcKbk1JNl7h09l/gOL2dvw9L1)
-    username: ENC(F07hl0qGxP59JQqF8VpbPA==)
-    #password: 123456
-    password: ENC(4VXOGDlKD/b96TiKNi57XbS+8VtOtkCd)
+    url: jdbc:mysql://localhost:3306/labsystem
+    username: root
+    password: root
 
   mail:
     host: ENC(4StS78Q8cuX+wLZUgEujZ2YU5f2FucVYJ6WYIH6xXnY=)
@@ -28,6 +27,7 @@ spring:
 mybatis:
   mapper-locations: classpath*:mapper/*Mapper.xml
   type-aliases-package: com.example.LabSystemBackend.entity
+
 jasypt:
   encryptor:
     password: b8NKshK63S3zI8z5y31HlrTx7PHEhsz9CLwREO/BYXo=

@@ -1,6 +1,5 @@
 package com.example.LabSystemBackend.service.impl;
 
-import com.example.LabSystemBackend.dao.AppointmentDao;
 import com.example.LabSystemBackend.dao.TimeSlotDao;
 import com.example.LabSystemBackend.entity.TimeSlot;
 import com.example.LabSystemBackend.entity.TimeSlotStatus;
@@ -16,7 +15,6 @@ import java.util.List;
 public class TimeSlotServiceImpl implements TimeSlotService {
     @Autowired
     private TimeSlotDao timeSlotDao;
-
 
 
     @Override
@@ -40,5 +38,16 @@ public class TimeSlotServiceImpl implements TimeSlotService {
         }
         return resultCounter == endRepeatAfter ? 1 : 0;
     }
+
+    @Override
+    public int activateTimeSlotStatus(int timeSlotId) { return timeSlotDao.updateTimeSlotStatus(timeSlotId,TimeSlotStatus.AVAILABLE);}
+    @Override
+    public int deactivateTimeSlotStatus(int timeSlotId) { return timeSlotDao.updateTimeSlotStatus(timeSlotId,TimeSlotStatus.UNAVAILABLE);}
+
+    @Override
+    public TimeSlotStatus getTimeSlotStatus(int timeSlotId) {
+      return timeSlotDao.getTimeSlotSlotStatus(timeSlotId).getTimeSlotStatus();
+    }
+
 
 }

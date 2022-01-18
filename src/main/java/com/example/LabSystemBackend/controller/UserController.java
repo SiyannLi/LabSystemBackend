@@ -127,18 +127,18 @@ public class UserController {
         } else if (result.equals("wrong token")) {
             return ResponseGenerator.genFailResult("wrong token");
         } else {
-                if (!userService.emailExists(email)) {
-                    return ResponseGenerator.genFailResult("User does not exist");
-                }
-                User user = userService.getUserByEmail(email);
-                if (!password.equals(user.getUserPassword())) {
-                    return ResponseGenerator.genFailResult("Incorrect password");
-                }
-                String token = JwtUtil.createToken(user);
-                HttpSession session = request.getSession();
-                session.setAttribute("token", token);
-                return ResponseGenerator.genSuccessResult(token);
+            if (!userService.emailExists(email)) {
+                return ResponseGenerator.genFailResult("User does not exist");
             }
+            User user = userService.getUserByEmail(email);
+            if (!password.equals(user.getUserPassword())) {
+                return ResponseGenerator.genFailResult("Incorrect password");
+            }
+            String token = JwtUtil.createToken(user);
+            HttpSession session = request.getSession();
+            session.setAttribute("token", token);
+            return ResponseGenerator.genSuccessResult(token);
+        }
 
 
     }
@@ -146,8 +146,8 @@ public class UserController {
     @ApiOperation("admin login")
     @PostMapping("adminLogin")
     public Response adminLogin(HttpServletRequest request, HttpServletResponse response,
-                                 @ApiParam(name = "emailAndPass", value = "emailAndPass", required = true)
-                                 @RequestBody Map<String, String> body) {
+                               @ApiParam(name = "emailAndPass", value = "emailAndPass", required = true)
+                               @RequestBody Map<String, String> body) {
         String email = body.get("email");
         String password = body.get("password");
         logger.info(email);
@@ -175,7 +175,6 @@ public class UserController {
         }
 
 
-        
     }
 
     @PostMapping("logout")

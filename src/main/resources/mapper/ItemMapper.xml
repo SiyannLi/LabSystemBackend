@@ -32,10 +32,10 @@
         from item
         where itemId = #{itemId}
     </delete>
-    
-    <update id="changeItemAmount" >
+
+    <update id="changeItemAmount">
         update item
-        set amount =  #{amount}
+        set amount = #{amount}
         where itemId = #{itemId}
     </update>
 </mapper>

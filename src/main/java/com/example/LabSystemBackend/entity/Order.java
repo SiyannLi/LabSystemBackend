@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,7 +23,7 @@ public class Order implements Serializable {
     @Override
     public String toString() {
         return "Order{" +
-                "user=" + userId+
+                "user=" + userId +
                 ", orderId=" + orderId +
                 ", item=" + itemId +
                 ", amount=" + amount +
