@@ -122,9 +122,9 @@ public class UserController {
         logger.debug("email " + email);
         logger.debug("password" + password);
         String result = (String) request.getAttribute("verification result");
-        if (result.equals("logged in")) {
+        if ("logged in".equals(result)) {
             return ResponseGenerator.genFailResult("logged in");
-        } else if (result.equals("wrong token")) {
+        } else if ("wrong token".equals(result)) {
             return ResponseGenerator.genFailResult("wrong token");
         } else {
             if (!userService.emailExists(email)) {
@@ -147,31 +147,25 @@ public class UserController {
     public Response adminLogin(HttpServletRequest request, HttpServletResponse response,
                                String email, String password) {
         String result = (String) request.getAttribute("verification result");
-        switch (result) {
-            case "logged in":
-                return ResponseGenerator.genFailResult("logged in");
-            case "wrong token":
-                return ResponseGenerator.genFailResult("wrong token");
-            case "not logged in": {
-                if (!userService.emailExists(email)) {
-                    return ResponseGenerator.genFailResult("User does not exist");
-                }
-                User user = userService.getUserByEmail(email);
-                if (!password.equals(user.getUserPassword())) {
-                    return ResponseGenerator.genFailResult("Incorrect password");
-                }
-                if (!user.getUserRole().getRoleValue().equals("admin")) {
-                    return ResponseGenerator.genFailResult("Not an administrator account");
-                }
-                String token = JwtUtil.createToken(user);
-                HttpSession session = request.getSession();
-                session.setAttribute("token", token);
-                return ResponseGenerator.genSuccessResult(token);
+        if ("logged in".equals(result)) {
+            return ResponseGenerator.genFailResult("logged in");
+        } else if ("wrong token".equals(result)) {
+            return ResponseGenerator.genFailResult("wrong token");
+        } else {
+            if (!userService.emailExists(email)) {
+                return ResponseGenerator.genFailResult("User does not exist");
             }
-            default:
-                return ResponseGenerator.genFailResult("error");
-
-
+            User user = userService.getUserByEmail(email);
+            if (!password.equals(user.getUserPassword())) {
+                return ResponseGenerator.genFailResult("Incorrect password");
+            }
+            if (!user.getUserRole().getRoleValue().equals("admin")) {
+                return ResponseGenerator.genFailResult("Not an administrator account");
+            }
+            String token = JwtUtil.createToken(user);
+            HttpSession session = request.getSession();
+            session.setAttribute("token", token);
+            return ResponseGenerator.genSuccessResult(token);
         }
     }
 
