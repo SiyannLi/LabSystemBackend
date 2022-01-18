@@ -32,7 +32,7 @@ jasypt:
   encryptor:
     password: b8NKshK63S3zI8z5y31HlrTx7PHEhsz9CLwREO/BYXo=
 
-  filter:
-    config:
-      excludeUrls: /users/visitorLogin,/users/register,/users/adminLogin,/users/sendVerificationCode
+filter:
+  config:
+    excludeUrls: /users/visitorLogin,/users/register,/users/adminLogin,/users/sendVerificationCode
 

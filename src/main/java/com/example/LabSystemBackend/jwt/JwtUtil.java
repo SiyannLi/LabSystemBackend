@@ -15,7 +15,6 @@ import org.mybatis.logging.Logger;
 import org.mybatis.logging.LoggerFactory;
 
 public class JwtUtil {
-    private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
     /**
      * 密钥
      */
@@ -33,38 +32,22 @@ public class JwtUtil {
 
             header.put("typ","JWT");
 
-//          设置过期时间为当前时间后俩小时
-
             Date nowDate = new Date();
             Date expireDate =   DateUtil.getNextMinute(nowDate, EXPIRATION);
+            Algorithm algorithm = Algorithm.HMAC256(SECRET);
 
             String token = JWT.create()
 
-//                    设置JWT中的header
-
                     .withHeader(header)
-
-//                    设置用户名
-
                     .withClaim("email",user.getEmail())
                     .withClaim("password",user.getUserPassword())
                     .withClaim("role",user.getUserRole().getRoleValue())
-
-//                    设置当前时间
-
                     .withIssuedAt(nowDate)
-
-//                    设置到期时间
-
                     .withExpiresAt(expireDate)
-
-//                    生成签名的加密方式
-
-                    .sign(Algorithm.HMAC256(SECRET));
-
+                    .sign(algorithm);
             return token;
 
-        } catch (JWTCreationException | UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
 
             return null;
