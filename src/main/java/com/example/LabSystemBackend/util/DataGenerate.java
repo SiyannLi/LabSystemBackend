@@ -73,11 +73,11 @@ public class DataGenerate {
     }
 
     public static Notification generateNotification() {
-    Notification notification = new Notification();
+        Notification notification = new Notification();
         notification.setContent(faker.harryPotter().quote());
         notification.setSubject(faker.aquaTeenHungerForce().character());
-        notification.setRecipientId(faker.random().nextInt(1,100));
-        notification.setSenderId(faker.random().nextInt(1,100));
+        notification.setRecipientId(faker.random().nextInt(1, 100));
+        notification.setSenderId(faker.random().nextInt(1, 100));
         return notification;
     }
 }

@@ -24,4 +24,18 @@
         limit 1
     </select>
 
+    <select id="getTimeSlotStatus" resultType="com.example.LabSystemBackend.entity.TimeSlot">
+        select *
+        from timeslot
+        where timeSlotId=#{timeSlotID}
+    </select>
+
+    <update id="updateTimeSlotStatus">
+        update timeslot
+        set timeSlotStatus = #{timeslotStatus}
+        where timeSlotId = #{timeSlotId}
+    </update>
+
+
+
 </mapper>

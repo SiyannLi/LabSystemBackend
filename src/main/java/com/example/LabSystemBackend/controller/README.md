@@ -1,4 +1,5 @@
 # ***Controller***
+
 ## _UserController_
 
 ```java
@@ -52,8 +53,8 @@ public Result getAllUsers();
 public Result getAllAdministrator();
 ```
 
-
 ---
+
 ## _DeviceController_
 
 ```java
@@ -81,9 +82,10 @@ public Result changeDeviceAmount(int deviceId, int newAmount);
 public Result mergeDevice(String deviceName, String link, int submitterId, String targetdevice);
 ```
 
-
 ---
+
 ## _OrderController_
+
 ```java
 @RequestMapping("/orders")
 
@@ -114,9 +116,10 @@ public Result confirmOrder(int orderId);
 public Result rejectOrder(int orderId);
 ```
 
-
 ---
+
 ## _NewsController_
+
 ```java
 @RequestMapping("/notification")
 
@@ -132,8 +135,8 @@ public Result getAllNews();
 public Result getUserAllNews(int receiverId);
 ```
 
-
 ---
+
 ## _AppointmentController_
 
 ```java

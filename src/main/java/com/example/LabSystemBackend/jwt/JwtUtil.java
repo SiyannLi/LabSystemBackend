@@ -30,10 +30,10 @@ public class JwtUtil {
 
             header.put("alg", "HS256");//alg为header和payload的加密方式
 
-            header.put("typ","JWT");
+            header.put("typ", "JWT");
 
             Date nowDate = new Date();
-            Date expireDate =   DateUtil.getNextMinute(nowDate, EXPIRATION);
+            Date expireDate = DateUtil.getNextMinute(nowDate, EXPIRATION);
             Algorithm algorithm = Algorithm.HMAC256(SECRET);
 
             String token = JWT.create()
@@ -60,33 +60,33 @@ public class JwtUtil {
 
     /**
      * 检验token是否正确
+     *
      * @param token 需要校验的token
      * @return 校验是否成功
      */
-    public static boolean verify(String token){
+    public static boolean verify(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(SECRET);
             JWTVerifier verifier = JWT.require(algorithm).build();
             DecodedJWT jwt = verifier.verify(token);
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public static String getUserInfo(String token,String info){
+    public static String getUserInfo(String token, String info) {
 
         try {
 
             DecodedJWT jwt = JWT.decode(token);
             return jwt.getClaim(info).asString();
-        } catch (Exception e){
+        } catch (Exception e) {
 
             e.printStackTrace();
             return null;
         }
     }
-
 
 
 ////  刷新令牌中的当前时间与到期时间

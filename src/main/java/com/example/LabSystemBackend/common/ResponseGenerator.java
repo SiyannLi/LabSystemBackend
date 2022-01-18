@@ -1,9 +1,11 @@
 package com.example.LabSystemBackend.common;
+
 import org.springframework.util.StringUtils;
 
 public class ResponseGenerator {
     private static final String DEFAULT_SUCCESS_MESSAGE = "SUCCESS";
     private static final String DEFAULT_FAIL_MESSAGE = "FAIL";
+
     public static Response genSuccessResult() {
         Response response = new Response<>();
         response.setResultCode(Constants.RESULT_CODE_SUCCESS);

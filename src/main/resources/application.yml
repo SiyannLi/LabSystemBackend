@@ -7,7 +7,6 @@ spring:
     url: ENC(7j2WfYrGc3yuRVXLBD44z6exCAyqE+jwyiNlfTUh5+Gt6FOhLWiADPWohtCUi2eCKSKwKHK2EyocGwKFbngEDgRXP7KH9wuwUQLcc3/LF3Q=)
     username: ENC(HOI6gfIfBjIUJ6S6apfIQVHs4d6rXKRnnF9q5kc161TWfpCEvMHmFXAyIiblIymH)
     password: ENC(PtiNKw/yPHFILhVRldjvywYTvYJ4M0/1qPY7SyGy2HG7he7ZmftYIuSSD3kzQ8m0)
-    #password: ENC(4VXOGDlKD/b96TiKNi57XbS+8VtOtkCd)
 
 #  mail:
 #    host: ENC(C/6wLABfjaW+gW8fzuUfYe/eOZgvJIAQM30uvr1T5e9ll/2z5zj9RP9DPzi2gCK4J8KLLtCAFmZ8xOuRyX1gyA==)
@@ -28,6 +27,7 @@ spring:
 mybatis:
   mapper-locations: classpath*:mapper/*Mapper.xml
   type-aliases-package: com.example.LabSystemBackend.entity
+
 jasypt:
   encryptor:
     password: b8NKshK63S3zI8z5y31HlrTx7PHEhsz9CLwREO/BYXo=

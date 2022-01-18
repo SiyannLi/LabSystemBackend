@@ -4,8 +4,10 @@ import com.example.LabSystemBackend.common.Response;
 import com.example.LabSystemBackend.common.ResponseGenerator;
 import com.example.LabSystemBackend.entity.TimeSlot;
 import com.example.LabSystemBackend.service.AppointmentService;
+import com.example.LabSystemBackend.service.TimeSlotService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -15,7 +17,8 @@ import java.util.Date;
 @RequestMapping("/appointments")
 public class AppointmentController {
     @Autowired
-    private AppointmentService appointmentService;
+    private AppointmentService appointmentService ;
+    
 
     @ApiOperation("get list of all appointments of this user")
     @GetMapping("getUserAppointments")
@@ -40,9 +43,8 @@ public class AppointmentController {
 
     @ApiOperation("User create one new appointment")
     @PostMapping("addAppointment")
-    public Response addAppointment(int userId,Date date, int slot){
-        TimeSlot timeSlot = new TimeSlot();
-        int timeSlotId = timeSlot.getTimeSlotId();
+
+    public Response addAppointment(int userId,int timeSlotId){
         return ResponseGenerator.genSuccessResult(appointmentService.addAppointment(userId, timeSlotId));
 
     }

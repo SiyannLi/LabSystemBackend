@@ -1,6 +1,7 @@
 package com.example.LabSystemBackend.dao;
 
 import com.example.LabSystemBackend.entity.TimeSlot;
+import com.example.LabSystemBackend.entity.TimeSlotStatus;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -14,4 +15,8 @@ public interface TimeSlotDao {
     int setAvailableTimeSlot(@Param("timeSlot") TimeSlot timeSlot);
 
     TimeSlot getLastTimeSlot();
+
+    int updateTimeSlotStatus(@Param("timeSlotId") int timeSlotId, @Param("timeslotStatus")TimeSlotStatus timeSlotStatus );
+
+    TimeSlot getTimeSlotSlotStatus(@Param("timeSlotId")int timeSlotId);
 }

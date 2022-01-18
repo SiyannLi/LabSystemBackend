@@ -139,13 +139,18 @@ public class UserController {
             session.setAttribute("token", token);
             return ResponseGenerator.genSuccessResult(token, JwtUtil.getUserInfo(token,"firstName"));
         }
-
     }
 
     @ApiOperation("admin login")
     @PostMapping("adminLogin")
     public Response adminLogin(HttpServletRequest request, HttpServletResponse response,
-                               String email, String password) {
+                               @ApiParam(name = "emailAndPass", value = "emailAndPass", required = true)
+                               @RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        String password = body.get("password");
+        logger.info(email);
+        logger.info(password);
+
         String result = (String) request.getAttribute("verification result");
         if ("logged in".equals(result)) {
             return ResponseGenerator.genFailResult("logged in");

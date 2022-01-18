@@ -1,6 +1,7 @@
 package com.example.LabSystemBackend.service;
 
 import com.example.LabSystemBackend.entity.User;
+
 import java.util.List;
 
 public interface UserService {
