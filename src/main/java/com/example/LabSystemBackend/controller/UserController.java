@@ -4,6 +4,7 @@ package com.example.LabSystemBackend.controller;
 import com.example.LabSystemBackend.common.Response;
 import com.example.LabSystemBackend.common.ResponseGenerator;
 import com.example.LabSystemBackend.entity.*;
+import com.example.LabSystemBackend.service.VerifyCodeService;
 import com.example.LabSystemBackend.jwt.JwtUtil;
 import com.example.LabSystemBackend.service.NotificationService;
 import com.example.LabSystemBackend.service.UserService;
@@ -32,6 +33,9 @@ public class UserController {
     private UserService userService;
     @Autowired
     private NotificationService notificationService;
+    @Autowired
+    private VerifyCodeService verifyCodeService;
+
 
     @ApiOperation("get one user")
     @GetMapping("get/{userId}")
@@ -44,47 +48,57 @@ public class UserController {
         }
     }
 
-    private String getRandomVerCode() {
-        Random random = new Random();
-        StringBuffer sb = new StringBuffer();
-
-        for (int i = 0; i < 6; i++) {
-
-            sb.append(random.nextInt(10));
-        }
-        return sb.toString();
-    }
 
     @ApiOperation("send verification code")
     @PostMapping("sendVerificationCode")
-    public Response sendVerificationCode(@ApiParam(name = "email", value = "email", required = true)
-
-                                         @Param("email") @RequestBody Map<String, String> email) {
-        if (!userService.emailExists(email.get("email"))) {
-            logger.info(email.get("email"));
-            User user = new User();
-            user.setUserRole(UserRole.VISITOR);
-            user.setUserAccountStatus(UserAccountStatus.CONFIRMING);
-            user.setEmail(email.get("email"));
-            user.setFirstName("firstName");
-            user.setLastName("lastName");
-            user.setUserPassword("****");
-            String verificationCode = getRandomVerCode();
-            user.setVerifyCode(verificationCode);
-            userService.insertUser(user);
-            Notification notification = new Notification();
-            notification.setSenderId(0);
-            notification.setRecipientId(user.getUserId());
-            notification.setContent(String.format(NotificationTemplate.VERIFICATION_CODE.getContent(), verificationCode));
-            notification.setSubject(NotificationTemplate.VERIFICATION_CODE.getSubject());
-            logger.info(user.toString());
-            logger.info(notification.toString());
-            notificationService.sendNotification(notification);
-            return ResponseGenerator.genSuccessResult();
-        } else {
-            return ResponseGenerator.genFailResult("This email has been registered.");
+    public Response sendVerificationCode(HttpServletRequest request, HttpServletResponse response,
+                                         @ApiParam(name = "emailAndInfo", value = "emailAndInfo", required = true)
+                                         @Param("email") @RequestBody Map<String, String> body) {
+        String info = body.get("info");
+        String email = body.get("email");
+        boolean userExist = userService.emailExists(body.get("email"));
+        boolean send = false;
+        String message = "succeed";
+        switch (info) {
+            case "register": {
+                if (!userExist) {
+                    logger.info(body.get("email"));
+                    send = true;
+                } else {
+                    message = "This email has been registered.";
+                }
+                break;
+            }
+            case "forget password": {
+                if (userExist) {
+                    logger.info(body.get("email"));
+                    send = true;
+                } else {
+                    message = "This email has been not registered.";
+                }
+                break;
+            }
+            default: {
+                message = "error";
+            }
         }
-
+        if (send) {
+            String verCode = verifyCodeService.getRandomVerCode();
+            Notification notification = verifyCodeService.sendVerifyCode(email, verCode);
+            HttpSession session = request.getSession();
+            session.setAttribute("verifyCode", verCode);
+            final Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                public void run() {
+                    session.removeAttribute("verifyCode");
+                    timer.cancel();
+                }
+            }, 10 * 60 * 1000);
+            logger.info(notification.toString());
+            send = false;
+            return ResponseGenerator.genSuccessResult(message);
+        }
+        return ResponseGenerator.genFailResult(message);
     }
 
 
@@ -137,7 +151,7 @@ public class UserController {
             String token = JwtUtil.createToken(user);
             HttpSession session = request.getSession();
             session.setAttribute("token", token);
-            return ResponseGenerator.genSuccessResult(token, JwtUtil.getUserInfo(token,"firstName"));
+            return ResponseGenerator.genSuccessResult(token, JwtUtil.getUserInfo(token, "firstName"));
         }
     }
 
@@ -170,7 +184,7 @@ public class UserController {
             String token = JwtUtil.createToken(user);
             HttpSession session = request.getSession();
             session.setAttribute("token", token);
-            return ResponseGenerator.genSuccessResult(token, JwtUtil.getUserInfo(token,"firstName"));
+            return ResponseGenerator.genSuccessResult(token, JwtUtil.getUserInfo(token, "firstName"));
         }
     }
 
@@ -193,7 +207,8 @@ public class UserController {
 
     @ApiOperation("register one account")
     @PostMapping("register")
-    public Response register(@ApiParam(name = "email", value = "email", required = true)
+    public Response register(HttpServletRequest request, HttpServletResponse response,
+                             @ApiParam(name = "email", value = "email", required = true)
                              @RequestBody Map<String, String> body) {
         String email = body.get("email");
         String password = body.get("userPassword");
@@ -207,15 +222,38 @@ public class UserController {
         logger.info("lastName " + lastName);
         logger.info("verificationCode " + verificationCode);
 
-        User user = userService.getUserByEmail(email);
-        logger.info(user.toString());
-        if (user.getVerifyCode().equals(verificationCode)) {
+        HttpSession session = request.getSession();
+        if (verificationCode.equals(session.getAttribute("verifyCode"))) {
 
             return ResponseGenerator.genSuccessResult(userService.register(email, password, firstName, lastName, verificationCode));
         } else {
-            userService.deleteUser(user.getUserId());
             return ResponseGenerator.genFailResult("Invalid verification code");
         }
+    }
+
+    @ApiOperation("change password")
+    @PostMapping("changePassword")
+    public Response changePassword(HttpServletRequest request, HttpServletResponse response,
+                                   @ApiParam(name = "email", value = "email", required = true)
+                                   @RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        String newPassword = body.get("password");
+        String verCode = body.get("verifyCode");
+
+        logger.info("email " + email);
+        logger.info("password " + newPassword);
+        logger.info("verificationCode " + verCode);
+
+
+        HttpSession session = request.getSession();
+        User user = userService.getUserByEmail(email);
+        if (verCode.equals(session.getAttribute("verifyCode"))) {
+            user.setUserPassword(newPassword);
+            return ResponseGenerator.genSuccessResult("Password is changed");
+        } else {
+            return ResponseGenerator.genFailResult("Invalid verification code");
+        }
+
     }
 
 

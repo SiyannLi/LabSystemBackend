@@ -1,7 +1,7 @@
 package com.example.LabSystemBackend.entity;
 
 public enum NotificationTemplate {
-    VERIFICATION_CODE("Your verification code at TECO", "Hello, Welcome to TECO! Your verification code ist: %s");
+    VERIFICATION_CODE("Your verification code at TECO", "Hello, Welcome to TECO! Your verification code is: %s");
 
     private final String subject;
     private final String content;
