@@ -8,6 +8,7 @@ import com.example.LabSystemBackend.service.VerifyCodeService;
 import com.example.LabSystemBackend.jwt.JwtUtil;
 import com.example.LabSystemBackend.service.NotificationService;
 import com.example.LabSystemBackend.service.UserService;
+import com.example.LabSystemBackend.ui.NotificationTemplate;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.ibatis.annotations.Param;
@@ -85,6 +86,7 @@ public class UserController {
         if (send) {
             String verCode = verifyCodeService.getRandomVerCode();
             Notification notification = verifyCodeService.sendVerifyCode(email, verCode);
+            logger.info(notification.toString());
             HttpSession session = request.getSession();
             session.setAttribute("verifyCode", verCode);
             final Timer timer = new Timer();
@@ -94,7 +96,6 @@ public class UserController {
                     timer.cancel();
                 }
             }, 10 * 60 * 1000);
-            logger.info(notification.toString());
             send = false;
             return ResponseGenerator.genSuccessResult(message);
         }
@@ -224,8 +225,15 @@ public class UserController {
 
         HttpSession session = request.getSession();
         if (verificationCode.equals(session.getAttribute("verifyCode"))) {
-
-            return ResponseGenerator.genSuccessResult(userService.register(email, password, firstName, lastName, verificationCode));
+            Notification notification = new Notification();
+            notification.setSenderId(User.ID_OF_SYSTEM);
+            notification.setSubject(NotificationTemplate.REGISTER_SUCCESS.getSubject());
+            notification.setContent(String.format(NotificationTemplate.REGISTER_SUCCESS.getContent()
+                    , firstName + " " + lastName));
+            notificationService.sendNotification(email, notification);
+            logger.info(notification.toString());
+            return ResponseGenerator.genSuccessResult(userService.register(email, password, firstName, lastName
+                    , verificationCode));
         } else {
             return ResponseGenerator.genFailResult("Invalid verification code");
         }
@@ -249,6 +257,13 @@ public class UserController {
         User user = userService.getUserByEmail(email);
         if (verCode.equals(session.getAttribute("verifyCode"))) {
             user.setUserPassword(newPassword);
+            Notification notification = new Notification();
+            notification.setSenderId(User.ID_OF_SYSTEM);
+            notification.setSubject(NotificationTemplate.CHANGE_PASSWORD_SUCCESS.getSubject());
+            notification.setContent(String.format(NotificationTemplate.REGISTER_SUCCESS.getContent()
+                    , user.getFullName()));
+            notificationService.sendNotification(email, notification);
+            logger.info(notification.toString());
             return ResponseGenerator.genSuccessResult("Password is changed");
         } else {
             return ResponseGenerator.genFailResult("Invalid verification code");

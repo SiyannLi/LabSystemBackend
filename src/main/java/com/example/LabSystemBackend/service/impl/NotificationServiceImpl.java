@@ -37,6 +37,19 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public int sendNotification(String email, Notification notification) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        String recipientEmail = email;
+        message.setFrom(sysEmail);
+        message.setTo(recipientEmail);
+        message.setSubject(notification.getSubject());
+        message.setText(notification.getContent());
+        mailSender.send(message);
+
+        return notificationDao.insertNotification(notification);
+    }
+
+    @Override
     public List<Notification> getAllNotification() {
         return notificationDao.getAllNotification();
     }

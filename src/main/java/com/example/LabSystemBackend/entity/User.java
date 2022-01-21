@@ -10,6 +10,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Serializable {
+    public static final int ID_OF_SYSTEM = 0;
+    public static final int ID_OF_UNREGISTERED = -1;
+
     private Integer userId;
 
     private String firstName;
@@ -25,6 +28,10 @@ public class User implements Serializable {
     private String verifyCode;
 
     private UserAccountStatus userAccountStatus;
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 
     @Override
     public String toString() {
