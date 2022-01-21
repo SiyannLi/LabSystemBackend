@@ -8,6 +8,8 @@ public interface NotificationService {
 
     int sendNotification(Notification notification);
 
+    int sendNotification(String email, Notification notification);
+
     List<Notification> getAllNotification();
 
     List<Notification> getUserAllNotification(int recipientId);

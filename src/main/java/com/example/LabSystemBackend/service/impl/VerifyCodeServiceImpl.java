@@ -1,19 +1,21 @@
 package com.example.LabSystemBackend.service.impl;
 
 import com.example.LabSystemBackend.entity.Notification;
-import com.example.LabSystemBackend.entity.NotificationTemplate;
+import com.example.LabSystemBackend.ui.NotificationTemplate;
 import com.example.LabSystemBackend.entity.User;
 import com.example.LabSystemBackend.service.NotificationService;
 import com.example.LabSystemBackend.service.UserService;
 import com.example.LabSystemBackend.service.VerifyCodeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
 
 @Service
 public class VerifyCodeServiceImpl implements VerifyCodeService {
-    private static final int ID_OF_UNREGISTERED = -1;
+    @Autowired
     private NotificationService notificationService;
+    @Autowired
     private UserService userService;
 
     @Override
@@ -32,18 +34,16 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
     public Notification sendVerifyCode(String email, String code) {
 
         Notification notification = new Notification();
-        notification.setSenderId(0);
+        notification.setSenderId(User.ID_OF_SYSTEM);
+        notification.setContent(String.format(NotificationTemplate.VERIFICATION_CODE.getContent(), code));
+        notification.setSubject(NotificationTemplate.VERIFICATION_CODE.getSubject());
         if(userService.emailExists(email)) {
             User recipient = userService.getUserByEmail(email);
             notification.setRecipientId(recipient.getUserId());
         } else {
-            notification.setRecipientId(ID_OF_UNREGISTERED);
+            notification.setRecipientId(User.ID_OF_UNREGISTERED);
         }
-
-        notification.setContent(String.format(NotificationTemplate.VERIFICATION_CODE.getContent(), code));
-        notification.setSubject(NotificationTemplate.VERIFICATION_CODE.getSubject());
-
-        notificationService.sendNotification(notification);
+        notificationService.sendNotification(email, notification);
         return notification;
     }
 
