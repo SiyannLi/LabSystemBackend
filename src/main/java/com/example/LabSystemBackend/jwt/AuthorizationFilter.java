@@ -1,6 +1,9 @@
 package com.example.LabSystemBackend.jwt;
 
+import com.example.LabSystemBackend.controller.UserController;
 import com.google.common.base.Splitter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.*;
@@ -13,6 +16,7 @@ import java.util.List;
 
 @WebFilter(filterName="AuthorizationFilter", urlPatterns = {"/**"})
 public class AuthorizationFilter implements Filter {
+    private static final Logger logger = LoggerFactory.getLogger(AuthorizationFilter.class);
 
     @Value("${filter.config.excludeUrls}")
     private String excludeUrls; // 获取配置文件中不需要过滤的uri
@@ -23,6 +27,8 @@ public class AuthorizationFilter implements Filter {
     public void init(FilterConfig filterConfig) {
         // 初始化
         // 移除配置文件中不过滤url，字符串的前空白和尾部空白
+        logger.info("init enter");
+        System.out.println("init enter");
         excludes = Splitter.on(",").trimResults().splitToList(this.excludeUrls);
     }
 
@@ -31,7 +37,7 @@ public class AuthorizationFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
-
+       // logger.info("OK");
 
         final HttpServletRequest req = (HttpServletRequest) servletRequest;
         final HttpServletResponse res = (HttpServletResponse) servletResponse;
@@ -39,6 +45,8 @@ public class AuthorizationFilter implements Filter {
         res.setCharacterEncoding("UTF-8");
 
         String token = req.getHeader("Authorization");
+        logger.info("uri: " + uri);
+        logger.info("token: " + token);
         if (this.isExcludesUrl(uri)) { // 判断请求uri是否需要过滤（方法在下面）
             filterChain.doFilter(req, res); // 不需要，放行
         } else {

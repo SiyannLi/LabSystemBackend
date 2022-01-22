@@ -286,6 +286,7 @@ public class UserController {
 
     private String checkTokenOfUser(HttpServletRequest request, HttpServletResponse response) {
         String result = (String) request.getAttribute("verification result");
+        logger.info("verification result" + result);
         if (!"logged in".equals(result)) {
             return result;
         }
@@ -356,7 +357,6 @@ public class UserController {
     }
 
 
-
 //    @ApiOperation("change username")
 //    @PostMapping("changeUserName")
 //    public Response changeUserName(int userId, String newFirstName, String newLastName) {
@@ -413,7 +413,12 @@ public class UserController {
     @ApiOperation("get all users")
     @GetMapping("getAllUsers")
     public Response getAllUsers(HttpServletRequest request, HttpServletResponse response) {
+        String token = request.getHeader("Authorization");
+        logger.info(token);
         String message = checkTokenOfAdmin(request, response);
+        logger.info(message);
+        String userMe = checkTokenOfUser(request, response);
+        logger.info(userMe);
         if (!"Success".equals(message)) {
             return ResponseGenerator.genFailResult(message);
         }
@@ -430,7 +435,6 @@ public class UserController {
         }
         return ResponseGenerator.genSuccessResult(userService.getAllAdministrators());
     }
-
 
 
     @ApiOperation("insert a admin")
