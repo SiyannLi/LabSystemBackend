@@ -5,6 +5,7 @@ import com.example.LabSystemBackend.entity.Notification;
 import com.example.LabSystemBackend.entity.User;
 import com.example.LabSystemBackend.service.NotificationService;
 import com.example.LabSystemBackend.service.UserService;
+import com.example.LabSystemBackend.ui.NotificationTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -47,6 +48,16 @@ public class NotificationServiceImpl implements NotificationService {
         mailSender.send(message);
 
         return notificationDao.insertNotification(notification);
+    }
+
+    @Override
+    public int sendNotificationByTemplate(String email, NotificationTemplate template, String  userName) {
+        Notification notification = new Notification();
+        notification.setSenderId(User.ID_OF_SYSTEM);
+        notification.setSubject(template.getSubject());
+        notification.setContent(String.format(template.getContent()
+                , userName));
+        return sendNotification(email, notification);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.example.LabSystemBackend.service;
 
 import com.example.LabSystemBackend.entity.User;
+import com.example.LabSystemBackend.entity.UserRole;
+
 import java.util.List;
 
 public interface UserService {
@@ -38,7 +40,11 @@ public interface UserService {
     //get a list of all admins
     List<User> getAllAdministrators();
 
+    List<User> getAllAccountToBeConfirmed();
+
     User getUserByEmail(String email);
 
     Boolean emailExists(String email);
+
+    int updateUserRole(int userId, UserRole role);
 }
