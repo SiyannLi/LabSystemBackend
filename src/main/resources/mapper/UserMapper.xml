@@ -7,6 +7,7 @@
     <select id="getAllUsers" resultType="com.example.LabSystemBackend.entity.User">
         select *
         from user
+        where userAccountStatus != 'CONFIRMING'
     </select>
 
     <select id="getAllAdministrators" resultType="com.example.LabSystemBackend.entity.User">
@@ -14,6 +15,14 @@
         from user
         where userRole = 'ADMIN'
            or userRole = 'SUPER_ADMIN'
+    </select>
+
+    <select id="getAllAccountToBeConfirmed" resultType="com.example.LabSystemBackend.entity.User">
+        select *
+        from user
+        where userRole = 'VISITOR'
+          and userAccountStatus = 'CONFIRMING'
+
     </select>
 
     <select id="getUser" resultType="com.example.LabSystemBackend.entity.User">

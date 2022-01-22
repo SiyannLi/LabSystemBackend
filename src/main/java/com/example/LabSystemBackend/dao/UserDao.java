@@ -14,6 +14,10 @@ public interface UserDao {
 
     List<User> getAllAdministrators();
 
+    List<User> getAllVisitors();
+
+    List<User> getAllAccountToBeConfirmed();
+
     User getUser(@Param("userId") int userId);
 
     User getUserByEmailAndPassword(@Param("email") String email, @Param("password") String password);

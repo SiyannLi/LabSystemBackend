@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
        user.setEmail(email);
        user.setUserRole(UserRole.VISITOR);
        user.setUserPassword(password);
-       user.setUserAccountStatus(UserAccountStatus.ACTIVE);
+       user.setUserAccountStatus(UserAccountStatus.CONFIRMING);
        user.setFirstName(firstName);
        user.setLastName(lastName);
        user.setVerifyCode(verificationCode);
@@ -86,6 +86,12 @@ public class UserServiceImpl implements UserService {
         return userDao.getAllAdministrators();
     }
 
+
+    @Override
+    public List<User> getAllAccountToBeConfirmed() {
+        return userDao.getAllAccountToBeConfirmed();
+    }
+
     @Override
     public User getUserByEmail(String email) {
         return userDao.getUserByEmail(email);
@@ -94,5 +100,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean emailExists(String email) {
         return userDao.getUserByEmail(email) != null;
+    }
+
+    @Override
+    public int updateUserRole(int userId, UserRole role) {
+        return userDao.updateUserRole(userId, role);
     }
 }

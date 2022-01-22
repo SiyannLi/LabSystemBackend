@@ -9,6 +9,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.LabSystemBackend.entity.User;
+import com.example.LabSystemBackend.entity.UserAccountStatus;
 
 public class JwtUtil {
     /**
@@ -38,6 +39,7 @@ public class JwtUtil {
                     .withClaim("email",user.getEmail())
                     .withClaim("password",user.getUserPassword())
                     .withClaim("role",user.getUserRole().getRoleValue())
+                    .withClaim("status", user.getUserAccountStatus().getStatusValue())
                     .withClaim("firstName",user.getFirstName())
                     .withIssuedAt(nowDate)
                     .withExpiresAt(expireDate)

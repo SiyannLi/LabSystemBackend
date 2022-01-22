@@ -34,5 +34,5 @@ jasypt:
 
 filter:
   config:
-    excludeUrls: /users/visitorLogin,/users/register,/users/adminLogin,/users/sendVerificationCode
+    excludeUrls: /users/visitorLogin,/users/register,/users/adminLogin,/users/sendVerificationCode,/users/resetPassword
 
