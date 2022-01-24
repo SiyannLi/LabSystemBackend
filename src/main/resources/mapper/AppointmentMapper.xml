@@ -29,6 +29,11 @@
         from appointment
         where appointmentId = #{appointmentId}
     </delete>
+    <delete id="deleteAppointmentByTimeSlotId">
+        delete
+        from appointment
+        where timeSlotId = #{timeSlotId}
+    </delete>
 
     <insert id="addAppointment" parameterType="com.example.LabSystemBackend.entity.Appointment"
             useGeneratedKeys="true" keyProperty="appointmentId">

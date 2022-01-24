@@ -1,9 +1,8 @@
 package com.example.LabSystemBackend.service;
 
 import com.example.LabSystemBackend.entity.Appointment;
-import com.example.LabSystemBackend.entity.TimeSlot;
+import org.apache.ibatis.annotations.Param;
 
-import java.util.Date;
 import java.util.List;
 
 public interface AppointmentService {
@@ -16,6 +15,8 @@ public interface AppointmentService {
     //删除一个预约
     int deleteAppointment(int appointmentId);
 
+    int deleteAppointmentByTimeSlotId(int timeSlotId);
+
     //用户新建一个预约
-    int addAppointment(int userId, int timeSlot);
+    int addAppointment(int userId, int timeSlotId);
 }

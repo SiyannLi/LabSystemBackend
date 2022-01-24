@@ -8,20 +8,72 @@
         select *
         from timeslot
         where timeSlotDate > #{startDate}
-          and timeSlotStatus = 'AVAILABLE'
+          and timeSlotStatus = 'FREE'
 
     </select>
 
-    <insert id="setAvailableTimeSlot" parameterType="com.example.LabSystemBackend.entity.TimeSlot">
-        insert into timeslot(timeSlotId, timeSlotDate, slot, timeSlotStatus)
-        values (null, #{timeSlot.timeSlotDate}, #{timeSlot.slot}, #{timeSlot.timeSlotStatus})
+
+    <select id="timeSlotPeriod" resultType="com.example.LabSystemBackend.entity.TimeSlot">
+        SELECT *
+        from timeSlot
+        where <![CDATA[timeSlotDate >= #{startDate}]]>
+          and <![CDATA[timeSlotDate <= #{endDate}]]>
+        order by slot
+    </select>
+
+    <select id="timeSlotOneDay" resultType="com.example.LabSystemBackend.entity.TimeSlot">
+        SELECT *
+        from timeSlot
+        where <![CDATA[timeSlotDate = #{date}]]>
+        order by slot
+    </select>
+
+    <insert id="addTimeSlot" parameterType="com.example.LabSystemBackend.entity.TimeSlot"
+            useGeneratedKeys="true"
+            keyProperty="timeSlotId">
+        insert into timeSlot(timeSlotDate, slot, timeSlotStatus)
+        values (#{timeSlot.timeSlotDate}, #{timeSlot.slot}, #{timeSlot.timeSlotStatus})
     </insert>
 
     <select id="getLastTimeSlot" resultType="com.example.LabSystemBackend.entity.TimeSlot">
         select *
         from timeslot
-        order by timeSlotId desc
-        limit 1
+        order by timeSlotId desc limit 1
     </select>
 
+    <resultMap id="userTimeSlot" type="java.util.Map">
+        <id property="timeSlotId" column="timeSlotId"/>
+        <result property="slot" column="slot"/>
+        <result property="timeSlotDate" column="timeSlotDate"/>
+        <association property="user" javaType="java.util.Map">
+            <id property="userId" column="userId"/>
+            <result property="firstName" column="firstName"/>
+            <result property="lastName" column="lastName"/>
+            <result property="email" column="email"/>
+        </association>
+    </resultMap>
+
+
+    <select id="getBookedTimeSlot" resultMap="userTimeSlot">
+        select user.firstName, user.lastName, user.email, timeSlot.timeSlotId, timeSlot.timeSlotDate, timeSlot.slot
+        from timeSlot
+                 left join appointment on timeSlot.timeSlotId = appointment.timeSlotId
+                 left join user on appointment.userId = user.userId
+        where timeSlot.timeSlotStatus = 'BOOKED'
+        and user.userId is not NULL
+        order by user.userId
+    </select>
+
+    <update id="updateTimeSlotStatus">
+        update timeSlot
+        set timeSlotStatus = #{timeSlotStatus}
+        where timeSlotId = #{timeSlotId}
+    </update>
+
+    <select id="getTimeSlot" resultType="com.example.LabSystemBackend.entity.TimeSlot">
+        select *
+        from timeSlot
+        where timeSlotDate = #{date}
+          and slot = #{slot}
+    </select>
 </mapper>

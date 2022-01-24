@@ -18,6 +18,9 @@ server:
           starttls:
             required: true
 
+  jackson:
+    date-format: yyyy-MM-dd
+    time-zone: GMT+1
 mybatis:
   mapper-locations: classpath*:mapper/*Mapper.xml
   type-aliases-package: com.example.LabSystemBackend.entity
@@ -28,5 +31,4 @@ jasypt:
 
 filter:
   config:
-    excludeUrls: /users/visitorLogin,/users/register,/users/adminLogin,/users/sendVerificationCode,/users/resetPassword
-
+    excludeUrls: /users/visitorLogin,/users/register,/users/adminLogin,/users/sendVerificationCode,/users/resetPassword,/timeslots/timeSlotCalender
