@@ -15,13 +15,18 @@ public interface TimeSlotService {
 
 
     //设置可预约时间段
-     int setPeriodTimeSlots(Date availableDate, int slot, int endRepeatAfter, TimeSlotStatus status);
+    int setPeriodTimeSlots(Date availableDate, int slot, int endRepeatAfter, TimeSlotStatus status);
 
-    int updateTimeSlotStatus(int timeSlotId,TimeSlotStatus timeSlotStatus);
+    int updateTimeSlotStatus(int timeSlotId, TimeSlotStatus timeSlotStatus);
 
     List<TimeSlot> timeSlotPeriod(Date startDate, Date endDate) throws ParseException;
 
     List<TimeSlot> timeSlotOneDay(Date date);
+
     List<Map<String, Object>> getBookedTimeSlot();
+
     TimeSlot getTimeSlot(Date date, int slot);
+
+    TimeSlot getTimeSlotById(int timeSlotId);
+
 }

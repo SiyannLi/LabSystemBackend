@@ -2,6 +2,7 @@ server:
   port: 8086
 
 
+
 #  mail:
 #    host: ENC(C/6wLABfjaW+gW8fzuUfYe/eOZgvJIAQM30uvr1T5e9ll/2z5zj9RP9DPzi2gCK4J8KLLtCAFmZ8xOuRyX1gyA==)
 #    username: ENC(dmdCt3TEcqWo6X16ab2KYfJhmGYjCLBrntpudAtG+jRbcgav0+xT0ohO2Jd58RoY)

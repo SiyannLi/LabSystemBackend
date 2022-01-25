@@ -9,6 +9,7 @@ import com.example.LabSystemBackend.entity.User;
 import com.example.LabSystemBackend.service.AppointmentService;
 import com.example.LabSystemBackend.service.TimeSlotService;
 import com.example.LabSystemBackend.service.UserService;
+import com.github.javafaker.App;
 import io.swagger.annotations.ApiOperation;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +46,12 @@ public class AppointmentController {
         String email = body.get("email");
         User user = userService.getUserByEmail(email);
         List<Appointment> appointments = appointmentService.getUserAppointments(user.getUserId());
-        return ResponseGenerator.genSuccessResult(appointments);
+        List<TimeSlot> timeSlots = new ArrayList<>();
+        for (Appointment appointment : appointments) {
+            TimeSlot timeSlot = timeSlotService.getTimeSlotById(appointment.getTimeSlotId());
+            timeSlots.add(timeSlot);
+        }
+        return ResponseGenerator.genSuccessResult(timeSlots);
     }
 
 

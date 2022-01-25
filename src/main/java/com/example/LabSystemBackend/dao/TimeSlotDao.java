@@ -21,6 +21,8 @@ public interface TimeSlotDao {
 
     TimeSlot getTimeSlot(@Param("date") Date date, @Param("slot") int slot);
 
+    TimeSlot getTimeSlotById(@Param("timeSlotId") int timeSlotId);
+
     List<TimeSlot> timeSlotPeriod(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
     List<TimeSlot> timeSlotOneDay(@Param("date") Date date);

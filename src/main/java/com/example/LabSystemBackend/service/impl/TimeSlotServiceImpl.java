@@ -38,7 +38,7 @@ public class TimeSlotServiceImpl implements TimeSlotService {
             timeSlot.setSlot(slot);
             timeSlot.setTimeSlotStatus(status);
             resultCounter += timeSlotDao.addTimeSlot(timeSlot);
-            calendar.add(Calendar.WEEK_OF_YEAR,1);
+            calendar.add(Calendar.WEEK_OF_YEAR, 1);
         }
         return resultCounter == endRepeatAfter ? 1 : 0;
     }
@@ -69,6 +69,11 @@ public class TimeSlotServiceImpl implements TimeSlotService {
     @Override
     public TimeSlot getTimeSlot(Date date, int slot) {
         return timeSlotDao.getTimeSlot(date, slot);
+    }
+
+    @Override
+    public TimeSlot getTimeSlotById(int timeSlotId) {
+        return timeSlotDao.getTimeSlotById(timeSlotId);
     }
 
 }

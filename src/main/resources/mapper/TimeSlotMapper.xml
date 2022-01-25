@@ -76,4 +76,10 @@
         where timeSlotDate = #{date}
           and slot = #{slot}
     </select>
+
+    <select id="getTimeSlotById" resultType="com.example.LabSystemBackend.entity.TimeSlot">
+        select *
+        from timeSlot
+        where timeSlotId = #{timeSlotId}
+    </select>
 </mapper>

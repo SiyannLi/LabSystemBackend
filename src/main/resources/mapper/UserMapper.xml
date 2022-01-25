@@ -67,8 +67,8 @@
 
     <update id="updateUserRole">
         update user
-        set userRole = #{userRole},
-            where userId = #{userId}
+        set userRole = #{userRole}
+        where userId = #{userId}
     </update>
 
     <select id="getUserByEmailAndPassword" resultType="com.example.LabSystemBackend.entity.User">

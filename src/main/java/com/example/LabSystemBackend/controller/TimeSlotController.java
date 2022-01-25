@@ -34,9 +34,10 @@ public class TimeSlotController {
     public Response setPeriodTimeSlots(@RequestBody Map<String, String> body) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate = sdf.parse(body.get("startDate"));
+        TimeSlotStatus status = TimeSlotStatus.valueOf(body.get("status"));
         int slot = Integer.parseInt(body.get("slot"));
         int endRepeatAfter = Integer.parseInt(body.get("endRepeatAfter"));
-        TimeSlotStatus status = TimeSlotStatus.valueOf(body.get("status"));
+
         return ResponseGenerator.genSuccessResult(timeSlotService.setPeriodTimeSlots(startDate,
                 slot, endRepeatAfter, status));
     }
@@ -49,10 +50,8 @@ public class TimeSlotController {
 
         Calendar cl = Calendar.getInstance();
         cl.setTime(startDate);
-        logger.info("start date " + startDate.toString());
         for (int day = 0; day < 7; day++) {
             Date date = cl.getTime();
-            logger.info(date.toString());
             List<TimeSlot> ts = new ArrayList<>();
             List<TimeSlot> oneDay = timeSlotService.timeSlotOneDay(date);
             for (int slot = 0; slot < 6; slot++) {
