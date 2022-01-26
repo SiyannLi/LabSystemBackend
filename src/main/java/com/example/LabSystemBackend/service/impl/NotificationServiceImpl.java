@@ -54,6 +54,11 @@ public class NotificationServiceImpl implements NotificationService {
     public int sendNotificationByTemplate(String email, NotificationTemplate template, String  userName) {
         Notification notification = new Notification();
         notification.setSenderId(User.ID_OF_SYSTEM);
+        if(userService.emailExists(email)) {
+            notification.setRecipientId(userService.getUserByEmail(email).getUserId());
+        } else {
+            notification.setRecipientId(User.ID_OF_UNREGISTERED);
+        }
         notification.setSubject(template.getSubject());
         notification.setContent(String.format(template.getContent()
                 , userName));

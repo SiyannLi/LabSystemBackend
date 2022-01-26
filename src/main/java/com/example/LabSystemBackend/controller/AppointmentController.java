@@ -12,6 +12,8 @@ import com.example.LabSystemBackend.service.UserService;
 import com.github.javafaker.App;
 import io.swagger.annotations.ApiOperation;
 import org.checkerframework.checker.units.qual.A;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.w3c.dom.stylesheets.LinkStyle;
@@ -27,45 +29,56 @@ import java.util.Map;
 @RestController
 @RequestMapping("/appointments")
 public class AppointmentController {
+    private static final Logger logger = LoggerFactory.getLogger(AppointmentController.class);
     @Autowired
     private AppointmentService appointmentService;
     @Autowired
     private UserService userService;
     @Autowired
     private TimeSlotService timeSlotService;
+
     @ApiOperation("get list of all appointments of this user")
     @GetMapping("getUserAppointments")
-    public Response getUserAppointments(int userId){
+    public Response getUserAppointments(int userId) {
 
         return ResponseGenerator.genSuccessResult(appointmentService.getUserAppointments(userId));
     }
 
     @ApiOperation("get list of all appointments of this user, with the given email")
-    @GetMapping("getUserAppointmentsWithEmail")
-    public Response getUserAppointments(@RequestBody Map<String, String> body){
+    @PostMapping("getUserAppointmentsWithEmail")
+    public Response getUserAppointments(@RequestBody Map<String, String> body) {
         String email = body.get("email");
+        logger.info("email: " + email);
         User user = userService.getUserByEmail(email);
+        logger.info("user id: " + user.getUserId().toString());
         List<Appointment> appointments = appointmentService.getUserAppointments(user.getUserId());
+        logger.info("appointments size: " + appointments.size());
         List<TimeSlot> timeSlots = new ArrayList<>();
         for (Appointment appointment : appointments) {
             TimeSlot timeSlot = timeSlotService.getTimeSlotById(appointment.getTimeSlotId());
             timeSlots.add(timeSlot);
         }
+        logger.info("timeSlots size:" + timeSlots.size());
         return ResponseGenerator.genSuccessResult(timeSlots);
     }
 
 
     @ApiOperation("get list of all appointments")
     @GetMapping("getAllAppointments")
-    public Response getAllAppointments(){
+    public Response getAllAppointments() {
         return ResponseGenerator.genSuccessResult(appointmentService.getAllAppointments());
     }
 
     @ApiOperation("delete one appointment")
-    @PostMapping("deleteAppointmentById")
-    public Response deleteAppointmentById(int appointmentId){
-        return ResponseGenerator.genSuccessResult(appointmentService.deleteAppointment(appointmentId));
-
+    @PostMapping("deleteAppointmentByDate")
+    public Response deleteAppointmentById(@RequestBody Map<String, String> body) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = sdf.parse(body.get("date"));
+        int slot = Integer.parseInt(body.get("slot"));
+        TimeSlot timeSlot = timeSlotService.getTimeSlot(date, slot);
+        timeSlotService.updateTimeSlotStatus(timeSlot.getTimeSlotId(), TimeSlotStatus.FREE);
+        appointmentService.deleteAppointmentByTimeSlotId(timeSlot.getTimeSlotId());
+        return ResponseGenerator.genSuccessResult();
     }
 
     @ApiOperation("User create one new appointment")
@@ -75,7 +88,7 @@ public class AppointmentController {
         Date date = sdf.parse(body.get("date"));
         int slot = Integer.parseInt(body.get("slot"));
         String email = body.get("email");
-        TimeSlot timeSlot = timeSlotService.getTimeSlot(date,slot);
+        TimeSlot timeSlot = timeSlotService.getTimeSlot(date, slot);
         if (timeSlot.getTimeSlotStatus() != TimeSlotStatus.FREE) {
             return ResponseGenerator.genFailResult("time slot not free");
         }
@@ -88,7 +101,7 @@ public class AppointmentController {
         timeSlotService.updateTimeSlotStatus(timeSlot.getTimeSlotId(), TimeSlotStatus.BOOKED);
 
 
-        appointmentService.addAppointment(user.getUserId(),timeSlot.getTimeSlotId());
+        appointmentService.addAppointment(user.getUserId(), timeSlot.getTimeSlotId());
 
         return ResponseGenerator.genSuccessResult();
 
@@ -100,7 +113,7 @@ public class AppointmentController {
         Date date = sdf.parse(body.get("date"));
         int slot = Integer.parseInt(body.get("slot"));
 
-        TimeSlot timeSlot = timeSlotService.getTimeSlot(date,slot);
+        TimeSlot timeSlot = timeSlotService.getTimeSlot(date, slot);
 
         timeSlotService.updateTimeSlotStatus(timeSlot.getTimeSlotId(), TimeSlotStatus.FREE);
 

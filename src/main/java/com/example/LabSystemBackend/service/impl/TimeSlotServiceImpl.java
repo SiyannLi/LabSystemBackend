@@ -31,7 +31,6 @@ public class TimeSlotServiceImpl implements TimeSlotService {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(availableDate);
         for (int i = 0; i < endRepeatAfter; i++) {
-
             Date date = calendar.getTime();
             TimeSlot timeSlot = new TimeSlot();
             timeSlot.setTimeSlotDate(date);
@@ -74,6 +73,11 @@ public class TimeSlotServiceImpl implements TimeSlotService {
     @Override
     public TimeSlot getTimeSlotById(int timeSlotId) {
         return timeSlotDao.getTimeSlotById(timeSlotId);
+    }
+
+    @Override
+    public boolean TimeSlotExists(Date date, int slot) {
+        return getTimeSlot(date, slot) != null;
     }
 
 }

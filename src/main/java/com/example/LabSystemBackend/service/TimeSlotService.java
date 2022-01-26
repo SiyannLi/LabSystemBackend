@@ -29,4 +29,6 @@ public interface TimeSlotService {
 
     TimeSlot getTimeSlotById(int timeSlotId);
 
+    boolean TimeSlotExists(Date date, int slot);
+
 }

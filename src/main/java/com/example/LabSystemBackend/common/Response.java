@@ -7,7 +7,9 @@ public class Response<T> implements Serializable {
     private int resultCode;
     private String message;
     private String token;
+    private String email;
     private String firstName;
+    private String lastName;
     private T data;
 
     public Response() {
@@ -17,6 +19,15 @@ public class Response<T> implements Serializable {
         this.resultCode = resultCode;
         this.message = message;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getToken() {
         return token;
     }
@@ -60,6 +71,15 @@ public class Response<T> implements Serializable {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     @Override
     public String toString() {
         return "Response{" +

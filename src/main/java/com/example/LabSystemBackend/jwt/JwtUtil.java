@@ -41,6 +41,7 @@ public class JwtUtil {
                     .withClaim("role",user.getUserRole().getRoleValue())
                     .withClaim("status", user.getUserAccountStatus().getStatusValue())
                     .withClaim("firstName",user.getFirstName())
+                    .withClaim("lastName", user.getLastName())
                     .withIssuedAt(nowDate)
                     .withExpiresAt(expireDate)
                     .sign(algorithm);
@@ -50,7 +51,6 @@ public class JwtUtil {
             e.printStackTrace();
 
             return null;
-
         }
 
     }

@@ -1,6 +1,7 @@
 package com.example.LabSystemBackend.service;
 
 import com.example.LabSystemBackend.entity.User;
+import com.example.LabSystemBackend.entity.UserAccountStatus;
 import com.example.LabSystemBackend.entity.UserRole;
 
 import java.util.List;
@@ -47,4 +48,8 @@ public interface UserService {
     Boolean emailExists(String email);
 
     int updateUserRole(int userId, UserRole role);
+
+    int updateUserAccountStatus(int userId, UserAccountStatus status);
+
+    int updateName(int userId, String firstName, String lastName);
 }

@@ -21,6 +21,7 @@ public interface AppointmentDao {
     int deleteAppointmentById(@Param("appointmentId") int appointmentId);
 
     int deleteAppointmentByTimeSlotId(@Param("timeSlotId") int timeSlotId);
+
     int addAppointment(@Param("appointment") Appointment appointment);
 
 

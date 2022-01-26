@@ -1,13 +1,18 @@
 server:
   port: 8086
 
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/labSystem
+    username: root
+    password: woaini99641212
 
-
-#  mail:
-#    host: ENC(C/6wLABfjaW+gW8fzuUfYe/eOZgvJIAQM30uvr1T5e9ll/2z5zj9RP9DPzi2gCK4J8KLLtCAFmZ8xOuRyX1gyA==)
-#    username: ENC(dmdCt3TEcqWo6X16ab2KYfJhmGYjCLBrntpudAtG+jRbcgav0+xT0ohO2Jd58RoY)
-#    password: ENC(83Ruzc4aIwkY6dxd/T6dhsoCj032/4Y1byHRB1P5bSFPWIzBLwuvgGjpfMIx6Sgn)
-#    port: 2525
+  #  mail:
+  #    host: ENC(C/6wLABfjaW+gW8fzuUfYe/eOZgvJIAQM30uvr1T5e9ll/2z5zj9RP9DPzi2gCK4J8KLLtCAFmZ8xOuRyX1gyA==)
+  #    username: ENC(dmdCt3TEcqWo6X16ab2KYfJhmGYjCLBrntpudAtG+jRbcgav0+xT0ohO2Jd58RoY)
+  #    password: ENC(83Ruzc4aIwkY6dxd/T6dhsoCj032/4Y1byHRB1P5bSFPWIzBLwuvgGjpfMIx6Sgn)
+  #    port: 2525
   mail:
     username: ENC(WpprIuAlbziJPKpsMhNooOTPFpy+uHEEH306jrUGNZZkJsKr3yGKcPR8ZAixmxRLk+Uzk+RirjR6zyQV8uCOGQ==)
     password: ENC(PVHzrEWc4IX0cmOcXLBatq69xcPGAwKtxZQemWxqoTLonj6M2InenT/TOHs348ag)
@@ -30,6 +35,6 @@ jasypt:
   encryptor:
     password: b8NKshK63S3zI8z5y31HlrTx7PHEhsz9CLwREO/BYXo=
 
-filter:
-  config:
-    excludeUrls: /users/visitorLogin,/users/register,/users/adminLogin,/users/sendVerificationCode,/users/resetPassword,/timeslots/timeSlotCalender
+#filter:
+#  config:
+#    excludeUrls: /users/visitorLogin,/users/register,/users/adminLogin,/users/sendVerificationCode,/users/resetPassword,/timeslots/timeSlotCalender
