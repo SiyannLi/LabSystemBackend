@@ -32,7 +32,7 @@
         from item
         where itemId = #{itemId}
     </delete>
-    
+
     <update id="changeItemAmount" >
         update item
         set amount =  #{amount}

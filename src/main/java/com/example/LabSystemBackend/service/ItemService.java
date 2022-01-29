@@ -14,5 +14,9 @@ public interface ItemService {
 
     int changeItemAmount(int itemId, int newAmount);
 
+    Boolean itemExists(String itemName);
+
+    Item getItemByName(String itemName);
+
     int mergeItem(int itemId, int targetItemId);
 }

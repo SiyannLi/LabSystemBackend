@@ -39,6 +39,16 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public Boolean itemExists(String itemName) {
+        return itemDao.getItemByName(itemName) != null;
+    }
+
+    @Override
+    public Item getItemByName(String itemName) {
+        return itemDao.getItemByName(itemName);
+    }
+
+    @Override
     public int mergeItem(int itemId, int targetItemId) {
         Item item = itemDao.getItemById(itemId);
         Item target = itemDao.getItemById(targetItemId);

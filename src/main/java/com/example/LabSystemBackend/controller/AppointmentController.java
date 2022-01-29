@@ -12,6 +12,8 @@ import com.example.LabSystemBackend.service.UserService;
 import com.github.javafaker.App;
 import io.swagger.annotations.ApiOperation;
 import org.checkerframework.checker.units.qual.A;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.w3c.dom.stylesheets.LinkStyle;
@@ -27,6 +29,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/appointments")
 public class AppointmentController {
+    private static final Logger logger = LoggerFactory.getLogger(AppointmentController.class);
     @Autowired
     private AppointmentService appointmentService;
     @Autowired
@@ -45,13 +48,17 @@ public class AppointmentController {
     @PostMapping("getUserAppointmentsWithEmail")
     public Response getUserAppointments(@RequestBody Map<String, String> body) {
         String email = body.get("email");
+        logger.info("email: " + email);
         User user = userService.getUserByEmail(email);
+        logger.info("user id: " + user.getUserId().toString());
         List<Appointment> appointments = appointmentService.getUserAppointments(user.getUserId());
+        logger.info("appointments size: " + appointments.size());
         List<TimeSlot> timeSlots = new ArrayList<>();
         for (Appointment appointment : appointments) {
             TimeSlot timeSlot = timeSlotService.getTimeSlotById(appointment.getTimeSlotId());
             timeSlots.add(timeSlot);
         }
+        logger.info("timeSlots size:" + timeSlots.size());
         return ResponseGenerator.genSuccessResult(timeSlots);
     }
 
