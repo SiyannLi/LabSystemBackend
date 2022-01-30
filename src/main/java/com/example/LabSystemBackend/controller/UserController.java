@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.mail.MessagingException;
 import java.util.*;
 
 
@@ -53,7 +54,7 @@ public class UserController {
     @ApiOperation("send verification code")
     @PostMapping("sendVerificationCode")
     public Response sendVerificationCode(@ApiParam(name = "emailAndInfo", value = "emailAndInfo", required = true)
-                                         @Param("email") @RequestBody Map<String, String> body) {
+                                         @Param("email") @RequestBody Map<String, String> body) throws MessagingException {
         String info = body.get("info");
         String email = body.get("email");
         boolean userExist = userService.emailExists(body.get("email"));
@@ -184,7 +185,7 @@ public class UserController {
     @ApiOperation("register one account")
     @PostMapping("register")
     public Response register(@ApiParam(name = "email", value = "email", required = true)
-                             @RequestBody Map<String, String> body) {
+                             @RequestBody Map<String, String> body) throws MessagingException {
         String email = body.get("email");
         String password = body.get("userPassword");
         String firstName = body.get("firstName");
@@ -202,7 +203,12 @@ public class UserController {
         if (userService.emailExists(email)) {
             return ResponseGenerator.genFailResult("This email has been registered.");
         }
-        if (verificationCode.equals(verifyCode)) {
+        String userName = firstName + " " + lastName;
+        notificationService.sendNotificationByTemplate(email, NotificationTemplate.RESISTER_CONFIRMING
+                , userName);
+        userService.register(email, password, firstName, lastName, verificationCode);
+        return ResponseGenerator.genSuccessResult();
+       /* if (verificationCode.equals(verifyCode)) {
             String userName = firstName + " " + lastName;
             notificationService.sendNotificationByTemplate(email, NotificationTemplate.RESISTER_CONFIRMING
                     , userName);
@@ -211,13 +217,13 @@ public class UserController {
             return ResponseGenerator.genSuccessResult();
         } else {
             return ResponseGenerator.genFailResult("Invalid verification code");
-        }
+        }*/
     }
 
     @ApiOperation("reset password")
     @PostMapping("resetPassword")
     public Response resetPassword(@ApiParam(name = "email", value = "email", required = true)
-                                  @RequestBody Map<String, String> body) {
+                                  @RequestBody Map<String, String> body) throws MessagingException {
         String email = body.get("email");
         String newPassword = body.get("userPassword");
         String verCode = body.get("verifyCode");
@@ -330,7 +336,7 @@ public class UserController {
     @PostMapping("confirmUserRegistration")
     public Response confirmUserRegistration(@RequestHeader("Authorization") String token,
                                             @ApiParam(name = "email", value = "email", required = true)
-                                            @RequestBody Map<String, String> body) {
+                                            @RequestBody Map<String, String> body) throws MessagingException {
         String operatorEmail = body.get("operatorEmail");
         String email = body.get("email");
 
@@ -346,7 +352,7 @@ public class UserController {
             notificationService.sendNotificationByTemplate(email, NotificationTemplate.REGISTER_SUCCESS
                     , user.getFullName());
             userService.confirmUserRegistration(user.getUserId());
-            return response;
+           return response;
         } else {
             return ResponseGenerator.genFailResult(response.getToken(), operatorEmail, "User does not exist");
         }
@@ -356,7 +362,7 @@ public class UserController {
     @PostMapping("rejectUserRegistration")
     public Response rejectUserRegistration(@RequestHeader("Authorization") String token,
                                            @ApiParam(name = "email", value = "email", required = true)
-                                           @RequestBody Map<String, String> body) {
+                                           @RequestBody Map<String, String> body) throws MessagingException {
         String operatorEmail = body.get("operatorEmail");
         String email = body.get("email");
 

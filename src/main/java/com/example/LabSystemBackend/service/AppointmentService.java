@@ -11,7 +11,8 @@ public interface AppointmentService {
 
     //查询所有预约
     List<Appointment> getAllAppointments();
-
+    //通过日期时间查预约
+    Appointment getAppointmentByTimeSlotId(int timeSlotId);
     //删除一个预约
     int deleteAppointment(int appointmentId);
 
