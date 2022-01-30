@@ -2,6 +2,7 @@ package com.example.LabSystemBackend.service;
 
 import com.example.LabSystemBackend.entity.Order;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 public interface OrderService {
@@ -18,7 +19,7 @@ public interface OrderService {
     List<Order> getUserPastOrders(int userId);
 
     //提交一个 order
-    int submitOrder(int userId, int itemId, int amount);
+    int submitOrder(int userId, int itemId, int amount) throws MessagingException;
 
     //获取所有的 active orders
     List<Order> getAllActiveOrders();

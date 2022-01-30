@@ -2,10 +2,16 @@ package com.example.LabSystemBackend.controller;
 
 import com.example.LabSystemBackend.common.Response;
 import com.example.LabSystemBackend.common.ResponseGenerator;
+import com.example.LabSystemBackend.entity.User;
 import com.example.LabSystemBackend.service.OrderService;
+import com.example.LabSystemBackend.service.UserService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.mail.MessagingException;
+import java.util.Map;
 
 @CrossOrigin("*")
 @RestController
@@ -13,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private UserService userService;
 
     @ApiOperation("get a list of all orders of this user")
     @GetMapping("getUserOrders")
@@ -40,8 +48,15 @@ public class OrderController {
 
     @ApiOperation("submit an order with user account")
     @PostMapping("submitOrder")
-    public Response submitOrder(int userId, int itemId, int amount){
-        return ResponseGenerator.genSuccessResult(orderService.submitOrder(userId,itemId,amount));
+    public Response submitOrder(@ApiParam(name = "email", value = "email", required = true)
+    @RequestBody Map<String, String> body) throws MessagingException {
+
+        String email = body.get("email");
+        int itemId = Integer.parseInt( body.get("itemId"));
+        int amount = Integer.parseInt(body.get("amount"));
+        User user = userService.getUserByEmail(email);
+
+        return ResponseGenerator.genSuccessResult(orderService.submitOrder(user.getUserId(),itemId,amount));
     }
 
     @ApiOperation("get all active orders")

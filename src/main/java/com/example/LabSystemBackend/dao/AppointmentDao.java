@@ -18,6 +18,8 @@ public interface AppointmentDao {
 
     Appointment getAppointment(@Param("appointmentId") int appointmentId);
 
+    Appointment getAppointmentByTimeSlotId(@Param("timeSlotId") int timeSlotId);
+
     int deleteAppointmentById(@Param("appointmentId") int appointmentId);
 
     int deleteAppointmentByTimeSlotId(@Param("timeSlotId") int timeSlotId);
