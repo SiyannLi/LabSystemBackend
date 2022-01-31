@@ -40,9 +40,9 @@
 
     <insert id="insertUser" parameterType="com.example.LabSystemBackend.entity.User" useGeneratedKeys="true"
             keyProperty="userId">
-        insert into user(firstName, lastName, email, userRole, userPassword, verifyCode, userAccountStatus)
+        insert into user(firstName, lastName, email, userRole, userPassword, userAccountStatus)
         values (#{user.firstName}, #{user.lastName}, #{user.email}, #{user.userRole},
-                #{user.userPassword}, #{user.verifyCode}, #{user.userAccountStatus})
+                #{user.userPassword}, #{user.userAccountStatus})
     </insert>
 
     <update id="updatePassword">

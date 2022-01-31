@@ -35,13 +35,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public int submitOrder(int userId, int itemId, int amount) {
-        Order order = new Order();
-        order.setUserId(userId);
-        order.setItemId(itemId);
-        order.setAmount(amount);
-        order.setOrderStatus(OrderStatus.PENDING);
-        //TODO 添加消息发送功能
+    public int submitOrder(Order order) {
         return orderDao.insertOrder(order);
     }
 
@@ -51,12 +45,32 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<Order> getAllPastOrders() {
+        return orderDao.getAllPastOrders();
+    }
+
+    @Override
     public int confirmOrder(int orderId) {
-        return orderDao.changeOrderStatus(orderId, OrderStatus.APPROVED);
+        return orderDao.changeOrderStatus(orderId, OrderStatus.CONFIRMED);
     }
 
     @Override
     public int rejectOrder(int orderId) {
-        return orderDao.changeOrderStatus(orderId, OrderStatus.REJECTED);
+        return orderDao.deleteOrder(orderId);
+    }
+
+    @Override
+    public Order getOrderById(int orderId) {
+        return orderDao.getOrder(orderId);
+    }
+
+    @Override
+    public boolean orderExist(int orderId) {
+        return orderDao.getOrder(orderId) != null;
+    }
+
+    @Override
+    public int inStock(int orderId) {
+        return orderDao.changeOrderStatus(orderId, OrderStatus.FINISHED);
     }
 }

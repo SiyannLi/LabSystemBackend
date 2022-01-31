@@ -7,6 +7,7 @@ import com.example.LabSystemBackend.entity.TimeSlot;
 import com.example.LabSystemBackend.entity.TimeSlotStatus;
 import com.example.LabSystemBackend.entity.User;
 import com.example.LabSystemBackend.service.AppointmentService;
+import com.example.LabSystemBackend.service.NotificationService;
 import com.example.LabSystemBackend.service.TimeSlotService;
 import com.example.LabSystemBackend.service.UserService;
 import com.github.javafaker.App;
