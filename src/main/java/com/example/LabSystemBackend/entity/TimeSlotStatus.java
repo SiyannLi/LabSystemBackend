@@ -1,6 +1,9 @@
 package com.example.LabSystemBackend.entity;
 
 public enum TimeSlotStatus {
-    AVAILABLE,
-    UNAVAILABLE
+    FREE,
+    BOOKED,
+    UNAVAILABLE,
+    NA
+
 }

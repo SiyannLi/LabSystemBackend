@@ -2,28 +2,81 @@ package com.example.LabSystemBackend.controller;
 
 import com.example.LabSystemBackend.common.Response;
 import com.example.LabSystemBackend.common.ResponseGenerator;
+import com.example.LabSystemBackend.entity.TimeSlot;
+import com.example.LabSystemBackend.entity.TimeSlotStatus;
 import com.example.LabSystemBackend.service.TimeSlotService;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
-@CrossOrigin("*")
+@CrossOrigin
 @RestController
 @RequestMapping("/timeslots")
 public class TimeSlotController {
+    private static final Logger logger = LoggerFactory.getLogger(TimeSlotController.class);
     @Autowired
     private TimeSlotService timeSlotService;
 
     @ApiOperation("get a list of all available Time slots from start date")
     @GetMapping("getAvailableTimeSlots")
-    public Response getAvailableTimeFrames(Date startDate){
-        return ResponseGenerator.genSuccessResult(timeSlotService.getAvailableTimeSlots(startDate));    }
+    public Response getAvailableTimeFrames(Date startDate) {
+        return ResponseGenerator.genSuccessResult(timeSlotService.getAvailableTimeSlots(startDate));
+    }
 
-    @ApiOperation("set one available time slot")
-    @PostMapping("setAvailableTimeSlots")
-    public Response setAvailableTimeFrames(Date availableDate, int TimeSlot, int endRepeatAfter){
-        return ResponseGenerator.genSuccessResult(timeSlotService.setAvailableTimeSlots(availableDate,TimeSlot,endRepeatAfter));    }
+    @ApiOperation("setPeriodTimeSlots")
+    @PostMapping("setPeriodTimeSlots")
+    public Response setPeriodTimeSlots(@RequestBody Map<String, String> body) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate = sdf.parse(body.get("startDate"));
+        TimeSlotStatus status = TimeSlotStatus.valueOf(body.get("status"));
+        int slot = Integer.parseInt(body.get("slot"));
+        int endRepeatAfter = Integer.parseInt(body.get("endRepeatAfter"));
 
+        return ResponseGenerator.genSuccessResult(timeSlotService.setPeriodTimeSlots(startDate,
+                slot, endRepeatAfter, status));
+    }
+
+    @PostMapping("timeSlotCalender")
+    public Response timeSlotCalender(@RequestBody Map<String, String> body) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate = sdf.parse(body.get("startDate"));
+        List<List<TimeSlot>> calender = new ArrayList<List<TimeSlot>>();
+
+        Calendar cl = Calendar.getInstance();
+        cl.setTime(startDate);
+        for (int day = 0; day < 7; day++) {
+            Date date = cl.getTime();
+            List<TimeSlot> ts = new ArrayList<>();
+            List<TimeSlot> oneDay = timeSlotService.timeSlotOneDay(date);
+            for (int slot = 0; slot < 6; slot++) {
+                TimeSlot toInsert = new TimeSlot();
+                toInsert.setTimeSlotStatus(TimeSlotStatus.NA);
+                toInsert.setSlot(slot);
+                toInsert.setTimeSlotDate(cl.getTime());
+                for (TimeSlot t : oneDay
+                ) {
+                    if (t.getSlot() == slot) {
+                        toInsert = t;
+                    }
+                }
+                ts.add(toInsert);
+            }
+            calender.add(ts);
+            cl.add(Calendar.DAY_OF_YEAR, 1);
+        }
+        return ResponseGenerator.genSuccessResult(calender);
+    }
+
+    @GetMapping("getBookedTimeSlot")
+    public Response getBookedTimeSlot() {
+        List<Map<String, Object>> books = timeSlotService.getBookedTimeSlot();
+        Response response = ResponseGenerator.genSuccessResult(books);
+        return response;
+    }
 }

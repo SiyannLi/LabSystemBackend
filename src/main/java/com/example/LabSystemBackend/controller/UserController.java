@@ -17,9 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
 import java.util.*;
 
 
@@ -29,6 +27,8 @@ import java.util.*;
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    public static final HashMap<String, String> emailVerifyCodes = new HashMap<>();
+    public static final HashMap<String, String> emailTokens = new HashMap<>();
 
     @Autowired
     private UserService userService;
@@ -38,22 +38,21 @@ public class UserController {
     private VerifyCodeService verifyCodeService;
 
 
-    @ApiOperation("get one user")
-    @GetMapping("get/{userId}")
-    public Response getUser(@ApiParam(name = "userId", value = "userId", required = true) @PathVariable int userId) {
-        User user = userService.getUser(userId);
-        if (null != user) {
-            return ResponseGenerator.genSuccessResult(user);
-        } else {
-            return ResponseGenerator.genFailResult("user dont exist");
-        }
-    }
+//    @ApiOperation("get one user")
+//    @GetMapping("get/{userId}")
+//    public Response getUser(@ApiParam(name = "userId", value = "userId", required = true) @PathVariable int userId) {
+//        User user = userService.getUser(userId);
+//        if (null != user) {
+//            return ResponseGenerator.genSuccessResult(user);
+//        } else {
+//            return ResponseGenerator.genFailResult("user dont exist");
+//        }
+//    }
 
 
     @ApiOperation("send verification code")
     @PostMapping("sendVerificationCode")
-    public Response sendVerificationCode(HttpServletRequest request, HttpServletResponse response,
-                                         @ApiParam(name = "emailAndInfo", value = "emailAndInfo", required = true)
+    public Response sendVerificationCode(@ApiParam(name = "emailAndInfo", value = "emailAndInfo", required = true)
                                          @Param("email") @RequestBody Map<String, String> body) {
         String info = body.get("info");
         String email = body.get("email");
@@ -87,15 +86,7 @@ public class UserController {
             String verCode = verifyCodeService.getRandomVerCode();
             Notification notification = verifyCodeService.sendVerifyCode(email, verCode);
             logger.info(notification.toString());
-            HttpSession session = request.getSession();
-            session.setAttribute("verifyCode", verCode);
-            final Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                public void run() {
-                    session.removeAttribute("verifyCode");
-                    timer.cancel();
-                }
-            }, 10 * 60 * 1000);
+            emailVerifyCodes.put(email, verCode);
             send = false;
             return ResponseGenerator.genSuccessResult(message);
         }
@@ -103,103 +94,94 @@ public class UserController {
     }
 
 
-    @ApiOperation("insert one user")
-    @PostMapping("/insertUser")
-    public Response insertUser(@ApiParam(name = "user", value = "user", required = true) @Param("user") @RequestParam User user) {
-        if (userService.insertUser(user) > 0) {
-            return ResponseGenerator.genSuccessResult();
-        } else {
-            return ResponseGenerator.genFailResult("fail to insert user");
-        }
-    }
+//    @ApiOperation("insert one user")
+//    @PostMapping("/insertUser")
+//    public Response insertUser(@ApiParam(name = "user", value = "user", required = true) @Param("user") @RequestParam User user) {
+//        if (userService.insertUser(user) > 0) {
+//            return ResponseGenerator.genSuccessResult();
+//        } else {
+//            return ResponseGenerator.genFailResult("fail to insert user");
+//        }
+//    }
 
 
     @ApiOperation("visitor login")
     @PostMapping("visitorLogin")
-    public Response visitorLogin(HttpServletRequest request, HttpServletResponse response,
-                                 @RequestBody Map<String, String> body) {
+    public Response visitorLogin(@RequestBody Map<String, String> body) {
         String email = body.get("email");
         String password = body.get("password");
         logger.debug("visitorLogin");
         logger.debug("email " + email);
         logger.debug("password" + password);
-        String result = (String) request.getAttribute("verification result");
-        if ("logged in".equals(result)) {
-            return ResponseGenerator.genFailResult("logged in");
-        } else if ("wrong token".equals(result)) {
-            return ResponseGenerator.genFailResult("wrong token");
-        } else {
-            if (!userService.emailExists(email)) {
-                return ResponseGenerator.genFailResult("User does not exist");
-            }
-            User user = userService.getUserByEmail(email);
-            if (!user.getUserAccountStatus().equals(UserAccountStatus.ACTIVE)) {
-                return ResponseGenerator.genFailResult("Not an active account");
-            }
-            if (!password.equals(user.getUserPassword())) {
-                return ResponseGenerator.genFailResult("Incorrect password");
-            }
-            String token = JwtUtil.createToken(user);
-            HttpSession session = request.getSession();
-            session.setAttribute("token", token);
-            return ResponseGenerator.genSuccessResult(token, JwtUtil.getUserInfo(token, "firstName"));
+        if (!userService.emailExists(email)) {
+            return ResponseGenerator.genFailResult("User does not exist");
         }
+        User user = userService.getUserByEmail(email);
+        if (!user.getUserAccountStatus().equals(UserAccountStatus.ACTIVE)) {
+            return ResponseGenerator.genFailResult("Not an active account");
+        }
+        if (!password.equals(user.getUserPassword())) {
+            return ResponseGenerator.genFailResult("Incorrect password");
+        }
+        String token = JwtUtil.createToken(user);
+        emailTokens.put(email, token);
+        return ResponseGenerator.genSuccessResult(token, email, JwtUtil.getUserInfo(token, "firstName")
+                , JwtUtil.getUserInfo(token, "lastName"));
+
     }
 
     @ApiOperation("admin login")
     @PostMapping("adminLogin")
-    public Response adminLogin(HttpServletRequest request, HttpServletResponse response,
-                               @ApiParam(name = "emailAndPass", value = "emailAndPass", required = true)
+    public Response adminLogin(@ApiParam(name = "emailAndPass", value = "emailAndPass", required = true)
                                @RequestBody Map<String, String> body) {
         String email = body.get("email");
         String password = body.get("password");
         logger.info(email);
         logger.info(password);
-
-        String result = (String) request.getAttribute("verification result");
-        if ("logged in".equals(result)) {
-            return ResponseGenerator.genFailResult("logged in");
-        } else if ("wrong token".equals(result)) {
-            return ResponseGenerator.genFailResult("wrong token");
-        } else {
-            if (!userService.emailExists(email)) {
-                return ResponseGenerator.genFailResult("User does not exist");
-            }
-            User user = userService.getUserByEmail(email);
-            if (user.getUserRole().getRoleValue().equals("visitor")) {
-                return ResponseGenerator.genFailResult("Not an administrator account");
-            }
-            if (!password.equals(user.getUserPassword())) {
-                return ResponseGenerator.genFailResult("Incorrect password");
-            }
-            String token = JwtUtil.createToken(user);
-            HttpSession session = request.getSession();
-            session.setAttribute("token", token);
-            return ResponseGenerator.genSuccessResult(token, JwtUtil.getUserInfo(token, "firstName"));
+        if (!userService.emailExists(email)) {
+            return ResponseGenerator.genFailResult("User does not exist");
         }
+        User user = userService.getUserByEmail(email);
+        if (user.getUserRole().getRoleValue().equals("visitor")) {
+            return ResponseGenerator.genFailResult("Not an administrator account");
+        }
+        if (!password.equals(user.getUserPassword())) {
+            return ResponseGenerator.genFailResult("Incorrect password");
+        }
+        String token = JwtUtil.createToken(user);
+        emailTokens.put(email, token);
+        return ResponseGenerator.genSuccessResult(token, email, JwtUtil.getUserInfo(token, "firstName")
+                , JwtUtil.getUserInfo(token, "lastName"));
     }
 
+
     @PostMapping("logout")
-    public Response logout(HttpServletRequest request, HttpServletResponse response) {
-
-        String result = (String) request.getAttribute("verification result");
-
-        if (!"logged in".equals(result)) {
-            return ResponseGenerator.genFailResult(result);
-        }
-
-        HttpSession session = request.getSession();
-
-        session.setAttribute("token", null);
-        session.invalidate();
-        return ResponseGenerator.genSuccessResult("logout");
+    public Response logout(@RequestHeader("Authorization") String token) {
+        String email = JwtUtil.getUserInfo(token, "email");
+//        String tokenServer = emailTokens.get(email);
+//        if (token == null) {
+//            if (tokenServer == null) {
+//                return ResponseGenerator.genFailResult("not logged in");
+//            } else {
+//                emailTokens.remove(email);
+//                emailVerifyCodes.remove(email);
+//                return ResponseGenerator.genFailResult("wrong token");
+//            }
+//        }
+//        if (!token.equals(tokenServer) || !JwtUtil.verify(token)) {
+//            emailTokens.remove(email);
+//            emailVerifyCodes.remove(email);
+//            return ResponseGenerator.genFailResult("wrong token");
+//        }
+        emailTokens.remove(email);
+        emailVerifyCodes.remove(email);
+        return ResponseGenerator.genSuccessResult("logout success");
 
     }
 
     @ApiOperation("register one account")
     @PostMapping("register")
-    public Response register(HttpServletRequest request, HttpServletResponse response,
-                             @ApiParam(name = "email", value = "email", required = true)
+    public Response register(@ApiParam(name = "email", value = "email", required = true)
                              @RequestBody Map<String, String> body) {
         String email = body.get("email");
         String password = body.get("userPassword");
@@ -212,14 +194,19 @@ public class UserController {
         logger.info("firstName " + firstName);
         logger.info("lastName " + lastName);
         logger.info("verificationCode " + verificationCode);
-
-        HttpSession session = request.getSession();
-        if (verificationCode.equals(session.getAttribute("verifyCode"))) {
+        String verifyCode = emailVerifyCodes.get(email);
+        logger.info("VerCode" + verifyCode);
+        logger.info("verificationCode2 " + verifyCode);
+        if (userService.emailExists(email)) {
+            return ResponseGenerator.genFailResult("This email has been registered.");
+        }
+        if (verificationCode.equals(verifyCode)) {
             String userName = firstName + " " + lastName;
-            notificationService.sendNotificationByTemplate(email, NotificationTemplate.RESISTER_CONFIRMING
+            notificationService.sendNotificationByTemplateWithName(email, NotificationTemplate.RESISTER_CONFIRMING
                     , userName);
-            return ResponseGenerator.genSuccessResult(userService.register(email, password, firstName, lastName
-                    , verificationCode));
+            userService.register(email, password, firstName, lastName);
+            emailVerifyCodes.remove(email);
+            return ResponseGenerator.genSuccessResult();
         } else {
             return ResponseGenerator.genFailResult("Invalid verification code");
         }
@@ -227,11 +214,10 @@ public class UserController {
 
     @ApiOperation("reset password")
     @PostMapping("resetPassword")
-    public Response resetPassword(HttpServletRequest request, HttpServletResponse response,
-                                  @ApiParam(name = "email", value = "email", required = true)
+    public Response resetPassword(@ApiParam(name = "email", value = "email", required = true)
                                   @RequestBody Map<String, String> body) {
         String email = body.get("email");
-        String newPassword = body.get("password");
+        String newPassword = body.get("userPassword");
         String verCode = body.get("verifyCode");
 
         logger.info("email " + email);
@@ -239,13 +225,13 @@ public class UserController {
         logger.info("verificationCode " + verCode);
 
 
-        HttpSession session = request.getSession();
-        if (verCode.equals(session.getAttribute("verifyCode"))) {
+        if (verCode.equals(emailVerifyCodes.get(email))) {
             User user = userService.getUserByEmail(email);
-            notificationService.sendNotificationByTemplate(email, NotificationTemplate.CHANGE_PASSWORD_SUCCESS
+            notificationService.sendNotificationByTemplateWithName(email, NotificationTemplate.CHANGE_PASSWORD_SUCCESS
                     , user.getFullName());
-            session.setAttribute("token", null);
-            session.invalidate();
+            emailTokens.remove(email);
+            emailVerifyCodes.remove(email);
+            logger.info(newPassword);
             return ResponseGenerator.genSuccessResult(userService.resetPassword(email, newPassword));
         } else {
             return ResponseGenerator.genFailResult("Invalid verification code");
@@ -253,108 +239,139 @@ public class UserController {
 
     }
 
-    private String checkTokenOfSuperAdmin(HttpServletRequest request, HttpServletResponse response) {
-        String message = checkTokenOfAdmin(request, response);
-        if ("Not an administrator account".equals(message)) {
-            return "Not an super administrator account";
-        }
-        if ("Success".equals(message)) {
-            HttpSession session = request.getSession();
-            String token = (String) session.getAttribute("token");
-            boolean isSuperAdmin = JwtUtil.getUserInfo(token, "role").equals("super admin");
-            if (!isSuperAdmin) {
-                return "Not an super administrator account";
-            }
-        }
-        return message;
+    private Response checkTokenOfSuperAdmin(String token) {
+        Response response = checkTokenOfAdmin(token);
+        //String message = response.getMessage();
+//        if ("Not an administrator account".equals(message)) {
+//            response = ResponseGenerator.genFailResult(response.getToken(), email
+//                    , "Not an super administrator account");
+//        }
+//        if ("Success".equals(message)) {
+//            boolean isSuperAdmin = JwtUtil.getUserInfo(token, "role").equals("super admin");
+//            if (!isSuperAdmin) {
+//                response = ResponseGenerator.genFailResult(response.getToken(), email
+//                        , "Not an super administrator account");
+//            }
+//        }
+        return response;
     }
 
 
-    private String checkTokenOfAdmin(HttpServletRequest request, HttpServletResponse response) {
-        String message = checkTokenOfUser(request, response);
-        if ("Success".equals(message) || "Not an active account".equals(message)) {
-            HttpSession session = request.getSession();
-            String token = (String) session.getAttribute("token");
-            boolean isAdmin = !JwtUtil.getUserInfo(token, "role").equals("visitor");
-            if (!isAdmin) {
-                return "Not an administrator account";
-            }
-            return "Success";
-        }
-        return message;
+    private Response checkTokenOfAdmin(String token) {
+        Response response = checkTokenOfUser(token);
+//        String message = response.getMessage();
+//        if ("Success".equals(message) || "Not an active account".equals(message)) {
+//            boolean isAdmin = !JwtUtil.getUserInfo(token, "role").equals("visitor");
+//            if (!isAdmin) {
+//                response = ResponseGenerator.genFailResult(response.getToken(), email
+//                        , "Not an administrator account");
+//            }
+//            response = ResponseGenerator.genSuccessResult(response.getToken(), email, "Success");
+//        }
+        return response;
     }
 
-    private String checkTokenOfUser(HttpServletRequest request, HttpServletResponse response) {
-        String result = (String) request.getAttribute("verification result");
-        if (!"logged in".equals(result)) {
-            return result;
-        }
-        HttpSession session = request.getSession();
-        String token = (String) session.getAttribute("token");
-        boolean isUserActive = JwtUtil.getUserInfo(token, "status").equals("active");
-        if (!isUserActive) {
-            return "Not an active account";
-        }
-        return "Success";
+    private Response checkTokenOfUser(String token) {
+        //String email = JwtUtil.getUserInfo(token, "email");
+        //       String tokenServer = emailTokens.get(email);
+//        if (token == null) {
+//            if (tokenServer == null) {
+//                return ResponseGenerator.genFailResult("not logged in");
+//            } else {
+//                emailTokens.remove(email);
+//                emailVerifyCodes.remove(email);
+//                return ResponseGenerator.genFailResult("wrong token");
+//            }
+//        }
+//        if (!token.equals(tokenServer) || !JwtUtil.verify(token)) {
+//            emailTokens.remove(email);
+//            emailVerifyCodes.remove(email);
+//            return ResponseGenerator.genFailResult("wrong token");
+//        }
+//        boolean isUserActive = JwtUtil.getUserInfo(token, "status").equals("active");
+//        if (!isUserActive) {
+//            return ResponseGenerator.genFailResult(tokenServer, email, "Not an active account");
+//        }
+        return ResponseGenerator.genSuccessResult(token/*Server*/, "Success");
     }
 
     @ApiOperation("get a list of all accounts to be confirmed")
     @GetMapping("getAllAccountToBeConfirmed")
-    public Response getAllAccountToBeConfirmed(HttpServletRequest request, HttpServletResponse response) {
-        String message = checkTokenOfAdmin(request, response);
-        if (!"Success".equals(message)) {
-            return ResponseGenerator.genFailResult(message);
-        }
+    public Response getAllAccountToBeConfirmed(@RequestHeader("Authorization") String token) {
+        Response response = checkTokenOfAdmin(token);
+//        String message = response.getMessage();
+//        if (!"Success".equals(message)) {
+//            return response;
+//        }
         List<User> users = userService.getAllAccountToBeConfirmed();
         if (!users.isEmpty()) {
-            return ResponseGenerator.genSuccessResult(users);
+            List<Map<String, String>> usersInfo = new ArrayList<>();
+            for (User user : users) {
+                int idx = users.indexOf(user);
+                usersInfo.add(new HashMap<>());
+                usersInfo.get(idx).put("firstName", user.getFirstName());
+                usersInfo.get(idx).put("lastName", user.getLastName());
+                usersInfo.get(idx).put("email", user.getEmail());
+
+            }
+            response.setData(usersInfo);
+            return response;
         } else {
-            return ResponseGenerator.genFailResult("No users to be confirmed");
+            return ResponseGenerator.genFailResult(response.getToken(), "No users to be confirmed");
 
         }
     }
 
     @ApiOperation("confirm the registration of user to create a new account")
     @PostMapping("confirmUserRegistration")
-    public Response confirmUserRegistration(HttpServletRequest request, HttpServletResponse response,
+    public Response confirmUserRegistration(@RequestHeader("Authorization") String token,
                                             @ApiParam(name = "email", value = "email", required = true)
                                             @RequestBody Map<String, String> body) {
-        String message = checkTokenOfAdmin(request, response);
-        if (!"Success".equals(message)) {
-            return ResponseGenerator.genFailResult(message);
-        }
         String email = body.get("email");
+
+        logger.info("email :" + email);
+
+        Response response = checkTokenOfAdmin(token);
+//        String message = response.getMessage();
+//        if (!"Success".equals(message)) {
+//            return response;
+//        }
         if (userService.emailExists(email)) {
             User user = userService.getUserByEmail(email);
-            notificationService.sendNotificationByTemplate(email, NotificationTemplate.REGISTER_SUCCESS
+            notificationService.sendNotificationByTemplateWithName(email, NotificationTemplate.REGISTER_SUCCESS
                     , user.getFullName());
-            return ResponseGenerator.genSuccessResult(userService.confirmUserRegistration(user.getUserId()));
+            userService.confirmUserRegistration(user.getUserId());
+            return response;
         } else {
-            return ResponseGenerator.genFailResult("User does not exist");
+            return ResponseGenerator.genFailResult(response.getToken(), "User does not exist");
         }
     }
 
     @ApiOperation("reject the application of user to create a new account")
     @PostMapping("rejectUserRegistration")
-    public Response rejectUserRegistration(HttpServletRequest request, HttpServletResponse response,
+    public Response rejectUserRegistration(@RequestHeader("Authorization") String token,
                                            @ApiParam(name = "email", value = "email", required = true)
                                            @RequestBody Map<String, String> body) {
-        String message = checkTokenOfAdmin(request, response);
-        if (!"Success".equals(message)) {
-            return ResponseGenerator.genFailResult(message);
-        }
         String email = body.get("email");
+
+        logger.info("email :" + email);
+
+        Response response = checkTokenOfAdmin(token);
+//        String message = response.getMessage();
+//        if (!"Success".equals(message)) {
+//            return response;
+//        }
         if (userService.emailExists(email)) {
             User user = userService.getUserByEmail(email);
-            notificationService.sendNotificationByTemplate(email, NotificationTemplate.REGISTER_FAIL
+            notificationService.sendNotificationByTemplateWithName(email, NotificationTemplate.REGISTER_FAIL
                     , user.getFullName());
-            return ResponseGenerator.genSuccessResult(userService.rejectUserRegistration(user.getUserId()));
+            userService.rejectUserRegistration(user.getUserId());
+            return response;
         } else {
-            return ResponseGenerator.genFailResult("User does not exist");
+            return ResponseGenerator.genFailResult(response.getToken(), "User does not exist");
         }
 
     }
-
 
 
 //    @ApiOperation("change username")
@@ -364,118 +381,154 @@ public class UserController {
 //
 //    }
 
-    @ApiOperation("deactivate account")
-    @PostMapping("deactivateUser")
-    public Response deactivateUser(HttpServletRequest request, HttpServletResponse response,
-                                   @ApiParam(name = "email", value = "email", required = true)
-                                   @RequestBody Map<String, String> body) {
-        String message = checkTokenOfAdmin(request, response);
-        if (!"Success".equals(message)) {
-            return ResponseGenerator.genFailResult(message);
-        }
+    @ApiOperation("reset information of users ")
+    @PostMapping("resetUserInfo")
+    public Response resetUserInfo(@RequestHeader("Authorization") String token,
+                                  @ApiParam(name = "nameAndStatus", value = "nameAndStatus", required = true)
+                                  @RequestBody Map<String, String> body) {
+        String firstName = body.get("firstName");
+        String lastName = body.get("lastName");
+        String userStatus = body.get("userStatus");
         String email = body.get("email");
+
+        logger.info("email " + email);
+        logger.info("firstName " + firstName);
+        logger.info("lastName " + lastName);
+        logger.info("status " + userStatus);
+        Response response = checkTokenOfAdmin(token);
+//        String message = response.getMessage();
+//        if (!"Success".equals(message)) {
+//            return response;
+//        }
+
         if (userService.emailExists(email)) {
             User user = userService.getUserByEmail(email);
-            if (user.getUserAccountStatus().equals(UserAccountStatus.INACTIVE)) {
-                return ResponseGenerator.genFailResult("This account is already an inactive account and cannot be " +
-                        "deactivated again");
-            }
-            return ResponseGenerator.genSuccessResult(userService.deactivateUser(user.getUserId()));
+            int userId = user.getUserId();
+            userService.updateName(userId, firstName, lastName);
+            switch (userStatus.toLowerCase()) {
+                case "active":
+                    return ResponseGenerator.genSuccessResult(userService.activateUser(userId));
+                case "inactive":
+                    return ResponseGenerator.genSuccessResult(userService.deactivateUser(userId));
+                default:
+                    return ResponseGenerator.genFailResult(token, "Input error");
 
+            }
         } else {
-            return ResponseGenerator.genFailResult("User does not exist");
+            return ResponseGenerator.genFailResult(token, "User does not exist");
         }
+
     }
 
-    @ApiOperation("activate account")
-    @PostMapping("activateUser")
-    public Response activeUser(HttpServletRequest request, HttpServletResponse response,
-                               @ApiParam(name = "email", value = "email", required = true)
-                               @RequestBody Map<String, String> body) {
-        String message = checkTokenOfAdmin(request, response);
-        if (!"Success".equals(message)) {
-            return ResponseGenerator.genFailResult(message);
-        }
-        String email = body.get("email");
-        if (userService.emailExists(email)) {
-            User user = userService.getUserByEmail(email);
-            if (user.getUserAccountStatus().equals(UserAccountStatus.ACTIVE)) {
-                return ResponseGenerator.genFailResult("This account is already an active account and cannot be " +
-                        "activated again");
-            }
-            return ResponseGenerator.genSuccessResult(userService.activateUser(user.getUserId()));
-
-        } else {
-            return ResponseGenerator.genFailResult("User does not exist");
-        }
-    }
 
     @ApiOperation("get all users")
     @GetMapping("getAllUsers")
-    public Response getAllUsers(HttpServletRequest request, HttpServletResponse response) {
-        String message = checkTokenOfAdmin(request, response);
-        if (!"Success".equals(message)) {
-            return ResponseGenerator.genFailResult(message);
+    public Response getAllUsers(@RequestHeader("Authorization") String token) {
+        Response response = checkTokenOfAdmin(token);
+//        String message = response.getMessage();
+//        if (!"Success".equals(message)) {
+//            return response;
+//        }
+        List<User> users = userService.getAllUsers();
+        List<Map<String, String>> usersInfo = new ArrayList<>();
+        for (User user : users) {
+            int idx = users.indexOf(user);
+            usersInfo.add(new HashMap<>());
+            usersInfo.get(idx).put("firstName", user.getFirstName());
+            usersInfo.get(idx).put("lastName", user.getLastName());
+            usersInfo.get(idx).put("email", user.getEmail());
+            usersInfo.get(idx).put("userAccountStatus", user.getUserAccountStatus().getStatusValue());
+
         }
-        return ResponseGenerator.genSuccessResult(userService.getAllUsers());
+        response.setData(usersInfo);
+        return response;
 
     }
 
     @ApiOperation("get a list of all admins")
     @GetMapping("getAllAdministrator")
-    public Response getAllAdministrator(HttpServletRequest request, HttpServletResponse response) {
-        String message = checkTokenOfSuperAdmin(request, response);
-        if (!"Success".equals(message)) {
-            return ResponseGenerator.genFailResult(message);
-        }
-        return ResponseGenerator.genSuccessResult(userService.getAllAdministrators());
-    }
+    public Response getAllAdministrator(@RequestHeader("Authorization") String token) {
+        Response response = checkTokenOfSuperAdmin(token);
+//        String message = response.getMessage();
+//        if (!"Success".equals(message)) {
+//            return response;
+//        }
+        List<User> admins = userService.getAllAdministrators();
+        List<Map<String, String>> adminsInfo = new ArrayList<>();
+        for (User admin : admins) {
+            int idx = admins.indexOf(admin);
+            adminsInfo.add(new HashMap<>());
+            adminsInfo.get(idx).put("firstName", admin.getFirstName());
+            adminsInfo.get(idx).put("lastName", admin.getLastName());
+            adminsInfo.get(idx).put("email", admin.getEmail());
 
+        }
+
+        response.setData(adminsInfo);
+        return response;
+    }
 
 
     @ApiOperation("insert a admin")
     @PostMapping("insertAdmin")
-    public Response insertAdmin(HttpServletRequest request, HttpServletResponse response,
+    public Response insertAdmin(@RequestHeader("Authorization") String token,
                                 @ApiParam(name = "email", value = "email", required = true)
                                 @RequestBody Map<String, String> body) {
-        String message = checkTokenOfSuperAdmin(request, response);
-        if (!"Success".equals(message)) {
-            return ResponseGenerator.genFailResult(message);
-        }
         String email = body.get("email");
+
+        logger.info("email " + email);
+
+        Response response = checkTokenOfSuperAdmin(token);
+//        String message = response.getMessage();
+//        if (!"Success".equals(message)) {
+//            return response;
+//        }
         if (userService.emailExists(email)) {
             User user = userService.getUserByEmail(email);
             if (!user.getUserRole().equals(UserRole.VISITOR)) {
-                return ResponseGenerator.genFailResult("This account is already an administrator account.");
+                return ResponseGenerator.genFailResult(response.getToken()
+                        , "This account is already an administrator account.");
             }
-            return ResponseGenerator.genSuccessResult(userService.updateUserRole(user.getUserId(), UserRole.ADMIN));
+            userService.updateUserRole(user.getUserId(), UserRole.ADMIN);
+            String newToken = JwtUtil.createToken(user);
+            emailTokens.put(email, newToken);
+            return response;
         } else {
-            return ResponseGenerator.genFailResult("User does not exist");
+            return ResponseGenerator.genFailResult(response.getToken(), "User does not exist");
         }
 
     }
 
     @ApiOperation("revoke administrator privileges")
     @PostMapping("revokeAdmin")
-    public Response revokeAdmin(HttpServletRequest request, HttpServletResponse response,
+    public Response revokeAdmin(@RequestHeader("Authorization") String token,
                                 @ApiParam(name = "email", value = "email", required = true)
                                 @RequestBody Map<String, String> body) {
-        String message = checkTokenOfSuperAdmin(request, response);
-        if (!"Success".equals(message)) {
-            return ResponseGenerator.genFailResult(message);
-        }
         String email = body.get("email");
+
+        logger.info("email " + email);
+
+        Response response = checkTokenOfSuperAdmin(token);
+//        String message = response.getMessage();
+//        if (!"Success".equals(message)) {
+//            return response;
+//        }
         if (userService.emailExists(email)) {
             User user = userService.getUserByEmail(email);
             if (user.getUserRole().equals(UserRole.VISITOR)) {
-                return ResponseGenerator.genFailResult("This account is already an visitor account.");
+                return ResponseGenerator.genFailResult(response.getToken()
+                        , "This account is already an visitor account.");
             }
             if (user.getUserRole().equals(UserRole.SUPER_ADMIN)) {
-                return ResponseGenerator.genFailResult("This account is the super administrator, can not be revoked");
+                return ResponseGenerator.genFailResult(response.getToken()
+                        , "This account is super admin account, can not be revoked");
             }
-            return ResponseGenerator.genSuccessResult(userService.updateUserRole(user.getUserId(), UserRole.ADMIN));
+            userService.updateUserRole(user.getUserId(), UserRole.VISITOR);
+            String newToken = JwtUtil.createToken(user);
+            emailTokens.put(email, newToken);
+            return response;
         } else {
-            return ResponseGenerator.genFailResult("User does not exist");
+            return ResponseGenerator.genFailResult(response.getToken(), "User does not exist");
         }
 
     }

@@ -49,15 +49,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int register(String email, String password, String firstName, String lastName, String verificationCode) {
-       User user = new User();
-       user.setEmail(email);
-       user.setUserRole(UserRole.VISITOR);
-       user.setUserPassword(password);
-       user.setUserAccountStatus(UserAccountStatus.CONFIRMING);
-       user.setFirstName(firstName);
-       user.setLastName(lastName);
-       user.setVerifyCode(verificationCode);
+    public int register(String email, String password, String firstName, String lastName) {
+        User user = new User();
+        user.setEmail(email);
+        user.setUserRole(UserRole.VISITOR);
+        user.setUserPassword(password);
+        user.setUserAccountStatus(UserAccountStatus.CONFIRMING);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
         return userDao.insertUser(user);
     }
 
@@ -105,5 +104,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public int updateUserRole(int userId, UserRole role) {
         return userDao.updateUserRole(userId, role);
+    }
+
+    @Override
+    public int updateUserAccountStatus(int userId, UserAccountStatus status) {
+        return userDao.updateUserAccountStatus(userId, status);
+    }
+
+    @Override
+    public int updateName(int userId, String firstName, String lastName) {
+        return userDao.updateName(userId, firstName, lastName);
     }
 }

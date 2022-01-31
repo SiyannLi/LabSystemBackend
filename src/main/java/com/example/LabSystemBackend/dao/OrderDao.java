@@ -15,13 +15,15 @@ public interface OrderDao {
 
     List<Order> getUserPastOrders(@Param("userId") int userId);
 
+    List<Order> getAllPastOrders();
+
     int deleteOrder(@Param("orderId") int orderId);
 
     int insertOrder(@Param("order") Order order);
 
     List<Order> getAllActiveOrders();
 
-    int changeOrderStatus(@Param("orderId") int orderId,@Param("orderStatus") OrderStatus orderStatus);
+    int changeOrderStatus(@Param("orderId") int orderId, @Param("orderStatus") OrderStatus orderStatus);
 
     Order getLastOrder();
 

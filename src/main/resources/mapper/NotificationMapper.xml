@@ -24,6 +24,6 @@
         select *
         from noti
         order by notiId desc
-        limit 1
+            limit 1
     </select>
 </mapper>

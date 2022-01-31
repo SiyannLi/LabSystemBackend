@@ -51,12 +51,33 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public int sendNotificationByTemplate(String email, NotificationTemplate template, String  userName) {
+    public int sendNotificationByTemplateWithName(String email, NotificationTemplate template, String userName) {
         Notification notification = new Notification();
         notification.setSenderId(User.ID_OF_SYSTEM);
+        if (userService.emailExists(email)) {
+            notification.setRecipientId(userService.getUserByEmail(email).getUserId());
+        } else {
+            notification.setRecipientId(User.ID_OF_UNREGISTERED);
+        }
         notification.setSubject(template.getSubject());
         notification.setContent(String.format(template.getContent()
                 , userName));
+        return sendNotification(email, notification);
+    }
+
+    @Override
+    public int sendNotificationByTemplateWithOrder(String email, NotificationTemplate template, String userName
+            , int orderId) {
+        Notification notification = new Notification();
+        notification.setSenderId(User.ID_OF_SYSTEM);
+        if (userService.emailExists(email)) {
+            notification.setRecipientId(userService.getUserByEmail(email).getUserId());
+        } else {
+            notification.setRecipientId(User.ID_OF_UNREGISTERED);
+        }
+        notification.setSubject(template.getSubject());
+        notification.setContent(String.format(template.getContent()
+                , userName, orderId));
         return sendNotification(email, notification);
     }
 

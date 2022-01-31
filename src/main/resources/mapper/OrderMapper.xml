@@ -13,7 +13,14 @@
         select *
         from orders
         where userId = #{userId}
-          and (orderStatus = 'PENDING' or orderStatus = 'APPROVED')
+          and (orderStatus = 'PENDING' or orderStatus = 'CONFIRMED')
+    </select>
+
+    <select id="getUserPastOrders" resultType="com.example.LabSystemBackend.entity.Order">
+        select *
+        from orders
+        where orderStatus = 'FINISHED'
+          and userId = #{userId}
     </select>
 
     <delete id="deleteOrder">
@@ -24,13 +31,20 @@
 
     <insert id="insertOrder" parameterType="com.example.LabSystemBackend.entity.Order"
             useGeneratedKeys="true" keyProperty="orderId">
-        insert into orders(userId, itemId, amount, orderStatus)
-        values (#{order.userId}, #{order.itemId}, #{order.amount}, #{order.orderStatus})
+        insert into orders(userId, itemName, amount, itemLink, orderStatus, contactEmail)
+        values (#{order.userId}, #{order.itemName}, #{order.amount}, #{order.itemLink}, #{order.orderStatus},
+                #{order.contactEmail})
     </insert>
     <select id="getAllActiveOrders" resultType="com.example.LabSystemBackend.entity.Order">
         select *
         from orders
-        where orderStatus = 'PENDING' or orderStatus = 'APPROVED'
+        where orderStatus = 'PENDING'
+           or orderStatus = 'CONFIRMED'
+    </select>
+    <select id="getAllPastOrders" resultType="com.example.LabSystemBackend.entity.Order">
+        select *
+        from orders
+        where orderStatus = 'FINISHED'
     </select>
 
     <update id="changeOrderStatus">
@@ -39,10 +53,14 @@
         where orderId = #{orderId}
     </update>
     <select id="getLastOrder" resultType="com.example.LabSystemBackend.entity.Order">
-        select * from orders order by orderId desc limit 1
+        select *
+        from orders
+        order by orderId desc limit 1
     </select>
 
     <select id="getOrder" resultType="com.example.LabSystemBackend.entity.Order">
-        select * from orders where orderId = #{orderId}
+        select *
+        from orders
+        where orderId = #{orderId}
     </select>
 </mapper>

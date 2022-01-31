@@ -11,7 +11,10 @@ public interface NotificationService {
 
     int sendNotification(String email, Notification notification);
 
-    int sendNotificationByTemplate(String email, NotificationTemplate template, String  userName);
+    int sendNotificationByTemplateWithName(String email, NotificationTemplate template, String userName);
+
+    int sendNotificationByTemplateWithOrder(String email, NotificationTemplate template, String userName
+            , int orderId);
 
     List<Notification> getAllNotification();
 

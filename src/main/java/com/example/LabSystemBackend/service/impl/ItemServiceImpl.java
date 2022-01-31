@@ -19,12 +19,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public int addItem(String itemName, int amount, String link, String description) {
+    public int addItem(String itemName, int amount, String description) {
         Item item = new Item();
         item.setItemName(itemName);
         item.setAmount(amount);
         item.setItemDescri(description);
-        item.setLink(link);
         return itemDao.addItem(item);
     }
 
@@ -36,6 +35,16 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public int changeItemAmount(int itemId, int newAmount) {
         return itemDao.changeItemAmount(itemId, newAmount);
+    }
+
+    @Override
+    public Boolean itemExists(String itemName) {
+        return itemDao.getItemByName(itemName) != null;
+    }
+
+    @Override
+    public Item getItemByName(String itemName) {
+        return itemDao.getItemByName(itemName);
     }
 
     @Override
