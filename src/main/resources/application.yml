@@ -1,11 +1,21 @@
 server:
   port: 8086
 
-#  mail:
-#    host: ENC(C/6wLABfjaW+gW8fzuUfYe/eOZgvJIAQM30uvr1T5e9ll/2z5zj9RP9DPzi2gCK4J8KLLtCAFmZ8xOuRyX1gyA==)
-#    username: ENC(dmdCt3TEcqWo6X16ab2KYfJhmGYjCLBrntpudAtG+jRbcgav0+xT0ohO2Jd58RoY)
-#    password: ENC(83Ruzc4aIwkY6dxd/T6dhsoCj032/4Y1byHRB1P5bSFPWIzBLwuvgGjpfMIx6Sgn)
-#    port: 2525
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/labSystem
+    username: root
+    password: woaini99641212
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}
+
+  #  mail:
+  #    host: ENC(C/6wLABfjaW+gW8fzuUfYe/eOZgvJIAQM30uvr1T5e9ll/2z5zj9RP9DPzi2gCK4J8KLLtCAFmZ8xOuRyX1gyA==)
+  #    username: ENC(dmdCt3TEcqWo6X16ab2KYfJhmGYjCLBrntpudAtG+jRbcgav0+xT0ohO2Jd58RoY)
+  #    password: ENC(83Ruzc4aIwkY6dxd/T6dhsoCj032/4Y1byHRB1P5bSFPWIzBLwuvgGjpfMIx6Sgn)
+  #    port: 2525
   mail:
     username: ENC(WpprIuAlbziJPKpsMhNooOTPFpy+uHEEH306jrUGNZZkJsKr3yGKcPR8ZAixmxRLk+Uzk+RirjR6zyQV8uCOGQ==)
     password: ENC(PVHzrEWc4IX0cmOcXLBatq69xcPGAwKtxZQemWxqoTLonj6M2InenT/TOHs348ag)
@@ -17,9 +27,16 @@ server:
           starttls:
             required: true
 
-  jackson:
-    date-format: yyyy-MM-dd
-    time-zone: GMT+1
+jackson:
+  date-format: yyyy-MM-dd
+  time-zone: GMT+1
+web:
+  upload-path: /Users/cong/Desktop/BackEnd/files/
+#    spring.mvc.static-path-pattern: /**
+#    resources_path: /Users/cong/Desktop/BackEnd/files/
+#    spring.resources.static-locations=classpath: /META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.resources.resources_path}
+
+
 mybatis:
   mapper-locations: classpath*:mapper/*Mapper.xml
   type-aliases-package: com.example.LabSystemBackend.entity
@@ -31,3 +48,5 @@ jasypt:
 #filter:
 #  config:
 #    excludeUrls: /users/visitorLogin,/users/register,/users/adminLogin,/users/sendVerificationCode,/users/resetPassword,/timeslots/timeSlotCalender
+
+

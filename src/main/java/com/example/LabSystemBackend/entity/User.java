@@ -25,8 +25,6 @@ public class User implements Serializable {
 
     private String userPassword;
 
-    private String verifyCode;
-
     private UserAccountStatus userAccountStatus;
 
     public String getFullName() {
@@ -42,7 +40,6 @@ public class User implements Serializable {
                 ", email='" + email + '\'' +
                 ", userRole=" + userRole +
                 ", userPassword='" + userPassword + '\'' +
-                ", verifyCode=" + verifyCode +
                 ", userAccountStatus=" + userAccountStatus +
                 '}';
     }

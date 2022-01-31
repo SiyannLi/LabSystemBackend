@@ -1,33 +1,29 @@
 package com.example.LabSystemBackend.ui;
 
 public enum NotificationTemplate {
-    VERIFICATION_CODE("Your verification code at TECO", "Hello,<p>Welcome to TECO!</p><p>Your verificationcode "+
-            "is: %s.</p><p>From your TECO team</p>"),
-    RESISTER_CONFIRMING("Register confirming", "Dear %s, <p>We have received your registration application " +
-            "and the administrators will confirm your information as soon as possible.<P>We will notify you by email when " +
-            "the review is complete. <p>Thank you for your patience. </p>  </P> <p>From your TECO team</P>"),
-    REGISTER_SUCCESS("Register success", "Dear %s, <P>welcome to TECO! </P>We are happy to inform you that " +
-            "you have successfully registered!</P><P>From your TECO team</P>"),
-    REGISTER_FAIL("Fail to register", "Dear %s， <P>We regret to inform you that your registration was not " +
-            "approved and we apologize for this.<P/><P>We look forward to your next visit.</p><p>From your TECO team</p>"),
-    CHANGE_PASSWORD_SUCCESS("Password changed successfully", "Dear %s, <p>We are happy to inform you that " +
-            "you have successfully changed your password!</p><p>From your TECO team</p>"),
-    ORDER_CONFIRMING("oder confirming","Dear %1$s, <p>We have received your order with orderNr.: %2$d  application " +
-            "and the administrators will confirm your oder as soon as possible.</p><P>We will notify you by email when " +
-            "the review is complete.</P><p>Thank you for your patience.</P> <p>From your TECO team"),
-    ORDER_APPROVED("Order approved", "Dear %1$s, </P>We are happy to inform you that your order with number %2$d" +
-            " is approved!</P>" +"<p>We will notify you by email when your order arrives.</P><P>From your TECO team</P>"),
-    ORDER_REJECTED("Order rejected", "Dear %s， <P>We regret to inform you that your order with number %d was not " +
-            "approved and we apologize for this.<P/><P>If you have any questions please contact your administrator.</p>" +
-            "<p>From your TECO team/p>"),
-    ORDER_CANCEL("Order cancel", "Dear %s， <P>We regret to inform you that your order with number %d was  " +
-            "cancelled.<P/><P>If you have any questions please contact your administrator.</p><p>From your TECO team/p>"),
-    APPOINTMENT_SUCCESS("Appointment success","Dear %1$s, </P>We are happy to inform you that the following " +
-            "appointment has been reserved for you:</p><p>Day: %2$tF</p><p>Time: %3$s </P><P>From your TECO team</P>"),
-    APPOINTMENT_CANCEL("Appointment cancel", "Dear %1$s, <p>We regret to cancel your appointment on : " +
-            "<p>Day : %2$tF</p> <p>Time: %3$s </p><p>If you still need to make an appointment, please make a new " +
-            "appointment in the TECO system.</P><P>From your " +
-            "TECO team</P>");
+    VERIFICATION_CODE("Your verification code at TECO", "Hello, Welcome to TECO! Your verification code " +
+            "is: %s"),
+    RESISTER_CONFIRMING("Register confirming", "Dear %s, <br>We have received your registration application " +
+            "and the administrators will confirm your information as soon as possible. We will notify you by email when " +
+            "the review is complete. Thank you for your patience.    From your TECO team"),
+    REGISTER_SUCCESS("Register success", "Dear %s, welcome to TECO!  We are happy to inform you that " +
+            "you have successfully registered!    From your TECO team"),
+    REGISTER_FAIL("Fail to register", "Dear %s， We regret to inform you that your registration was not " +
+            "approved and we apologize for this. We look forward to your next visit.     From your TECO team"),
+    CHANGE_PASSWORD_SUCCESS("Password changed successfully", "Dear %s, We are happy to inform you that " +
+            "You have successfully changed your password!    From your TECO team"),
+    ORDER_CONFIRMED("Your order is confirmed", "Dear %s, Thank you for your patience and we are happy " +
+            "to inform you that your order with id %d has been confirmed by the administrator.  We will notify you by email when " +
+            "the item you ordered arrives.  From your TECO team"),
+    ORDER_REJECTED("Your order is rejected", "Dear %s, Thank you for your patience, but we are sorry to " +
+            "inform you that we are unable to accept your order with id %d. We apologize for this and look forward to " +
+            "your next order.  From your TECO team"),
+    IN_STOCK("Your order is in stock", "Dear %s， We are pleased to inform you that your order with " +
+            "id %d has arrived and we welcome you to pick it up anytime during our working hours.  From your TECO team"),
+    ORDER_CONFIRMING("Order confirming", "Dear %s, We have received your order with id %d application " +
+            "and the administrators will confirm this order as soon as possible. We will notify you by email when " +
+            "the review is complete. Thank you for your patience.    From your TECO team");
+
 
     private final String subject;
     private final String content;

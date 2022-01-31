@@ -38,7 +38,7 @@ public class ItemController {
             itemsInfo.add(new HashMap<>());
             itemsInfo.get(idx).put("itemName", item.getItemName());
             itemsInfo.get(idx).put("amount", item.getAmount().toString());
-            itemsInfo.get(idx).put("link", item.getLink());
+            itemsInfo.get(idx).put("description", item.getItemDescri());
 
         }
         return ResponseGenerator.genSuccessResult(itemsInfo);
@@ -53,12 +53,11 @@ public class ItemController {
                             @RequestBody Map<String, String> body) {
         String itemName = body.get("itemName");
         int amount = Integer.parseInt(body.get("amount"));
-        String link = body.get("link");
         String description = body.get("description");
         if (itemService.itemExists(itemName)) {
             return ResponseGenerator.genFailResult("Item already exists");
         }
-        return ResponseGenerator.genSuccessResult(itemService.addItem(itemName, amount, link, description));
+        return ResponseGenerator.genSuccessResult(itemService.addItem(itemName, amount, description));
     }
 
     @ApiOperation("delete a device from database")

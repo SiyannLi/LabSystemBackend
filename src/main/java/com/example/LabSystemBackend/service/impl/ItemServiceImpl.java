@@ -19,12 +19,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public int addItem(String itemName, int amount, String link, String description) {
+    public int addItem(String itemName, int amount, String description) {
         Item item = new Item();
         item.setItemName(itemName);
         item.setAmount(amount);
         item.setItemDescri(description);
-        item.setLink(link);
         return itemDao.addItem(item);
     }
 

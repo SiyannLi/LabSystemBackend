@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int register(String email, String password, String firstName, String lastName, String verificationCode) {
+    public int register(String email, String password, String firstName, String lastName) {
         User user = new User();
         user.setEmail(email);
         user.setUserRole(UserRole.VISITOR);
@@ -57,7 +57,6 @@ public class UserServiceImpl implements UserService {
         user.setUserAccountStatus(UserAccountStatus.CONFIRMING);
         user.setFirstName(firstName);
         user.setLastName(lastName);
-        user.setVerifyCode(verificationCode);
         return userDao.insertUser(user);
     }
 

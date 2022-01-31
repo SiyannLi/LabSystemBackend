@@ -23,8 +23,8 @@
 
     <insert id="addItem" parameterType="com.example.LabSystemBackend.entity.Item"
             useGeneratedKeys="true" keyProperty="itemId">
-        insert into item(itemName, amount, link, itemDescri)
-        values (#{item.itemName}, #{item.amount}, #{item.link}, #{item.itemDescri})
+        insert into item(itemName, amount, itemDescri)
+        values (#{item.itemName}, #{item.amount}, #{item.itemDescri})
     </insert>
 
     <delete id="deleteItem">

@@ -17,8 +17,6 @@ public class Item implements Serializable {
 
     private Integer amount;
 
-    private String link;
-
     private String itemDescri;
 
 
@@ -28,7 +26,6 @@ public class Item implements Serializable {
                 "itemId=" + itemId +
                 ", itemName='" + itemName + '\'' +
                 ", amount=" + amount +
-                ", link='" + link + '\'' +
                 ", description='" + itemDescri + '\'' +
                 '}';
     }

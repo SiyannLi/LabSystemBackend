@@ -20,11 +20,17 @@ public class ResponseGenerator {
         return response;
     }
 
-    public static Response genSuccessResult(String token, String email, String message) {
+    public static Response genSuccessResultStringData(String data) {
+        Response<Object> response = new Response<>();
+        response.setResultCode(Constants.RESULT_CODE_SUCCESS);
+        response.setData(data);
+        return response;
+    }
+
+    public static Response genSuccessResult(String token, String message) {
         Response<Object> response = new Response<>();
         response.setResultCode(Constants.RESULT_CODE_SUCCESS);
         response.setToken(token);
-        response.setEmail(email);
         response.setMessage(message);
         return response;
     }
@@ -40,12 +46,12 @@ public class ResponseGenerator {
         return response;
     }
 
-    public static Response genSuccessResult(String token, String email, Object data) {
+
+    public static Response genSuccessResult(String token, Object data) {
         Response<Object> response = new Response<>();
         response.setResultCode(Constants.RESULT_CODE_SUCCESS);
         response.setMessage(DEFAULT_SUCCESS_MESSAGE);
         response.setToken(token);
-        response.setEmail(email);
         response.setData(data);
         return response;
     }
@@ -71,7 +77,7 @@ public class ResponseGenerator {
     }
 
 
-    public static Response genFailResult(String token, String email, String message) {
+    public static Response genFailResult(String token, String message) {
         Response<Object> response = new Response<>();
         response.setResultCode(Constants.RESULT_CODE_SERVER_ERROR);
         if (StringUtils.isEmpty(message)) {
@@ -80,7 +86,6 @@ public class ResponseGenerator {
             response.setMessage(message);
         }
         response.setToken(token);
-        response.setEmail(email);
         return response;
     }
 

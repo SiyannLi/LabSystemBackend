@@ -29,7 +29,6 @@ public class DataGenerate {
         int role = new Random().nextInt(UserRole.values().length);
         user.setUserRole(UserRole.values()[role]);
         user.setEmail(faker.internet().emailAddress(name[0].toLowerCase() + name[1].toLowerCase()));
-        user.setVerifyCode("123456");
         user.setUserAccountStatus(UserAccountStatus.CONFIRMING);
         return user;
     }
@@ -38,7 +37,6 @@ public class DataGenerate {
         Item item = new Item();
         item.setItemName(faker.food().spice());
         item.setAmount(faker.random().nextInt(1, 100));
-        item.setLink(faker.internet().url());
         item.setItemDescri(faker.ancient().primordial());
         return item;
     }
@@ -66,18 +64,17 @@ public class DataGenerate {
         Order order = new Order();
         order.setUserId(faker.random().nextInt(1, 100));
         order.setAmount(faker.random().nextInt(1, 100));
-        order.setItemId(faker.random().nextInt(1, 100));
         int status = new Random().nextInt(OrderStatus.values().length);
         order.setOrderStatus(OrderStatus.values()[status]);
         return order;
     }
 
     public static Notification generateNotification() {
-    Notification notification = new Notification();
+        Notification notification = new Notification();
         notification.setContent(faker.harryPotter().quote());
         notification.setSubject(faker.aquaTeenHungerForce().character());
-        notification.setRecipientId(faker.random().nextInt(1,100));
-        notification.setSenderId(faker.random().nextInt(1,100));
+        notification.setRecipientId(faker.random().nextInt(1, 100));
+        notification.setSenderId(faker.random().nextInt(1, 100));
         return notification;
     }
 }
