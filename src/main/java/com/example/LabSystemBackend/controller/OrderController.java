@@ -2,10 +2,7 @@ package com.example.LabSystemBackend.controller;
 
 import com.example.LabSystemBackend.common.Response;
 import com.example.LabSystemBackend.common.ResponseGenerator;
-import com.example.LabSystemBackend.entity.Item;
-import com.example.LabSystemBackend.entity.Order;
-import com.example.LabSystemBackend.entity.OrderStatus;
-import com.example.LabSystemBackend.entity.User;
+import com.example.LabSystemBackend.entity.*;
 import com.example.LabSystemBackend.jwt.JwtUtil;
 import com.example.LabSystemBackend.service.ItemService;
 import com.example.LabSystemBackend.service.NotificationService;
@@ -19,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,9 +86,17 @@ public class OrderController {
     @PostMapping("deleteOrder")
     public Response deleteOrder(/*@RequestHeader("Authorization") String token,*/
             @ApiParam(name = "email", value = "email", required = true)
-            @RequestBody Map<String, String> body) {
-        String orderId = body.get("orderId");
-        return ResponseGenerator.genSuccessResult(orderService.deleteOrder(Integer.parseInt(orderId)));
+            @RequestBody Map<String, String> body) throws MessagingException {
+        int orderId =Integer.parseInt(body.get("orderId"));
+        String email = body.get("email");
+        User user = userService.getUserByEmail(email);
+        Notification notification = new Notification();
+        notification.setSenderId(User.ID_OF_SYSTEM);
+        notification.setContent(String.format(NotificationTemplate.ORDER_CANCEL.getContent(), user.getFullName(), orderId));
+        notification.setSubject(NotificationTemplate.ORDER_CANCEL.getSubject());
+        notification.setRecipientId(user.getUserId());
+        notificationService.sendNotification(email, notification);
+        return ResponseGenerator.genSuccessResult(orderService.deleteOrder(orderId));
     }
 
     @ApiOperation("get all past orders of this user")
@@ -112,7 +118,7 @@ public class OrderController {
     @PostMapping("submitOrder")
     public Response submitOrder(/*@RequestHeader("Authorization") String token,*/
             @ApiParam(name = "itemInfo", value = "itemInfo", required = true)
-            @RequestBody Map<String, String> body) {
+            @RequestBody Map<String, String> body) throws MessagingException {
         int amount = Integer.parseInt(body.get("amount"));
         String itemName = body.get("itemName");
         String email = body.get("email");
@@ -136,8 +142,15 @@ public class OrderController {
             order.setItemLink(link);
             order.setOrderStatus(OrderStatus.PENDING);
             orderService.submitOrder(order);
-            notificationService.sendNotificationByTemplateWithOrder(contactEmail
-                    , NotificationTemplate.ORDER_CONFIRMING, user.getFullName(), order.getOrderId());
+
+            int oderId = order.getOrderId();
+            Notification notification = new Notification();
+            notification.setSenderId(User.ID_OF_SYSTEM);
+            notification.setContent(String.format(NotificationTemplate.ORDER_CONFIRMING.getContent(), user.getFullName(), oderId));
+            notification.setSubject(NotificationTemplate.ORDER_CONFIRMING.getSubject());
+            notification.setRecipientId(user.getUserId());
+            notificationService.sendNotification(user.getEmail(), notification);
+
             return ResponseGenerator.genSuccessResult(/*token,*/ "SUCCESS");
 
         } else {
@@ -200,17 +213,22 @@ public class OrderController {
     @ApiOperation("confirm order application")
     @PostMapping("confirmOrder")
     public Response confirmOrder(@ApiParam(name = "orderId", value = "orderId", required = true)
-                                 @RequestBody Map<String, String> body) {
+                                 @RequestBody Map<String, String> body) throws MessagingException {
         int orderId = Integer.parseInt(body.get("orderId"));
         if (orderService.orderExist(orderId)) {
             Order order = orderService.getOrderById(orderId);
             if (!order.getOrderStatus().equals(OrderStatus.PENDING)) {
                 return ResponseGenerator.genFailResult("This order cannot be confirmed");
             }
+
             User user = userService.getUser(order.getUserId());
-            notificationService.sendNotificationByTemplateWithOrder(order.getContactEmail()
-                    , NotificationTemplate.ORDER_CONFIRMED
-                    , user.getFullName(), orderId);
+            Notification notification = new Notification();
+            notification.setSenderId(User.ID_OF_SYSTEM);
+            notification.setContent(String.format(NotificationTemplate.ORDER_CONFIRMED.getContent(), user.getFullName(), orderId));
+            notification.setSubject(NotificationTemplate.ORDER_CONFIRMED.getSubject());
+            notification.setRecipientId(user.getUserId());
+            notificationService.sendNotification(user.getEmail(), notification);
+
             return ResponseGenerator.genSuccessResult(orderService.confirmOrder(orderId));
         }
         return ResponseGenerator.genFailResult("Order does not exist");
@@ -219,7 +237,7 @@ public class OrderController {
     @ApiOperation("reject one order application")
     @PostMapping("rejectOrder")
     public Response rejectOrder(@ApiParam(name = "orderId", value = "orderId", required = true)
-                                @RequestBody Map<String, String> body) {
+                                @RequestBody Map<String, String> body) throws MessagingException {
         int orderId = Integer.parseInt(body.get("orderId"));
         if (orderService.orderExist(orderId)) {
             Order order = orderService.getOrderById(orderId);
@@ -227,9 +245,12 @@ public class OrderController {
                 return ResponseGenerator.genFailResult("This order cannot be rejected");
             }
             User user = userService.getUser(order.getUserId());
-            notificationService.sendNotificationByTemplateWithOrder(order.getContactEmail()
-                    , NotificationTemplate.ORDER_REJECTED
-                    , user.getFullName(), orderId);
+            Notification notification = new Notification();
+            notification.setSenderId(User.ID_OF_SYSTEM);
+            notification.setContent(String.format(NotificationTemplate.ORDER_REJECTED.getContent(), user.getFullName(), orderId));
+            notification.setSubject(NotificationTemplate.ORDER_REJECTED.getSubject());
+            notification.setRecipientId(user.getUserId());
+            notificationService.sendNotification(user.getEmail(), notification);
             return ResponseGenerator.genSuccessResult(orderService.rejectOrder(orderId));
         }
         return ResponseGenerator.genFailResult("Order does not exist");
@@ -240,7 +261,7 @@ public class OrderController {
     @ApiOperation("reject one order application")
     @PostMapping("inStock")
     public Response inStock(@ApiParam(name = "orderId", value = "orderId", required = true)
-                            @RequestBody Map<String, String> body) {
+                            @RequestBody Map<String, String> body) throws MessagingException {
         int orderId = Integer.parseInt(body.get("orderId"));
         String itemName = body.get("itemName");
         if (orderService.orderExist(orderId)) {
@@ -250,8 +271,13 @@ public class OrderController {
             }
             int amount = order.getAmount();
             User user = userService.getUser(order.getUserId());
-            notificationService.sendNotificationByTemplateWithOrder(order.getContactEmail()
-                    , NotificationTemplate.IN_STOCK, user.getFullName(), orderId);
+            Notification notification = new Notification();
+            notification.setSenderId(User.ID_OF_SYSTEM);
+            notification.setContent(String.format(NotificationTemplate.IN_STOCK.getContent(), user.getFullName(), orderId));
+            notification.setSubject(NotificationTemplate.IN_STOCK.getSubject());
+            notification.setRecipientId(user.getUserId());
+            notificationService.sendNotification(user.getEmail(), notification);
+
             if (itemService.itemExists(itemName)) {
                 Item item = itemService.getItemByName(itemName);
                 itemService.changeItemAmount(item.getItemId(), item.getAmount() + amount);

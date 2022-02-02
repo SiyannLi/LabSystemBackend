@@ -20,6 +20,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentDao.getUserAppointments(userId);
     }
 
+    @Override
+    public Appointment getAppointmentByTimeSlotId(int timeSlotId) {
+        return appointmentDao.getAppointmentByTimeSlotId(timeSlotId);
+    }
 
     @Override
     public List<Appointment> getAllAppointments() {

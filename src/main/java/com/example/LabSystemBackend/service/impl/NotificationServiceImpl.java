@@ -9,8 +9,12 @@ import com.example.LabSystemBackend.ui.NotificationTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
@@ -38,20 +42,25 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public int sendNotification(String email, Notification notification) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        String recipientEmail = email;
-        message.setFrom(sysEmail);
-        message.setTo(recipientEmail);
-        message.setSubject(notification.getSubject());
-        message.setText(notification.getContent());
-        mailSender.send(message);
+    public int sendNotification(String email, Notification notification) throws MessagingException {
+
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper mHelper = new MimeMessageHelper(mimeMessage,
+                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
+        mHelper.setFrom(sysEmail);
+        mHelper.setTo(email);
+        mHelper.setSubject(notification.getSubject());
+        String content = notification.getContent();
+        String htmlMsg = "<body style='border:2px solid black'>" + content + "</body>";
+        mHelper.setText(htmlMsg, true);
+        mailSender.send(mimeMessage);
 
         return notificationDao.insertNotification(notification);
     }
 
     @Override
-    public int sendNotificationByTemplateWithName(String email, NotificationTemplate template, String userName) {
+    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName)
+            throws MessagingException {
         Notification notification = new Notification();
         notification.setSenderId(User.ID_OF_SYSTEM);
         if (userService.emailExists(email)) {
@@ -62,22 +71,6 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setSubject(template.getSubject());
         notification.setContent(String.format(template.getContent()
                 , userName));
-        return sendNotification(email, notification);
-    }
-
-    @Override
-    public int sendNotificationByTemplateWithOrder(String email, NotificationTemplate template, String userName
-            , int orderId) {
-        Notification notification = new Notification();
-        notification.setSenderId(User.ID_OF_SYSTEM);
-        if (userService.emailExists(email)) {
-            notification.setRecipientId(userService.getUserByEmail(email).getUserId());
-        } else {
-            notification.setRecipientId(User.ID_OF_UNREGISTERED);
-        }
-        notification.setSubject(template.getSubject());
-        notification.setContent(String.format(template.getContent()
-                , userName, orderId));
         return sendNotification(email, notification);
     }
 

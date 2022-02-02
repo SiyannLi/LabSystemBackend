@@ -14,6 +14,8 @@ import java.util.List;
 public interface AppointmentDao {
     List<Appointment> getUserAppointments(@Param("userId") int userId);
 
+    Appointment getAppointmentByTimeSlotId(@Param("timeSlotId") int timeSlotId);
+
     List<Appointment> getAllAppointments();
 
     Appointment getAppointment(@Param("appointmentId") int appointmentId);
