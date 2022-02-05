@@ -4,6 +4,7 @@ import com.example.LabSystemBackend.dao.AppointmentDao;
 import com.example.LabSystemBackend.entity.Appointment;
 import com.example.LabSystemBackend.entity.TimeSlot;
 import com.example.LabSystemBackend.service.AppointmentService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,5 +47,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setTimeSlotId(timeSlotId);
 
         return appointmentDao.addAppointment(appointment);
+    }
+
+    @Override
+    public Appointment getAppointmentByTimeSlotId(int timeSlotId){
+        return appointmentDao.getAppointmentByTimeSlotId(timeSlotId);
     }
 }

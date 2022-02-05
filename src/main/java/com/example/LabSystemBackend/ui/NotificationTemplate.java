@@ -20,6 +20,10 @@ public enum NotificationTemplate {
             "Should you have any further questions, please contact %s."),
     //appointment
 
+    APPOINTMENT_BOOKED("Appointment Booked","Dear %s, your appointment at %d on %s has been confirmed. " +
+            "This appointment was booked by %s"),
+    APPOINTMENT_CANCELLED("Appointment Cancelled","Dear %s, your appointment at %d on %s has been cancelled. " +
+            "This appointment was cancelled by %s."),
     //order
     ORDER_CONFIRMED("Order Confirmed", "Dear %s, the following order has been confirmed, " +
             "you will be notified separately once your item has arrived and checked into stock." +
