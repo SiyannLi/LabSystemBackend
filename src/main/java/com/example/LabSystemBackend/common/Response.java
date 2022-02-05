@@ -10,6 +10,9 @@ public class Response<T> implements Serializable {
     private String email;
     private String firstName;
     private String lastName;
+    private boolean isReceiveBulkEmail;
+    private boolean isUserLogged;
+    private boolean isAdminLogged;
     private T data;
 
     public Response() {
@@ -18,6 +21,30 @@ public class Response<T> implements Serializable {
     public Response(int resultCode, String message) {
         this.resultCode = resultCode;
         this.message = message;
+    }
+
+    public boolean isReceiveBulkEmail() {
+        return isReceiveBulkEmail;
+    }
+
+    public void setReceiveBulkEmail(boolean receiveBulkEmail) {
+        isReceiveBulkEmail = receiveBulkEmail;
+    }
+
+    public boolean isUserLogged() {
+        return isUserLogged;
+    }
+
+    public boolean isAdminLogged() {
+        return isAdminLogged;
+    }
+
+    public void setAdminLogged(boolean adminLogged) {
+        isAdminLogged = adminLogged;
+    }
+
+    public void setUserLogged(boolean userLogged) {
+        isUserLogged = userLogged;
     }
 
     public String getEmail() {

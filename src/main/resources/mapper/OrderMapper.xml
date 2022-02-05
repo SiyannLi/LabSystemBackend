@@ -26,7 +26,8 @@
     <delete id="deleteOrder">
         delete
         from orders
-        where orderId = #{orderId}
+        where orderStatus = 'PENDING'
+          and orderId = #{orderId}
     </delete>
 
     <insert id="insertOrder" parameterType="com.example.LabSystemBackend.entity.Order"

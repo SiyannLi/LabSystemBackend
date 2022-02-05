@@ -28,4 +28,6 @@ public interface TimeSlotDao {
     List<TimeSlot> timeSlotOneDay(@Param("date") Date date);
 
     List<Map<String, Object>> getBookedTimeSlot();
+
+    List<TimeSlot> getUserBookedTimeSlot(@Param("email") String email);
 }

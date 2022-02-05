@@ -1,6 +1,7 @@
 package com.example.LabSystemBackend.service;
 
 import com.example.LabSystemBackend.entity.Notification;
+import com.example.LabSystemBackend.entity.Order;
 import com.example.LabSystemBackend.ui.NotificationTemplate;
 
 import java.util.List;
@@ -11,10 +12,15 @@ public interface NotificationService {
 
     int sendNotification(String email, Notification notification);
 
-    int sendNotificationByTemplateWithName(String email, NotificationTemplate template, String userName);
+    int sendNotificationByTemplate(String email, NotificationTemplate template, String userName);
 
-    int sendNotificationByTemplateWithOrder(String email, NotificationTemplate template, String userName
-            , int orderId);
+    int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, String opEmail);
+
+    int sendNotificationByTemplate(String email, NotificationTemplate template, String userName
+            , Order order);
+
+    int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, String opEmail
+            , Order order);
 
     List<Notification> getAllNotification();
 

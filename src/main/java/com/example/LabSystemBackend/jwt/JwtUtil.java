@@ -7,6 +7,7 @@ import java.util.Map;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.LabSystemBackend.entity.User;
 import com.example.LabSystemBackend.entity.UserAccountStatus;
@@ -17,6 +18,7 @@ public class JwtUtil {
      */
     private static final String SECRET = "my_secret";
     private static final int EXPIRATION = 120;
+    private static final int REFRESH = 90;
 
     /**
      * 过期时间
@@ -31,19 +33,16 @@ public class JwtUtil {
 
             Date nowDate = new Date();
             Date expireDate =   DateUtil.getNextMinute(nowDate, EXPIRATION);
+            Date refreshDate =   DateUtil.getNextMinute(nowDate, REFRESH);
             Algorithm algorithm = Algorithm.HMAC256(SECRET);
 
             String token = JWT.create()
 
                     .withHeader(header)
                     .withClaim("email",user.getEmail())
-                    .withClaim("password",user.getUserPassword())
-                    .withClaim("role",user.getUserRole().getRoleValue())
-                    .withClaim("status", user.getUserAccountStatus().getStatusValue())
-                    .withClaim("firstName",user.getFirstName())
-                    .withClaim("lastName", user.getLastName())
+                    .withClaim("expireDate", expireDate)
+                    .withClaim("refreshDate", refreshDate)
                     .withIssuedAt(nowDate)
-                    .withExpiresAt(expireDate)
                     .sign(algorithm);
             return token;
 
@@ -85,28 +84,29 @@ public class JwtUtil {
         }
     }
 
+    public static Date getExpiresTime (String token) {
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            Date date = jwt.getClaim("expireDate").asDate();
 
+            return date;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-////  刷新令牌中的当前时间与到期时间
-//
-//    public static <Claims> String reFreshToken(String token){
-////        首先获取到token中的userName信息，再生成新的token
-//
-//        try{
-//            Claims claims = (Claims) Jwts.parser()
-//
-//                    .setSigningKey(SECRET)
-//
-//                    .parseClaimsJws(token).getBody();
-//
-//            return createToken(claims.get("userName").toString());
-//
-//        }catch (Exception e){
-//            throw new RuntimeException("解密失败");
-//
-//        }
-//
-//    }
+    public static Date getRefreshTime (String token) {
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            Date date = jwt.getClaim("refreshDate").asDate();
+
+            return date;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }
 

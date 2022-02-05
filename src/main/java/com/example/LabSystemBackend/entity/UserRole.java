@@ -1,7 +1,7 @@
 package com.example.LabSystemBackend.entity;
 
 public enum UserRole {
-    VISITOR("visitor"),
+    USER("user"),
     ADMIN("admin"),
     SUPER_ADMIN("super admin");
 

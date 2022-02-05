@@ -52,11 +52,12 @@ public class UserServiceImpl implements UserService {
     public int register(String email, String password, String firstName, String lastName) {
         User user = new User();
         user.setEmail(email);
-        user.setUserRole(UserRole.VISITOR);
+        user.setUserRole(UserRole.USER);
         user.setUserPassword(password);
-        user.setUserAccountStatus(UserAccountStatus.CONFIRMING);
+        user.setUserAccountStatus(UserAccountStatus.PENDING);
         user.setFirstName(firstName);
         user.setLastName(lastName);
+        user.setReceiveBulkEmail(false);
         return userDao.insertUser(user);
     }
 
@@ -92,6 +93,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getAllAdminReceiveBulkEmail() {
+        return userDao.getAllAdminReceiveBulkEmail();
+    }
+
+    @Override
     public User getUserByEmail(String email) {
         return userDao.getUserByEmail(email);
     }
@@ -114,5 +120,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public int updateName(int userId, String firstName, String lastName) {
         return userDao.updateName(userId, firstName, lastName);
+    }
+
+    @Override
+    public int updateAdminEmailSetting(int userId, boolean receiveBulkEmail) {
+        return userDao.updateAdminEmailSetting(userId, receiveBulkEmail);
     }
 }

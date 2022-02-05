@@ -2,6 +2,7 @@ package com.example.LabSystemBackend.service.impl;
 
 import com.example.LabSystemBackend.dao.NotificationDao;
 import com.example.LabSystemBackend.entity.Notification;
+import com.example.LabSystemBackend.entity.Order;
 import com.example.LabSystemBackend.entity.User;
 import com.example.LabSystemBackend.service.NotificationService;
 import com.example.LabSystemBackend.service.UserService;
@@ -51,7 +52,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public int sendNotificationByTemplateWithName(String email, NotificationTemplate template, String userName) {
+    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName) {
         Notification notification = new Notification();
         notification.setSenderId(User.ID_OF_SYSTEM);
         if (userService.emailExists(email)) {
@@ -66,8 +67,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public int sendNotificationByTemplateWithOrder(String email, NotificationTemplate template, String userName
-            , int orderId) {
+    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, String opEmail) {
         Notification notification = new Notification();
         notification.setSenderId(User.ID_OF_SYSTEM);
         if (userService.emailExists(email)) {
@@ -77,9 +77,40 @@ public class NotificationServiceImpl implements NotificationService {
         }
         notification.setSubject(template.getSubject());
         notification.setContent(String.format(template.getContent()
-                , userName, orderId));
+                , userName, opEmail));
         return sendNotification(email, notification);
     }
+
+    @Override
+    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, Order order) {
+        Notification notification = new Notification();
+        notification.setSenderId(User.ID_OF_SYSTEM);
+        if (userService.emailExists(email)) {
+            notification.setRecipientId(userService.getUserByEmail(email).getUserId());
+        } else {
+            notification.setRecipientId(User.ID_OF_UNREGISTERED);
+        }
+        notification.setSubject(template.getSubject());
+        notification.setContent(String.format(template.getContent()
+                , userName, order.getOrderId(), order.getItemName(), order.getAmount(), order.getItemLink()));
+        return sendNotification(email, notification);
+    }
+
+    @Override
+    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, String opEmail, Order order) {
+        Notification notification = new Notification();
+        notification.setSenderId(User.ID_OF_SYSTEM);
+        if (userService.emailExists(email)) {
+            notification.setRecipientId(userService.getUserByEmail(email).getUserId());
+        } else {
+            notification.setRecipientId(User.ID_OF_UNREGISTERED);
+        }
+        notification.setSubject(template.getSubject());
+        notification.setContent(String.format(template.getContent()
+                , userName, opEmail, order.getOrderId(), order.getItemName(), order.getAmount(), order.getItemLink()));
+        return sendNotification(email, notification);
+    }
+
 
     @Override
     public List<Notification> getAllNotification() {

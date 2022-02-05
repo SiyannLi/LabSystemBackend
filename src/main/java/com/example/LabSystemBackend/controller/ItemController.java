@@ -5,7 +5,11 @@ import com.example.LabSystemBackend.common.Response;
 import com.example.LabSystemBackend.common.ResponseGenerator;
 import com.example.LabSystemBackend.entity.Item;
 import com.example.LabSystemBackend.entity.User;
+import com.example.LabSystemBackend.jwt.JwtUtil;
+import com.example.LabSystemBackend.jwt.comment.AdminLoginToken;
+import com.example.LabSystemBackend.jwt.comment.UserLoginToken;
 import com.example.LabSystemBackend.service.ItemService;
+import com.example.LabSystemBackend.ui.KeyMessage;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -28,9 +32,7 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
-    @ApiOperation("get a list of all Items")
-    @GetMapping("getAllItems")
-    public Response getAllItemsAndAmount() {
+    private List<Map<String, String>> getAllItems() {
         List<Item> items = itemService.getAllItemsAndAmount();
         List<Map<String, String>> itemsInfo = new ArrayList<>();
         for (Item item : items) {
@@ -41,49 +43,78 @@ public class ItemController {
             itemsInfo.get(idx).put("description", item.getItemDescri());
 
         }
-        return ResponseGenerator.genSuccessResult(itemsInfo);
+        return itemsInfo;
+    }
+
+    @UserLoginToken
+    @ApiOperation("get a list of all Items")
+    @GetMapping("userGetAllItems")
+    public Response userGetAllItems(@RequestHeader(KeyMessage.TOKEN) String token) {
+        String email = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
+        return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(email), getAllItems());
+
+
+    }
+
+    @AdminLoginToken
+    @ApiOperation("get a list of all Items")
+    @GetMapping("adminGetAllItems")
+    public Response adminGetAllItems(@RequestHeader(KeyMessage.TOKEN) String token) {
+        String email = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
+        return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(email), getAllItems());
 
 
     }
 
 
+    @AdminLoginToken
     @ApiOperation("add a new device")
     @PostMapping("addItem")
-    public Response addItem(@ApiParam(name = "itemName", value = "itemName", required = true)
+    public Response addItem(@RequestHeader(KeyMessage.TOKEN) String token,
+                            @ApiParam(name = "itemName", value = "itemName", required = true)
                             @RequestBody Map<String, String> body) {
+        String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         String itemName = body.get("itemName");
         int amount = Integer.parseInt(body.get("amount"));
         String description = body.get("description");
         if (itemService.itemExists(itemName)) {
-            return ResponseGenerator.genFailResult("Item already exists");
+            return ResponseGenerator.genFailResult(UserController.emailTokens.get(opEmail),"Item already exists");
         }
-        return ResponseGenerator.genSuccessResult(itemService.addItem(itemName, amount, description));
+        return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(opEmail), itemService.addItem(itemName, amount, description));
     }
 
+    @AdminLoginToken
     @ApiOperation("delete a device from database")
     @PostMapping("deleteItem")
-    public Response deleteItem(@ApiParam(name = "itemName", value = "itemName", required = true)
+    public Response deleteItem(@RequestHeader(KeyMessage.TOKEN) String token,
+                               @ApiParam(name = "itemName", value = "itemName", required = true)
                                @RequestBody Map<String, String> body) {
+        String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         String itemName = body.get("itemName");
         logger.info("itemName: " + itemName);
         if (!itemService.itemExists(itemName)) {
-            return ResponseGenerator.genFailResult("Item not exists");
+            return ResponseGenerator.genFailResult(UserController.emailTokens.get(opEmail),"Item not exists");
         }
-        return ResponseGenerator.genSuccessResult(itemService.deleteItem(itemService.getItemByName(itemName).getItemId()));
+        return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(opEmail)
+                , itemService.deleteItem(itemService.getItemByName(itemName).getItemId()));
 
     }
 
+    @AdminLoginToken
     @ApiOperation("change the amount of one item")
     @PostMapping("changeItemAmount")
-    public Response changeItemAmount(@ApiParam(name = "itemName", value = "itemName", required = true)
+    public Response changeItemAmount(@RequestHeader(KeyMessage.TOKEN) String token,
+                                     @ApiParam(name = "itemName", value = "itemName", required = true)
                                      @RequestBody Map<String, String> body) {
+        String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         String itemName = body.get("itemName");
         int newAmount = Integer.parseInt(body.get("amount"));
         if (!itemService.itemExists(itemName)) {
-            return ResponseGenerator.genFailResult("Item not exists");
+            return ResponseGenerator.genFailResult(UserController.emailTokens.get(opEmail)
+                    ,"Item not exists");
         }
-        return ResponseGenerator.genSuccessResult(itemService.changeItemAmount(itemService.getItemByName(itemName).getItemId()
-                , newAmount));
+        return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(opEmail)
+                , itemService.changeItemAmount(itemService.getItemByName(itemName).getItemId(), newAmount));
 
     }
 

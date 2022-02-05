@@ -80,4 +80,9 @@ public class TimeSlotServiceImpl implements TimeSlotService {
         return getTimeSlot(date, slot) != null;
     }
 
+    @Override
+    public List<TimeSlot> getUserBookedTimeSlot(String email){
+        return timeSlotDao.getUserBookedTimeSlot(email);
+    }
+
 }
