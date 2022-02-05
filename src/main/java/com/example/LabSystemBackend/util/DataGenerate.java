@@ -1,12 +1,8 @@
 package com.example.LabSystemBackend.util;
 
-import com.example.LabSystemBackend.dao.TimeSlotDao;
-import com.example.LabSystemBackend.dao.UserDao;
 import com.example.LabSystemBackend.entity.*;
 import com.github.javafaker.Faker;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Random;
@@ -29,7 +25,7 @@ public class DataGenerate {
         int role = new Random().nextInt(UserRole.values().length);
         user.setUserRole(UserRole.values()[role]);
         user.setEmail(faker.internet().emailAddress(name[0].toLowerCase() + name[1].toLowerCase()));
-        user.setUserAccountStatus(UserAccountStatus.CONFIRMING);
+        user.setUserAccountStatus(UserAccountStatus.PENDING);
         return user;
     }
 

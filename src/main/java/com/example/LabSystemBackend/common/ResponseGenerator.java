@@ -35,16 +35,20 @@ public class ResponseGenerator {
         return response;
     }
 
-    public static Response genSuccessResult(String token, String email, String firstName, String lastName) {
+    public static Response genSuccessResult(String token, String firstName, String lastName, String email
+            , boolean isUserLogged, boolean isAdminLogged) {
         Response<Object> response = new Response<>();
         response.setResultCode(Constants.RESULT_CODE_SUCCESS);
         response.setToken(token);
         response.setEmail(email);
         response.setFirstName(firstName);
         response.setLastName(lastName);
+        response.setUserLogged(isUserLogged);
+        response.setAdminLogged(isAdminLogged);
 
         return response;
     }
+
 
 
     public static Response genSuccessResult(String token, Object data) {
@@ -53,6 +57,15 @@ public class ResponseGenerator {
         response.setMessage(DEFAULT_SUCCESS_MESSAGE);
         response.setToken(token);
         response.setData(data);
+        return response;
+    }
+
+    public static Response genSuccessResult(String token, boolean isReceiveBulkEmail) {
+        Response<Object> response = new Response<>();
+        response.setResultCode(Constants.RESULT_CODE_SUCCESS);
+        response.setMessage(DEFAULT_SUCCESS_MESSAGE);
+        response.setToken(token);
+        response.setReceiveBulkEmail(isReceiveBulkEmail);
         return response;
     }
 
@@ -68,6 +81,17 @@ public class ResponseGenerator {
     public static Response genFailResult(String message) {
         Response<Object> response = new Response<>();
         response.setResultCode(Constants.RESULT_CODE_SERVER_ERROR);
+        if (StringUtils.isEmpty(message)) {
+            response.setMessage(DEFAULT_FAIL_MESSAGE);
+        } else {
+            response.setMessage(message);
+        }
+        return response;
+    }
+
+    public static Response genFailResultToken(String message) {
+        Response<Object> response = new Response<>();
+        response.setResultCode(Constants.RESULT_CODE_NOT_LOGIN);
         if (StringUtils.isEmpty(message)) {
             response.setMessage(DEFAULT_FAIL_MESSAGE);
         } else {

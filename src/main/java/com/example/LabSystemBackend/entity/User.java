@@ -27,6 +27,8 @@ public class User implements Serializable {
 
     private UserAccountStatus userAccountStatus;
 
+    private boolean receiveBulkEmail;
+
     public String getFullName() {
         return firstName + " " + lastName;
     }
@@ -38,9 +40,10 @@ public class User implements Serializable {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", userRole=" + userRole +
+                ", userRole=" + userRole + '\'' +
                 ", userPassword='" + userPassword + '\'' +
-                ", userAccountStatus=" + userAccountStatus +
+                ", userAccountStatus=" + userAccountStatus + + '\'' +
+                ", receiveBulkEmail=" + receiveBulkEmail + + + '\'' +
                 '}';
     }
 }

@@ -1,28 +1,59 @@
 package com.example.LabSystemBackend.ui;
 
 public enum NotificationTemplate {
-    VERIFICATION_CODE("Your verification code at TECO", "Hello, Welcome to TECO! Your verification code " +
-            "is: %s"),
-    RESISTER_CONFIRMING("Register confirming", "Dear %s, <br>We have received your registration application " +
-            "and the administrators will confirm your information as soon as possible. We will notify you by email when " +
-            "the review is complete. Thank you for your patience.    From your TECO team"),
-    REGISTER_SUCCESS("Register success", "Dear %s, welcome to TECO!  We are happy to inform you that " +
-            "you have successfully registered!    From your TECO team"),
-    REGISTER_FAIL("Fail to register", "Dear %s， We regret to inform you that your registration was not " +
-            "approved and we apologize for this. We look forward to your next visit.     From your TECO team"),
-    CHANGE_PASSWORD_SUCCESS("Password changed successfully", "Dear %s, We are happy to inform you that " +
-            "You have successfully changed your password!    From your TECO team"),
-    ORDER_CONFIRMED("Your order is confirmed", "Dear %s, Thank you for your patience and we are happy " +
-            "to inform you that your order with id %d has been confirmed by the administrator.  We will notify you by email when " +
-            "the item you ordered arrives.  From your TECO team"),
-    ORDER_REJECTED("Your order is rejected", "Dear %s, Thank you for your patience, but we are sorry to " +
-            "inform you that we are unable to accept your order with id %d. We apologize for this and look forward to " +
-            "your next order.  From your TECO team"),
-    IN_STOCK("Your order is in stock", "Dear %s， We are pleased to inform you that your order with " +
-            "id %d has arrived and we welcome you to pick it up anytime during our working hours.  From your TECO team"),
-    ORDER_CONFIRMING("Order confirming", "Dear %s, We have received your order with id %d application " +
-            "and the administrators will confirm this order as soon as possible. We will notify you by email when " +
-            "the review is complete. Thank you for your patience.    From your TECO team");
+    //user
+    VERIFICATION_CODE("Verification Code", "Dear visitor, your verification code is" +
+            "%s. Please DO NOT share this code with others."),
+    RESISTER_FINISHED("Registration Finished", "Dear %s, we have received your registration. You will " +
+            "be notified by a separate email once your registration is approved or rejected    From your TECO team"),
+    REGISTER_SUCCESS("Registration Successful", "Dear %s, your registration has been approved, you " +
+            "may now access to the system with your credentials.    From your TECO team"),
+    REGISTER_REJECTED("Registration Rejected", "Dear %s， your registration has been rejected, Should you have any" +
+            "further questions, please contact %s.     From your TECO team"),
+    PASSWORD_RESET_SUCCESS("Password Reset successfully", "Dear %s, your password has been " +
+            "successfully reset. You may access to the system with new credentials    From your TECO team"),
+    INFO_CHANGED("User Information Changed", "Dear %s, your account information has been changed by an " +
+            "administrator, please consult %s or any administrator for further assistance.    From your TECO team"),
+    BECOME_ADMIN("Become Admin", "Dear %s, you are now an administrator, please use admin login to " +
+            "access to the administrator management system."),
+    ADMIN_ROLE_REVOKED("Admin Role Revoked", "Dear %s, your administrator access has been removed. " +
+            "Should you have any further questions, please contact %s."),
+    //appointment
+
+    //order
+    ORDER_CONFIRMED("Order Confirmed", "Dear %s, the following order has been confirmed, " +
+            "you will be notified separately once your item has arrived and checked into stock." +
+            "ID : %d" +
+            "ITEM : %s" +
+            "AMOUNT: %d" +
+            "LINK :%s  From your TECO team"),
+    ORDER_REJECTED("Order Rejected", "Dear %s, the following order has been rejected, Should you have any " +
+            "further questions, please contact %s." +
+            "ID : %d" +
+            "ITEM : %s" +
+            "AMOUNT: %d" +
+            "LINK :%s  From your TECO team"),
+    ORDER_ARRIVED("Order Arrived", "Dear %s，the following order has arrived and item(s) have/has " +
+            "been checked into stock." +
+            "ID : %d" +
+            "ITEM : %s" +
+            "AMOUNT: %d" +
+            "LINK :%s  From your TECO team"),
+    ORDER_RECEIVED("Order Received", "Dear %s, the following order has been submitted for auditing , " +
+            "you will be notified separately once your order is approved or rejected." +
+            "ID : %d" +
+            "ITEM : %s" +
+            "AMOUNT: %d" +
+            "LINK :%s    From your TECO team"),
+    ORDER_CANCELLED("Order Cancelled", "Dear %s, the following order has been cancelled by yourself." +
+            "ID : %d" +
+            "ITEM : %s" +
+            "AMOUNT: %d" +
+            "LINK :%s"),
+    //admin
+    NEW_REGISTRATION_REQUEST("New Registration Request", "Dear %s, there is a new registration request " +
+            "to be processed."),
+    NEW_ORDER_REQUEST("New Order Request", "Dear %s, there is a new order request to be processed.");
 
 
     private final String subject;

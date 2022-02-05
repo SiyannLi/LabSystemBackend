@@ -1,7 +1,7 @@
 package com.example.LabSystemBackend.entity;
 
 public enum UserAccountStatus {
-    CONFIRMING("confirming"),
+    PENDING("pending"),
     ACTIVE("active"),
     INACTIVE("inactive");
 
