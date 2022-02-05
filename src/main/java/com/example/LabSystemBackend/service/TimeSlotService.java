@@ -31,4 +31,6 @@ public interface TimeSlotService {
 
     boolean TimeSlotExists(Date date, int slot);
 
+    List<TimeSlot> getUserBookedTimeSlot(String email);
+
 }

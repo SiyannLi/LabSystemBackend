@@ -43,6 +43,8 @@ public interface UserService {
 
     List<User> getAllAccountToBeConfirmed();
 
+    List<User> getAllAdminReceiveBulkEmail();
+
     User getUserByEmail(String email);
 
     Boolean emailExists(String email);
@@ -52,4 +54,6 @@ public interface UserService {
     int updateUserAccountStatus(int userId, UserAccountStatus status);
 
     int updateName(int userId, String firstName, String lastName);
+
+    int updateAdminEmailSetting(int userId, boolean receiveBulkEmail);
 }

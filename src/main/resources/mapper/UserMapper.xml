@@ -7,7 +7,7 @@
     <select id="getAllUsers" resultType="com.example.LabSystemBackend.entity.User">
         select *
         from user
-        where userAccountStatus != 'CONFIRMING'
+        where userAccountStatus != 'PENDING'
     </select>
 
     <select id="getAllAdministrators" resultType="com.example.LabSystemBackend.entity.User">
@@ -17,11 +17,18 @@
            or userRole = 'SUPER_ADMIN'
     </select>
 
+    <select id="getAllAdminReceiveBulkEmail" resultType="com.example.LabSystemBackend.entity.User">
+        select *
+        from user
+        where userRole != 'USER'
+           and receiveBulkEmail = 1
+    </select>
+
     <select id="getAllAccountToBeConfirmed" resultType="com.example.LabSystemBackend.entity.User">
         select *
         from user
-        where userRole = 'VISITOR'
-          and userAccountStatus = 'CONFIRMING'
+        where userRole = 'USER'
+          and userAccountStatus = 'PENDING'
 
     </select>
 
@@ -40,9 +47,8 @@
 
     <insert id="insertUser" parameterType="com.example.LabSystemBackend.entity.User" useGeneratedKeys="true"
             keyProperty="userId">
-        insert into user(firstName, lastName, email, userRole, userPassword, userAccountStatus)
-        values (#{user.firstName}, #{user.lastName}, #{user.email}, #{user.userRole},
-                #{user.userPassword}, #{user.userAccountStatus})
+        insert into user(firstName, lastName, email, userRole, userPassword, userAccountStatus, receiveBulkEmail)
+        values (#{user.firstName}, #{user.lastName}, #{user.email}, #{user.userRole}, #{user.userPassword}, #{user.userAccountStatus}, #{user.receiveBulkEmail})
     </insert>
 
     <update id="updatePassword">
@@ -68,6 +74,12 @@
     <update id="updateUserRole">
         update user
         set userRole = #{userRole}
+        where userId = #{userId}
+    </update>
+
+    <update id="updateAdminEmailSetting">
+        update user
+        set receiveBulkEmail = #{receiveBulkEmail}
         where userId = #{userId}
     </update>
 

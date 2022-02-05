@@ -18,6 +18,8 @@ public interface UserDao {
 
     List<User> getAllAccountToBeConfirmed();
 
+    List<User> getAllAdminReceiveBulkEmail();
+
     User getUser(@Param("userId") int userId);
 
     User getUserByEmailAndPassword(@Param("email") String email, @Param("password") String password);
@@ -35,6 +37,8 @@ public interface UserDao {
     int updateName(@Param("userId") int userId, @Param("firstName") String firstName, @Param("lastName") String lastName);
 
     int updateUserRole(@Param("userId") int userId, @Param("userRole") UserRole userRole);
+
+    int updateAdminEmailSetting(@Param("userId") int userId, @Param("receiveBulkEmail") boolean receiveBulkEmail);
 
     User getLastUser();
 }
