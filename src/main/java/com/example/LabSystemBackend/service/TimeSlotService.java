@@ -15,7 +15,9 @@ public interface TimeSlotService {
 
 
     //设置可预约时间段
-    int setPeriodTimeSlots(Date availableDate, int slot, int endRepeatAfter, TimeSlotStatus status);
+    int setPeriodTimeSlotsFREE(Date availableDate, int slot, int endRepeatAfter);
+
+    int setPeriodTimeSlotsNA(Date availableDate, int slot, int endRepeatAfter);
 
     int updateTimeSlotStatus(int timeSlotId, TimeSlotStatus timeSlotStatus);
 
@@ -23,7 +25,7 @@ public interface TimeSlotService {
 
     List<TimeSlot> timeSlotOneDay(Date date);
 
-    List<Map<String, Object>> getBookedTimeSlot();
+    List<Map<String, Object>> getBookedTimeSlot(Date today);
 
     TimeSlot getTimeSlot(Date date, int slot);
 
