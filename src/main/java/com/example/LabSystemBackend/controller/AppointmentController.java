@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.w3c.dom.stylesheets.LinkStyle;
 
+import javax.mail.MessagingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -127,7 +128,7 @@ public class AppointmentController {
     @ApiOperation("User create one new appointment")
     @PostMapping("adminAddAppointment")
     public Response adminAddAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
-                                   @RequestBody Map<String, String> body) throws ParseException {
+                                   @RequestBody Map<String, String> body) throws ParseException, MessagingException {
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         User opUser = userService.getUserByEmail(opEmail);
         String email = body.get("email");
@@ -135,8 +136,9 @@ public class AppointmentController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = sdf.parse(body.get("date"));
         int slot = Integer.parseInt(body.get("slot"));
+        String[] slots ={"8:00-10:00","10:00-12:00","12:00-14:00","14:00-16:00","16:00-18:00","18:00-20:00"};
         notificationService.sendNotificationAddOrDeleteAppointment(email, NotificationTemplate.APPOINTMENT_BOOKED
-                , user.getFullName(),slot, body.get("date"),opUser.getFullName());
+                , user.getFullName(),slots[slot], body.get("date"),opUser.getFullName());
         Response response = addAppointment(opEmail, email, date, slot);
         return response;
 
@@ -146,14 +148,15 @@ public class AppointmentController {
     @ApiOperation("User create one new appointment")
     @PostMapping("userAddAppointment")
     public Response userAddAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
-                                        @RequestBody Map<String, String> body) throws ParseException {
+                                        @RequestBody Map<String, String> body) throws ParseException, MessagingException {
         String email = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         User user = userService.getUserByEmail(email);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = sdf.parse(body.get("date"));
         int slot = Integer.parseInt(body.get("slot"));
+        String[] slots ={"8:00-10:00","10:00-12:00","12:00-14:00","14:00-16:00","16:00-18:00","18:00-20:00"};
         notificationService.sendNotificationAddOrDeleteAppointment(email, NotificationTemplate.APPOINTMENT_BOOKED
-                , user.getFullName(),slot, body.get("date"),user.getFullName());
+                , user.getFullName(),slots[slot], body.get("date"),user.getFullName());
         Response response = addAppointment(email, email, date, slot);
         return response;
 
@@ -183,13 +186,14 @@ public class AppointmentController {
     @AdminLoginToken
     @PostMapping("adminDeleteAppointment")
     public Response adminDeleteAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
-                                      @RequestBody Map<String, String> body) throws ParseException {
+                                      @RequestBody Map<String, String> body) throws ParseException, MessagingException {
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         User opUser = userService.getUserByEmail(opEmail);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = sdf.parse(body.get("date"));
         int slot = Integer.parseInt(body.get("slot"));
+        String[] slots ={"8:00-10:00","10:00-12:00","12:00-14:00","14:00-16:00","16:00-18:00","18:00-20:00"};
 
         TimeSlot timeSlot = timeSlotService.getTimeSlot(date, slot);
 
@@ -201,7 +205,7 @@ public class AppointmentController {
         appointmentService.deleteAppointmentByTimeSlotId(timeSlot.getTimeSlotId());
 
         notificationService.sendNotificationAddOrDeleteAppointment(user.getEmail(), NotificationTemplate.APPOINTMENT_CANCELLED
-                , user.getFullName(),slot, body.get("date"),opUser.getFullName());
+                , user.getFullName(),slots[slot], body.get("date"),opUser.getFullName());
 
         return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(opEmail), OutputMessage.SUCCEED);
 
@@ -210,14 +214,14 @@ public class AppointmentController {
     @UserLoginToken
     @PostMapping("userDeleteAppointment")
     public Response userDeleteAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
-                                      @RequestBody Map<String, String> body) throws ParseException {
+                                      @RequestBody Map<String, String> body) throws ParseException, MessagingException {
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         User opUser = userService.getUserByEmail(opEmail);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = sdf.parse(body.get("date"));
         int slot = Integer.parseInt(body.get("slot"));
-
+        String[] slots ={"8:00-10:00","10:00-12:00","12:00-14:00","14:00-16:00","16:00-18:00","18:00-20:00"};
         TimeSlot timeSlot = timeSlotService.getTimeSlot(date, slot);
 
         timeSlotService.updateTimeSlotStatus(timeSlot.getTimeSlotId(), TimeSlotStatus.FREE);
@@ -231,7 +235,7 @@ public class AppointmentController {
         appointmentService.deleteAppointmentByTimeSlotId(timeSlot.getTimeSlotId());
 
         notificationService.sendNotificationAddOrDeleteAppointment(user.getEmail(), NotificationTemplate.APPOINTMENT_CANCELLED
-                , user.getFullName(),slot, body.get("date"),opUser.getFullName());
+                , user.getFullName(),slots[slot], body.get("date"),opUser.getFullName());
 
         return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(opEmail), OutputMessage.SUCCEED);
 
@@ -259,12 +263,12 @@ public class AppointmentController {
                 toInsert.setSlot(slot);
                 toInsert.setTimeSlotDate(cl.getTime());
                 for (TimeSlot t : oneDay) {
-                    if (t.getSlot() == slot) {
+                    if (t.getSlot() == slot && t.getTimeSlotStatus() == TimeSlotStatus.FREE) {
                         toInsert = t;
                     }
                 }
                 for (TimeSlot t : userBooked) {
-                    if (t.getSlot() == slot && t.getTimeSlotDate() == cl.getTime()) {
+                    if (t.getSlot() == slot && Objects.equals(t.getTimeSlotDate(), cl.getTime())) {
                         toInsert = t;
                     }
                 }

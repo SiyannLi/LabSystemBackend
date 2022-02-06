@@ -33,19 +33,44 @@ public class TimeSlotController {
     }
 
     @AdminLoginToken
-    @ApiOperation("setPeriodTimeSlots")
-    @PostMapping("setPeriodTimeSlots")
-    public Response setPeriodTimeSlots(@RequestHeader(KeyMessage.TOKEN) String token,
+    @ApiOperation("setPeriodTimeSlotsNA")
+    @PostMapping("setPeriodTimeSlotsNA")
+    public Response setPeriodTimeSlotsNA(@RequestHeader(KeyMessage.TOKEN) String token,
                                        @RequestBody Map<String, String> body) throws ParseException {
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate = sdf.parse(body.get("startDate"));
-        TimeSlotStatus status = TimeSlotStatus.valueOf(body.get("status"));
         int slot = Integer.parseInt(body.get("slot"));
         int endRepeatAfter = Integer.parseInt(body.get("endRepeatAfter"));
 
-        return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(opEmail)
-                , timeSlotService.setPeriodTimeSlots(startDate, slot, endRepeatAfter, status));
+        int changedLine = timeSlotService.setPeriodTimeSlotsNA(startDate, slot, endRepeatAfter);
+        if (changedLine == endRepeatAfter) {
+            return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(opEmail),"succeed");
+        }
+        else {
+            return ResponseGenerator.genFailResult(UserController.emailTokens.get(opEmail),"only " + changedLine+" time slot set to not available.");
+        }
+    }
+
+    @AdminLoginToken
+    @ApiOperation("setPeriodTimeSlotsFREE")
+    @PostMapping("setPeriodTimeSlotsFREE")
+    public Response setPeriodTimeSlotsFREE(@RequestHeader(KeyMessage.TOKEN) String token,
+                                         @RequestBody Map<String, String> body) throws ParseException {
+        String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate = sdf.parse(body.get("startDate"));
+        int slot = Integer.parseInt(body.get("slot"));
+        int endRepeatAfter = Integer.parseInt(body.get("endRepeatAfter"));
+
+        int changedLine = timeSlotService.setPeriodTimeSlotsFREE(startDate, slot, endRepeatAfter);
+        if (changedLine == endRepeatAfter) {
+            return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(opEmail),"succeed");
+        }
+        else {
+            return ResponseGenerator.genFailResult(UserController.emailTokens.get(opEmail),"only " + changedLine+" time slot set to free.");
+        }
+
     }
 
     @AdminLoginToken
@@ -86,7 +111,8 @@ public class TimeSlotController {
     @GetMapping("getBookedTimeSlot")
     public Response getBookedTimeSlot(@RequestHeader(KeyMessage.TOKEN) String token) {
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
-        List<Map<String, Object>> books = timeSlotService.getBookedTimeSlot();
+        Date today = new Date();
+        List<Map<String, Object>> books = timeSlotService.getBookedTimeSlot(today);
         Response response = ResponseGenerator.genSuccessResult(UserController.emailTokens.get(opEmail), books);
         return response;
     }

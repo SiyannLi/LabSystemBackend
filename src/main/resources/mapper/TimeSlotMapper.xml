@@ -60,6 +60,7 @@
                  left join appointment on timeSlot.timeSlotId = appointment.timeSlotId
                  left join user on appointment.userId = user.userId
         where timeSlot.timeSlotStatus = 'BOOKED'
+        and <![CDATA[timeSlotDate >= #{today}]]>
         and user.userId is not NULL
         order by user.userId
     </select>

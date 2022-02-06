@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,7 +69,7 @@ public class OrderController {
     @PostMapping("deleteOrder")
     public Response deleteOrder(@RequestHeader(KeyMessage.TOKEN) String token,
                                 @ApiParam(name = "email", value = "email", required = true)
-                                @RequestBody Map<String, String> body) {
+                                @RequestBody Map<String, String> body) throws MessagingException {
         String email = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         int orderId = Integer.parseInt(body.get(KeyMessage.ORDER_ID));
         if (orderService.orderExist(orderId)) {
@@ -111,7 +112,7 @@ public class OrderController {
     @PostMapping("submitOrder")
     public Response submitOrder(@RequestHeader(KeyMessage.TOKEN) String token,
                                 @ApiParam(name = "itemInfo", value = "itemInfo", required = true)
-                                @RequestBody Map<String, String> body) {
+                                @RequestBody Map<String, String> body) throws MessagingException {
         int amount = Integer.parseInt(body.get(KeyMessage.AMOUNT));
         String itemName = body.get(KeyMessage.ITEM_NAME);
         String link = body.get(KeyMessage.ITEM_LINK);
@@ -211,7 +212,7 @@ public class OrderController {
     @PostMapping("confirmOrder")
     public Response confirmOrder(@RequestHeader(KeyMessage.TOKEN) String token,
                                  @ApiParam(name = "orderId", value = "orderId", required = true)
-                                 @RequestBody Map<String, String> body) {
+                                 @RequestBody Map<String, String> body) throws MessagingException {
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         int orderId = Integer.parseInt(body.get(KeyMessage.ORDER_ID));
         if (orderService.orderExist(orderId)) {
@@ -236,7 +237,7 @@ public class OrderController {
     @PostMapping("rejectOrder")
     public Response rejectOrder(@RequestHeader(KeyMessage.TOKEN) String token,
                                 @ApiParam(name = "orderId", value = "orderId", required = true)
-                                @RequestBody Map<String, String> body) {
+                                @RequestBody Map<String, String> body) throws MessagingException {
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         int orderId = Integer.parseInt(body.get(KeyMessage.ORDER_ID));
         if (orderService.orderExist(orderId)) {
@@ -264,7 +265,7 @@ public class OrderController {
     @PostMapping("inStock")
     public Response inStock(@RequestHeader(KeyMessage.TOKEN) String token,
                             @ApiParam(name = "orderId", value = "orderId", required = true)
-                            @RequestBody Map<String, String> body) {
+                            @RequestBody Map<String, String> body) throws MessagingException {
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         int orderId = Integer.parseInt(body.get(KeyMessage.ORDER_ID));
         String itemName = body.get(KeyMessage.ITEM_NAME);
