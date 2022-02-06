@@ -26,7 +26,7 @@ public class TimeSlotServiceImpl implements TimeSlotService {
     }
 
     @Override
-    public int setPeriodTimeSlots(Date availableDate, int slot, int endRepeatAfter, TimeSlotStatus status) {
+    public int setPeriodTimeSlotsFREE(Date availableDate, int slot, int endRepeatAfter) {
         int resultCounter = 0;
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(availableDate);
@@ -35,11 +35,38 @@ public class TimeSlotServiceImpl implements TimeSlotService {
             TimeSlot timeSlot = new TimeSlot();
             timeSlot.setTimeSlotDate(date);
             timeSlot.setSlot(slot);
-            timeSlot.setTimeSlotStatus(status);
-            resultCounter += timeSlotDao.addTimeSlot(timeSlot);
+            timeSlot.setTimeSlotStatus(TimeSlotStatus.FREE);
+
+            TimeSlot oldSlot =timeSlotDao.getTimeSlot(date,slot);
+            if ( oldSlot == null) {
+                resultCounter += timeSlotDao.addTimeSlot(timeSlot);
+            } else if (oldSlot.getTimeSlotStatus() == TimeSlotStatus.NA){
+                resultCounter +=  timeSlotDao.updateTimeSlotStatus(oldSlot.getTimeSlotId(), TimeSlotStatus.FREE);
+            }
+
             calendar.add(Calendar.WEEK_OF_YEAR, 1);
         }
-        return resultCounter == endRepeatAfter ? 1 : 0;
+        return resultCounter;
+    }
+
+    @Override
+    public int setPeriodTimeSlotsNA(Date availableDate, int slot, int endRepeatAfter) {
+        int resultCounter = 0;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(availableDate);
+        for (int i = 0; i < endRepeatAfter; i++) {
+            Date date = calendar.getTime();
+
+            TimeSlot oldSlot =timeSlotDao.getTimeSlot(date,slot);
+            if ( oldSlot == null) {
+                resultCounter += 1;
+            } else if (oldSlot.getTimeSlotStatus() == TimeSlotStatus.FREE){
+                resultCounter +=  timeSlotDao.updateTimeSlotStatus(oldSlot.getTimeSlotId(), TimeSlotStatus.NA);
+            }
+
+            calendar.add(Calendar.WEEK_OF_YEAR, 1);
+        }
+        return resultCounter;
     }
 
     @Override
@@ -60,8 +87,8 @@ public class TimeSlotServiceImpl implements TimeSlotService {
     }
 
     @Override
-    public List<Map<String, Object>> getBookedTimeSlot() {
-        List<Map<String, Object>> books = timeSlotDao.getBookedTimeSlot();
+    public List<Map<String, Object>> getBookedTimeSlot(Date today) {
+        List<Map<String, Object>> books = timeSlotDao.getBookedTimeSlot(today);
         return books;
     }
 

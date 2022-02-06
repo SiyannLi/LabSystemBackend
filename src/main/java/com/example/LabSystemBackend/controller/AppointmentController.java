@@ -259,12 +259,12 @@ public class AppointmentController {
                 toInsert.setSlot(slot);
                 toInsert.setTimeSlotDate(cl.getTime());
                 for (TimeSlot t : oneDay) {
-                    if (t.getSlot() == slot) {
+                    if (t.getSlot() == slot && t.getTimeSlotStatus() == TimeSlotStatus.FREE) {
                         toInsert = t;
                     }
                 }
                 for (TimeSlot t : userBooked) {
-                    if (t.getSlot() == slot && t.getTimeSlotDate() == cl.getTime()) {
+                    if (t.getSlot() == slot && Objects.equals(t.getTimeSlotDate(), cl.getTime())) {
                         toInsert = t;
                     }
                 }
