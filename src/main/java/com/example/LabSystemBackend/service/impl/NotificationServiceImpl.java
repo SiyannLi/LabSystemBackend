@@ -10,8 +10,12 @@ import com.example.LabSystemBackend.ui.NotificationTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
@@ -39,20 +43,26 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public int sendNotification(String email, Notification notification) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        String recipientEmail = email;
-        message.setFrom(sysEmail);
-        message.setTo(recipientEmail);
-        message.setSubject(notification.getSubject());
-        message.setText(notification.getContent());
-        mailSender.send(message);
+    public int sendNotification(String email, Notification notification) throws MessagingException {
+        System.out.print(notification);
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper mHelper = new MimeMessageHelper(mimeMessage,
+                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
+        mHelper.setFrom(sysEmail);
+        mHelper.setTo(email);
+        mHelper.setSubject(notification.getSubject());
+        String content = notification.getContent();
+        String htmlMsg = "<body>" + content + "</body>"; //style='border:2px solid black
+        mHelper.setText(htmlMsg, true);
+        mailSender.send(mimeMessage);
 
         return notificationDao.insertNotification(notification);
     }
 
     @Override
-    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName) {
+    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName)
+            throws MessagingException {
+        System.out.print(userName);
         Notification notification = new Notification();
         notification.setSenderId(User.ID_OF_SYSTEM);
         if (userService.emailExists(email)) {
@@ -67,7 +77,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, String opEmail) {
+    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, String opEmail) throws MessagingException {
         Notification notification = new Notification();
         notification.setSenderId(User.ID_OF_SYSTEM);
         if (userService.emailExists(email)) {
@@ -82,7 +92,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, Order order) {
+    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, Order order) throws MessagingException {
         Notification notification = new Notification();
         notification.setSenderId(User.ID_OF_SYSTEM);
         if (userService.emailExists(email)) {
@@ -97,7 +107,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, String opEmail, Order order) {
+    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, String opEmail, Order order) throws MessagingException {
         Notification notification = new Notification();
         notification.setSenderId(User.ID_OF_SYSTEM);
         if (userService.emailExists(email)) {
@@ -112,7 +122,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public int sendNotificationAddOrDeleteAppointment(String email, NotificationTemplate template, String userName, int timeSlot, String date, String operatorName){
+    public int sendNotificationAddOrDeleteAppointment(String email, NotificationTemplate template, String userName,
+                                                      String timeSlot, String date, String operatorName) throws MessagingException {
         Notification notification = new Notification();
         notification.setSenderId(User.ID_OF_SYSTEM);
         if (userService.emailExists(email)) {
