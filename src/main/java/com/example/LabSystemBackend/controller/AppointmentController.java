@@ -142,7 +142,7 @@ public class AppointmentController {
 
     }
 
-    @AdminLoginToken
+    @UserLoginToken
     @ApiOperation("User create one new appointment")
     @PostMapping("userAddAppointment")
     public Response userAddAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
@@ -181,8 +181,8 @@ public class AppointmentController {
 
 
     @AdminLoginToken
-    @PostMapping("deleteAppointment")
-    public Response deleteAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
+    @PostMapping("adminDeleteAppointment")
+    public Response adminDeleteAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
                                       @RequestBody Map<String, String> body) throws ParseException {
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         User opUser = userService.getUserByEmail(opEmail);
@@ -198,6 +198,36 @@ public class AppointmentController {
         Appointment appointment = appointmentService.getAppointmentByTimeSlotId(timeSlot.getTimeSlotId());
         int userId = appointment.getUserId();
         User user = userService.getUser(userId);
+        appointmentService.deleteAppointmentByTimeSlotId(timeSlot.getTimeSlotId());
+
+        notificationService.sendNotificationAddOrDeleteAppointment(user.getEmail(), NotificationTemplate.APPOINTMENT_CANCELLED
+                , user.getFullName(),slot, body.get("date"),opUser.getFullName());
+
+        return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(opEmail), OutputMessage.SUCCEED);
+
+    }
+
+    @UserLoginToken
+    @PostMapping("userDeleteAppointment")
+    public Response userDeleteAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
+                                      @RequestBody Map<String, String> body) throws ParseException {
+        String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
+        User opUser = userService.getUserByEmail(opEmail);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = sdf.parse(body.get("date"));
+        int slot = Integer.parseInt(body.get("slot"));
+
+        TimeSlot timeSlot = timeSlotService.getTimeSlot(date, slot);
+
+        timeSlotService.updateTimeSlotStatus(timeSlot.getTimeSlotId(), TimeSlotStatus.FREE);
+
+        Appointment appointment = appointmentService.getAppointmentByTimeSlotId(timeSlot.getTimeSlotId());
+        int userId = appointment.getUserId();
+        User user = userService.getUser(userId);
+        if (!Objects.equals(opUser.getUserId(), user.getUserId())) {
+            return ResponseGenerator.genFailResult("you can not cancel other's appointment.");
+        }
         appointmentService.deleteAppointmentByTimeSlotId(timeSlot.getTimeSlotId());
 
         notificationService.sendNotificationAddOrDeleteAppointment(user.getEmail(), NotificationTemplate.APPOINTMENT_CANCELLED

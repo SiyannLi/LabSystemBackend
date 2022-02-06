@@ -437,7 +437,7 @@ public class UserController {
 
     @AdminLoginToken
     @ApiOperation("Change email settings")
-    @GetMapping("changeEmailSetting")
+    @PostMapping("changeEmailSetting")
     public Response changeEmailSetting(@RequestHeader("Authorization") String token,
                                        @ApiParam(name = "isReceiveBulkEmail", value = "isReceiveBulkEmail", required = true)
                                        @RequestBody Map<String, String> body) {
