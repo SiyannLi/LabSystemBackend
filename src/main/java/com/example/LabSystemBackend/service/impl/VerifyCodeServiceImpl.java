@@ -9,6 +9,7 @@ import com.example.LabSystemBackend.service.VerifyCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.util.Random;
 
 @Service
@@ -31,7 +32,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
     }
 
     @Override
-    public Notification sendVerifyCode(String email, String code) {
+    public Notification sendVerifyCode(String email, String code) throws MessagingException {
 
         Notification notification = new Notification();
         notification.setSenderId(User.ID_OF_SYSTEM);

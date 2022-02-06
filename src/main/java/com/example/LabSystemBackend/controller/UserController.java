@@ -17,6 +17,7 @@ import com.example.LabSystemBackend.ui.NotificationTemplate;
 import com.example.LabSystemBackend.ui.OutputMessage;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.ibatis.annotations.Lang;
 import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.mail.MessagingException;
 import java.util.*;
 
 
@@ -35,7 +37,6 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     public static final HashMap<String, String> emailVerifyCodes = new HashMap<>();
     public static final HashMap<String, String> emailTokens = new HashMap<>();
-
 
     @Autowired
     private UserService userService;
@@ -49,7 +50,7 @@ public class UserController {
     @ApiOperation("send verification code")
     @PostMapping("sendVerificationCode")
     public Response sendVerificationCode(@ApiParam(name = "emailAndInfo", value = "emailAndInfo", required = true)
-                                         @Param("email") @RequestBody Map<String, String> body) {
+                                         @Param("email") @RequestBody Map<String, String> body) throws MessagingException {
         String info = body.get(KeyMessage.INFO);
         String email = body.get(KeyMessage.EMAIL);
         boolean userExist = userService.emailExists(email);
@@ -131,6 +132,7 @@ public class UserController {
         if (!userService.emailExists(email)) {
             return ResponseGenerator.genFailResult(OutputMessage.USER_NOT_EXISTS);
         }
+
         User user = userService.getUserByEmail(email);
         if (user.getUserRole().equals(UserRole.USER)) {
             return ResponseGenerator.genFailResult(OutputMessage.NOT_ADMIN);
@@ -160,7 +162,7 @@ public class UserController {
     @ApiOperation("register one account")
     @PostMapping("register")
     public Response register(@ApiParam(name = "email", value = "email", required = true)
-                             @RequestBody Map<String, String> body) {
+                             @RequestBody Map<String, String> body) throws MessagingException {
         String email = body.get(KeyMessage.EMAIL);
         String password = body.get("userPassword");
         String firstName = body.get(KeyMessage.FIRSTNAME);
@@ -200,7 +202,7 @@ public class UserController {
     @ApiOperation("reset password")
     @PostMapping("resetPassword")
     public Response resetPassword(@ApiParam(name = "email", value = "email", required = true)
-                                  @RequestBody Map<String, String> body) {
+                                  @RequestBody Map<String, String> body) throws MessagingException {
         String email = body.get("email");
         String newPassword = body.get("userPassword");
         String verCode = body.get("verifyCode");
@@ -253,7 +255,7 @@ public class UserController {
     @PostMapping("confirmUserRegistration")
     public Response confirmUserRegistration(@RequestHeader("Authorization") String token,
             @ApiParam(name = "email", value = "email", required = true)
-            @RequestBody Map<String, String> body) {
+            @RequestBody Map<String, String> body) throws MessagingException {
         String email = body.get("email");
         logger.info("email :" + email);
         String opEmail = JwtUtil.getUserInfo(token, "email");
@@ -262,6 +264,7 @@ public class UserController {
             if (!UserAccountStatus.PENDING.equals(user.getUserAccountStatus())) {
                 return ResponseGenerator.genFailResult(emailTokens.get(opEmail), "User status is not pending");
             }
+            System.out.print(user);
             notificationService.sendNotificationByTemplate(email, NotificationTemplate.REGISTER_SUCCESS
                     , user.getFullName());
             return ResponseGenerator.genSuccessResult(emailTokens.get(opEmail), userService.confirmUserRegistration(user.getUserId()));
@@ -275,7 +278,7 @@ public class UserController {
     @PostMapping("rejectUserRegistration")
     public Response rejectUserRegistration(@RequestHeader("Authorization") String token,
                                            @ApiParam(name = "email", value = "email", required = true)
-                                           @RequestBody Map<String, String> body) {
+                                           @RequestBody Map<String, String> body) throws MessagingException {
         String email = body.get("email");
 
         logger.info("email :" + email);
@@ -301,7 +304,7 @@ public class UserController {
     @PostMapping("resetUserInfo")
     public Response resetUserInfo(@RequestHeader("Authorization") String token,
                                   @ApiParam(name = "nameAndStatus", value = "nameAndStatus", required = true)
-                                  @RequestBody Map<String, String> body) {
+                                  @RequestBody Map<String, String> body) throws MessagingException {
         String firstName = body.get("firstName");
         String lastName = body.get("lastName");
         String userStatus = body.get("userStatus");
@@ -382,7 +385,7 @@ public class UserController {
     @PostMapping("insertAdmin")
     public Response insertAdmin(@RequestHeader("Authorization") String token,
             @ApiParam(name = "email", value = "email", required = true)
-            @RequestBody Map<String, String> body) {
+            @RequestBody Map<String, String> body) throws MessagingException {
         String email = body.get("email");
         String opEmail = JwtUtil.getUserInfo(token, "email");
         logger.info("email " + email);
@@ -409,7 +412,7 @@ public class UserController {
     @PostMapping("revokeAdmin")
     public Response revokeAdmin(@RequestHeader("Authorization") String token,
                                 @ApiParam(name = "email", value = "email", required = true)
-                                @RequestBody Map<String, String> body) {
+                                @RequestBody Map<String, String> body) throws MessagingException {
         String email = body.get("email");
         String opEmail = JwtUtil.getUserInfo(token, "email");
         logger.info("email " + email);
