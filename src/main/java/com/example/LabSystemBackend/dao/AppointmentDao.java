@@ -24,5 +24,6 @@ public interface AppointmentDao {
 
     int addAppointment(@Param("appointment") Appointment appointment);
 
+    Appointment getAppointmentByTimeSlotId(@Param("timeSlotId") int timeSlotId);
 
 }

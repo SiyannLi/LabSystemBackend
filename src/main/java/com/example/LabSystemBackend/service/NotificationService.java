@@ -21,6 +21,8 @@ public interface NotificationService {
 
     int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, String opEmail
             , Order order);
+    public int sendNotificationAddOrDeleteAppointment(String email, NotificationTemplate template, String userName,
+                                                      int timeSlot, String date, String operationName);
 
     List<Notification> getAllNotification();
 

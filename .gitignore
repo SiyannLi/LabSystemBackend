@@ -34,3 +34,4 @@ build/
 
 .github
 src/test
+src/main/resources/application.yml

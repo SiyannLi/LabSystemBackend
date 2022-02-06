@@ -14,6 +14,7 @@ import com.example.LabSystemBackend.service.NotificationService;
 import com.example.LabSystemBackend.service.TimeSlotService;
 import com.example.LabSystemBackend.service.UserService;
 import com.example.LabSystemBackend.ui.KeyMessage;
+import com.example.LabSystemBackend.ui.NotificationTemplate;
 import com.example.LabSystemBackend.ui.OutputMessage;
 import com.github.javafaker.App;
 import io.swagger.annotations.ApiOperation;
@@ -40,6 +41,8 @@ public class AppointmentController {
     private UserService userService;
     @Autowired
     private TimeSlotService timeSlotService;
+    @Autowired
+    private NotificationService notificationService;
 
 
     @UserLoginToken
@@ -126,24 +129,31 @@ public class AppointmentController {
     public Response adminAddAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
                                    @RequestBody Map<String, String> body) throws ParseException {
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
+        User opUser = userService.getUserByEmail(opEmail);
         String email = body.get("email");
+        User user = userService.getUserByEmail(body.get("email"));
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = sdf.parse(body.get("date"));
         int slot = Integer.parseInt(body.get("slot"));
+        notificationService.sendNotificationAddOrDeleteAppointment(email, NotificationTemplate.APPOINTMENT_BOOKED
+                , user.getFullName(),slot, body.get("date"),opUser.getFullName());
         Response response = addAppointment(opEmail, email, date, slot);
         return response;
 
     }
 
-    @AdminLoginToken
+    @UserLoginToken
     @ApiOperation("User create one new appointment")
     @PostMapping("userAddAppointment")
     public Response userAddAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
                                         @RequestBody Map<String, String> body) throws ParseException {
         String email = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
+        User user = userService.getUserByEmail(email);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = sdf.parse(body.get("date"));
         int slot = Integer.parseInt(body.get("slot"));
+        notificationService.sendNotificationAddOrDeleteAppointment(email, NotificationTemplate.APPOINTMENT_BOOKED
+                , user.getFullName(),slot, body.get("date"),user.getFullName());
         Response response = addAppointment(email, email, date, slot);
         return response;
 
@@ -171,10 +181,12 @@ public class AppointmentController {
 
 
     @AdminLoginToken
-    @PostMapping("deleteAppointment")
-    public Response deleteAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
+    @PostMapping("adminDeleteAppointment")
+    public Response adminDeleteAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
                                       @RequestBody Map<String, String> body) throws ParseException {
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
+        User opUser = userService.getUserByEmail(opEmail);
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = sdf.parse(body.get("date"));
         int slot = Integer.parseInt(body.get("slot"));
@@ -183,7 +195,43 @@ public class AppointmentController {
 
         timeSlotService.updateTimeSlotStatus(timeSlot.getTimeSlotId(), TimeSlotStatus.FREE);
 
+        Appointment appointment = appointmentService.getAppointmentByTimeSlotId(timeSlot.getTimeSlotId());
+        int userId = appointment.getUserId();
+        User user = userService.getUser(userId);
         appointmentService.deleteAppointmentByTimeSlotId(timeSlot.getTimeSlotId());
+
+        notificationService.sendNotificationAddOrDeleteAppointment(user.getEmail(), NotificationTemplate.APPOINTMENT_CANCELLED
+                , user.getFullName(),slot, body.get("date"),opUser.getFullName());
+
+        return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(opEmail), OutputMessage.SUCCEED);
+
+    }
+
+    @UserLoginToken
+    @PostMapping("userDeleteAppointment")
+    public Response userDeleteAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
+                                      @RequestBody Map<String, String> body) throws ParseException {
+        String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
+        User opUser = userService.getUserByEmail(opEmail);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = sdf.parse(body.get("date"));
+        int slot = Integer.parseInt(body.get("slot"));
+
+        TimeSlot timeSlot = timeSlotService.getTimeSlot(date, slot);
+
+        timeSlotService.updateTimeSlotStatus(timeSlot.getTimeSlotId(), TimeSlotStatus.FREE);
+
+        Appointment appointment = appointmentService.getAppointmentByTimeSlotId(timeSlot.getTimeSlotId());
+        int userId = appointment.getUserId();
+        User user = userService.getUser(userId);
+        if (!Objects.equals(opUser.getUserId(), user.getUserId())) {
+            return ResponseGenerator.genFailResult("you can not cancel other's appointment.");
+        }
+        appointmentService.deleteAppointmentByTimeSlotId(timeSlot.getTimeSlotId());
+
+        notificationService.sendNotificationAddOrDeleteAppointment(user.getEmail(), NotificationTemplate.APPOINTMENT_CANCELLED
+                , user.getFullName(),slot, body.get("date"),opUser.getFullName());
 
         return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(opEmail), OutputMessage.SUCCEED);
 

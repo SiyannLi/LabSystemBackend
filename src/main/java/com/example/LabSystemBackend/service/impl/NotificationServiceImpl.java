@@ -111,6 +111,20 @@ public class NotificationServiceImpl implements NotificationService {
         return sendNotification(email, notification);
     }
 
+    @Override
+    public int sendNotificationAddOrDeleteAppointment(String email, NotificationTemplate template, String userName, int timeSlot, String date, String operatorName){
+        Notification notification = new Notification();
+        notification.setSenderId(User.ID_OF_SYSTEM);
+        if (userService.emailExists(email)) {
+            notification.setRecipientId(userService.getUserByEmail(email).getUserId());
+        } else {
+            notification.setRecipientId(User.ID_OF_UNREGISTERED);
+        }
+        notification.setSubject(template.getSubject());
+        notification.setContent(String.format(template.getContent()
+                , userName, timeSlot, date, operatorName));
+        return sendNotification(email, notification);
+    }
 
     @Override
     public List<Notification> getAllNotification() {

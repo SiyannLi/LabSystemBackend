@@ -19,4 +19,6 @@ public interface AppointmentService {
 
     //用户新建一个预约
     int addAppointment(int userId, int timeSlotId);
+
+    Appointment getAppointmentByTimeSlotId(int timeSlotId);
 }

@@ -35,6 +35,11 @@
         where timeSlotId = #{timeSlotId}
     </delete>
 
+    <select id="getAppointmentByTimeSlotId" resultType="com.example.LabSystemBackend.entity.Appointment">
+        select *
+        from appointment
+        where timeSlotId = #{timeSlotId}
+    </select>
     <insert id="addAppointment" parameterType="com.example.LabSystemBackend.entity.Appointment"
             useGeneratedKeys="true" keyProperty="appointmentId">
         insert into appointment(userId, timeSlotId)
