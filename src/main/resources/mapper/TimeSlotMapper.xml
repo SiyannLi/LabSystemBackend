@@ -12,7 +12,6 @@
 
     </select>
 
-
     <select id="timeSlotPeriod" resultType="com.example.LabSystemBackend.entity.TimeSlot">
         SELECT *
         from timeSlot
@@ -60,7 +59,7 @@
                  left join appointment on timeSlot.timeSlotId = appointment.timeSlotId
                  left join user on appointment.userId = user.userId
         where timeSlot.timeSlotStatus = 'BOOKED'
-        and <![CDATA[timeSlotDate >= #{today}]]>
+        and <![CDATA[timeSlotDate >= subdate(now(),1)]]>
         and user.userId is not NULL
         order by user.userId
     </select>

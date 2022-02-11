@@ -6,6 +6,12 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * @version 1.0
+ * @author Siyan Li
+ *
+ * Time slot
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

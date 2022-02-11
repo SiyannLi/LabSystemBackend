@@ -7,7 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li
+ *
+ * Implement of Item Service
+ */
 @Service
 public class ItemServiceImpl implements ItemService {
     @Autowired
@@ -47,17 +52,4 @@ public class ItemServiceImpl implements ItemService {
         return itemDao.getItemByName(itemName);
     }
 
-    @Override
-    public int mergeItem(int itemId, int targetItemId) {
-        Item item = itemDao.getItemById(itemId);
-        Item target = itemDao.getItemById(targetItemId);
-        int amount = item.getAmount() + target.getAmount();
-        if (itemDao.changeItemAmount(targetItemId, amount) == 1 &&
-                itemDao.deleteItem(itemId) == 1) {
-            return 1;
-        } else {
-            return 0;
-        }
-
-    }
 }

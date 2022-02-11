@@ -4,9 +4,9 @@ package com.example.LabSystemBackend.controller;
 import com.example.LabSystemBackend.common.Response;
 import com.example.LabSystemBackend.common.ResponseGenerator;
 import com.example.LabSystemBackend.entity.*;
-import com.example.LabSystemBackend.jwt.comment.AdminLoginToken;
-import com.example.LabSystemBackend.jwt.comment.PassToken;
-import com.example.LabSystemBackend.jwt.comment.SuperAdminLoginToken;
+import com.example.LabSystemBackend.jwt.annotation.AdminLoginToken;
+import com.example.LabSystemBackend.jwt.annotation.PassToken;
+import com.example.LabSystemBackend.jwt.annotation.SuperAdminLoginToken;
 import com.example.LabSystemBackend.service.VerifyCodeService;
 import com.example.LabSystemBackend.jwt.JwtUtil;
 import com.example.LabSystemBackend.service.NotificationService;
@@ -17,18 +17,24 @@ import com.example.LabSystemBackend.ui.NotificationTemplate;
 import com.example.LabSystemBackend.ui.OutputMessage;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.ibatis.annotations.Lang;
 import org.apache.ibatis.annotations.Param;
+import org.checkerframework.checker.units.qual.K;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
 
 import javax.mail.MessagingException;
 import java.util.*;
 
-
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li
+ *
+ * User Controller
+ */
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/users")
@@ -149,7 +155,7 @@ public class UserController {
 
 
     @GetMapping("logout")
-    public Response logout(@RequestHeader("Authorization") String token) {
+    public Response logout(@RequestHeader(KeyMessage.TOKEN) String token) {
         String email = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         logger.info("emailServer: " + emailTokens.get(email));
         emailTokens.remove(email);
@@ -164,7 +170,7 @@ public class UserController {
     public Response register(@ApiParam(name = "email", value = "email", required = true)
                              @RequestBody Map<String, String> body) throws MessagingException {
         String email = body.get(KeyMessage.EMAIL);
-        String password = body.get("userPassword");
+        String password = body.get(KeyMessage.USER_PASSWORD);
         String firstName = body.get(KeyMessage.FIRSTNAME);
         String lastName = body.get(KeyMessage.LASTNAME);
         String verificationCode = body.get(KeyMessage.VERIFY_CODE);
@@ -179,22 +185,16 @@ public class UserController {
         if (userService.emailExists(email)) {
             return ResponseGenerator.genFailResult(OutputMessage.USER_EXISTS);
         }
-        if (verificationCode.equals(verifyCode)) {
+        if (verifyCodeService.checkVerifyCode(verificationCode, verifyCode)) {
             String userName = firstName + OutputMessage.BLANK + lastName;
             userService.register(email, password, firstName, lastName);
             emailVerifyCodes.remove(email);
             notificationService.sendNotificationByTemplate(email, NotificationTemplate.RESISTER_FINISHED
                     , userName);
-            List<User> admins = userService.getAllAdminReceiveBulkEmail();
-            for (User admin : admins) {
-                String adminEmail = admin.getEmail();
-                String adminName = admin.getFullName();
-                notificationService.sendNotificationByTemplate(adminEmail, NotificationTemplate.NEW_REGISTRATION_REQUEST
-                        , adminName);
-            }
-            return ResponseGenerator.genSuccessResult();
+           notificationService.sendToAllAdmin(NotificationTemplate.NEW_REGISTRATION_REQUEST);
+            return ResponseGenerator.genSuccessResult(OutputMessage.SUCCEED);
         } else {
-            return ResponseGenerator.genFailResult("Invalid verification code");
+            return ResponseGenerator.genFailResult(OutputMessage.INVALID_VERIFY_CODE);
         }
     }
 
@@ -203,25 +203,26 @@ public class UserController {
     @PostMapping("resetPassword")
     public Response resetPassword(@ApiParam(name = "email", value = "email", required = true)
                                   @RequestBody Map<String, String> body) throws MessagingException {
-        String email = body.get("email");
-        String newPassword = body.get("userPassword");
-        String verCode = body.get("verifyCode");
-
+        String email = body.get(KeyMessage.EMAIL);
+        String newPassword = body.get(KeyMessage.USER_PASSWORD);
+        String verCode = body.get(KeyMessage.VERIFY_CODE);
+        String verifyCode = emailVerifyCodes.get(email);
         logger.info("email " + email);
         logger.info("password " + newPassword);
         logger.info("verificationCode " + verCode);
 
 
-        if (verCode.equals(emailVerifyCodes.get(email))) {
+        if (verifyCodeService.checkVerifyCode(verCode, verifyCode)) {
             User user = userService.getUserByEmail(email);
             notificationService.sendNotificationByTemplate(email, NotificationTemplate.PASSWORD_RESET_SUCCESS
                     , user.getFullName());
             emailVerifyCodes.remove(email);
             emailTokens.remove(email);
             logger.info(newPassword);
-            return ResponseGenerator.genSuccessResult(userService.resetPassword(email, newPassword));
+            userService.resetPassword(email, newPassword);
+            return ResponseGenerator.genSuccessResult(OutputMessage.SUCCEED);
         } else {
-            return ResponseGenerator.genFailResult("Invalid verification code");
+            return ResponseGenerator.genFailResult(OutputMessage.INVALID_VERIFY_CODE);
         }
 
     }
@@ -230,22 +231,22 @@ public class UserController {
     @AdminLoginToken
     @ApiOperation("get a list of all accounts to be confirmed")
     @GetMapping("getAllAccountToBeConfirmed")
-    public Response getAllAccountToBeConfirmed(@RequestHeader("Authorization") String token) {
-        String opEmail = JwtUtil.getUserInfo(token, "email");
+    public Response getAllAccountToBeConfirmed(@RequestHeader(KeyMessage.TOKEN) String token) {
+        String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         List<User> users = userService.getAllAccountToBeConfirmed();
         if (!users.isEmpty()) {
             List<Map<String, String>> usersInfo = new ArrayList<>();
             for (User user : users) {
                 int idx = users.indexOf(user);
                 usersInfo.add(new HashMap<>());
-                usersInfo.get(idx).put("firstName", user.getFirstName());
-                usersInfo.get(idx).put("lastName", user.getLastName());
-                usersInfo.get(idx).put("email", user.getEmail());
+                usersInfo.get(idx).put(KeyMessage.FIRSTNAME, user.getFirstName());
+                usersInfo.get(idx).put(KeyMessage.LASTNAME, user.getLastName());
+                usersInfo.get(idx).put(KeyMessage.EMAIL, user.getEmail());
 
             }
             return ResponseGenerator.genSuccessResult(emailTokens.get(opEmail), usersInfo);
         } else {
-            return ResponseGenerator.genFailResult(emailTokens.get(opEmail), "No users to be confirmed");
+            return ResponseGenerator.genFailResult(emailTokens.get(opEmail), OutputMessage.NO_USER_TO_CONFIRM);
 
         }
     }
@@ -253,47 +254,46 @@ public class UserController {
     @AdminLoginToken
     @ApiOperation("confirm the registration of user to create a new account")
     @PostMapping("confirmUserRegistration")
-    public Response confirmUserRegistration(@RequestHeader("Authorization") String token,
+    public Response confirmUserRegistration(@RequestHeader(KeyMessage.TOKEN) String token,
             @ApiParam(name = "email", value = "email", required = true)
             @RequestBody Map<String, String> body) throws MessagingException {
-        String email = body.get("email");
+        String email = body.get(KeyMessage.EMAIL);
         logger.info("email :" + email);
-        String opEmail = JwtUtil.getUserInfo(token, "email");
+        String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         if (userService.emailExists(email)) {
             User user = userService.getUserByEmail(email);
             if (!UserAccountStatus.PENDING.equals(user.getUserAccountStatus())) {
-                return ResponseGenerator.genFailResult(emailTokens.get(opEmail), "User status is not pending");
+                return ResponseGenerator.genFailResult(emailTokens.get(opEmail), OutputMessage.USER_NOT_PENDING);
             }
-            System.out.print(user);
             notificationService.sendNotificationByTemplate(email, NotificationTemplate.REGISTER_SUCCESS
                     , user.getFullName());
             return ResponseGenerator.genSuccessResult(emailTokens.get(opEmail), userService.confirmUserRegistration(user.getUserId()));
         } else {
-            return ResponseGenerator.genFailResult(emailTokens.get(opEmail), "User does not exist");
+            return ResponseGenerator.genFailResult(emailTokens.get(opEmail), OutputMessage.USER_NOT_EXISTS);
         }
     }
 
     @AdminLoginToken
     @ApiOperation("reject the application of user to create a new account")
     @PostMapping("rejectUserRegistration")
-    public Response rejectUserRegistration(@RequestHeader("Authorization") String token,
+    public Response rejectUserRegistration(@RequestHeader(KeyMessage.TOKEN) String token,
                                            @ApiParam(name = "email", value = "email", required = true)
                                            @RequestBody Map<String, String> body) throws MessagingException {
-        String email = body.get("email");
+        String email = body.get(KeyMessage.EMAIL);
 
         logger.info("email :" + email);
 
-        String opEmail = JwtUtil.getUserInfo(token, "email");
+        String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         if (userService.emailExists(email)) {
             User user = userService.getUserByEmail(email);
             if (!UserAccountStatus.PENDING.equals(user.getUserAccountStatus())) {
-                return ResponseGenerator.genFailResult(emailTokens.get(opEmail), "User status is not pending");
+                return ResponseGenerator.genFailResult(emailTokens.get(opEmail), OutputMessage.USER_NOT_PENDING);
             }
             notificationService.sendNotificationByTemplate(email, NotificationTemplate.REGISTER_REJECTED
                     , user.getFullName(), opEmail);
             return ResponseGenerator.genSuccessResult(emailTokens.get(opEmail), userService.rejectUserRegistration(user.getUserId()));
         } else {
-            return ResponseGenerator.genFailResult(emailTokens.get(opEmail), "User does not exist");
+            return ResponseGenerator.genFailResult(emailTokens.get(opEmail), OutputMessage.USER_NOT_EXISTS);
         }
 
     }
@@ -302,14 +302,14 @@ public class UserController {
     @AdminLoginToken
     @ApiOperation("reset information of users ")
     @PostMapping("resetUserInfo")
-    public Response resetUserInfo(@RequestHeader("Authorization") String token,
+    public Response resetUserInfo(@RequestHeader(KeyMessage.TOKEN) String token,
                                   @ApiParam(name = "nameAndStatus", value = "nameAndStatus", required = true)
                                   @RequestBody Map<String, String> body) throws MessagingException {
-        String firstName = body.get("firstName");
-        String lastName = body.get("lastName");
-        String userStatus = body.get("userStatus");
-        String email = body.get("email");
-        String opEmail = JwtUtil.getUserInfo(token, "email");
+        String firstName = body.get(KeyMessage.FIRSTNAME);
+        String lastName = body.get(KeyMessage.LASTNAME);
+        String userStatus = body.get(KeyMessage.USER_STATUS);
+        String email = body.get(KeyMessage.EMAIL);
+        String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
 
         logger.info("email " + email);
         logger.info("opEmail " + opEmail);
@@ -322,20 +322,20 @@ public class UserController {
             int userId = user.getUserId();
             userService.updateName(userId, firstName, lastName);
             switch (userStatus.toLowerCase()) {
-                case "active":
+                case InputMessage.ACTIVE:
                     userService.activateUser(userId);
                     break;
-                case "inactive":
+                case InputMessage.INACTIVE:
                     userService.deactivateUser(userId);
                     break;
                 default:
-                    return ResponseGenerator.genFailResult(emailTokens.get(opEmail), "Input error");
+                    return ResponseGenerator.genFailResult(emailTokens.get(opEmail), OutputMessage.INPUT_ERROR);
             }
             notificationService.sendNotificationByTemplate(email, NotificationTemplate.INFO_CHANGED
                     , user.getFullName(), opEmail);
-            return ResponseGenerator.genSuccessResult(emailTokens.get(opEmail),"SUCCEED");
+            return ResponseGenerator.genSuccessResult(emailTokens.get(opEmail),OutputMessage.SUCCEED);
         } else {
-            return ResponseGenerator.genFailResult(emailTokens.get(opEmail), "User does not exist");
+            return ResponseGenerator.genFailResult(emailTokens.get(opEmail), OutputMessage.USER_NOT_EXISTS);
         }
 
     }
@@ -344,17 +344,17 @@ public class UserController {
     @AdminLoginToken
     @ApiOperation("get all users")
     @GetMapping("getAllUsers")
-    public Response getAllUsers(@RequestHeader("Authorization") String token) {
-        String opEmail = JwtUtil.getUserInfo(token, "email");
+    public Response getAllUsers(@RequestHeader(KeyMessage.TOKEN) String token) {
+        String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         List<User> users = userService.getAllUsers();
         List<Map<String, String>> usersInfo = new ArrayList<>();
         for (User user : users) {
             int idx = users.indexOf(user);
             usersInfo.add(new HashMap<>());
-            usersInfo.get(idx).put("firstName", user.getFirstName());
-            usersInfo.get(idx).put("lastName", user.getLastName());
-            usersInfo.get(idx).put("email", user.getEmail());
-            usersInfo.get(idx).put("userAccountStatus", user.getUserAccountStatus().getStatusValue());
+            usersInfo.get(idx).put(KeyMessage.FIRSTNAME, user.getFirstName());
+            usersInfo.get(idx).put(KeyMessage.LASTNAME, user.getLastName());
+            usersInfo.get(idx).put(KeyMessage.EMAIL, user.getEmail());
+            usersInfo.get(idx).put(KeyMessage.USER_ACCOUNT_STATUS, user.getUserAccountStatus().getStatusValue());
 
         }
         return ResponseGenerator.genSuccessResult(emailTokens.get(opEmail), usersInfo);
@@ -364,16 +364,16 @@ public class UserController {
     @SuperAdminLoginToken
     @ApiOperation("get a list of all admins")
     @GetMapping("getAllAdministrator")
-    public Response getAllAdministrator(@RequestHeader("Authorization") String token) {
-        String opEmail = JwtUtil.getUserInfo(token, "email");
+    public Response getAllAdministrator(@RequestHeader(KeyMessage.TOKEN) String token) {
+        String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         List<User> admins = userService.getAllAdministrators();
         List<Map<String, String>> adminsInfo = new ArrayList<>();
         for (User admin : admins) {
             int idx = admins.indexOf(admin);
             adminsInfo.add(new HashMap<>());
-            adminsInfo.get(idx).put("firstName", admin.getFirstName());
-            adminsInfo.get(idx).put("lastName", admin.getLastName());
-            adminsInfo.get(idx).put("email", admin.getEmail());
+            adminsInfo.get(idx).put(KeyMessage.FIRSTNAME, admin.getFirstName());
+            adminsInfo.get(idx).put(KeyMessage.LASTNAME, admin.getLastName());
+            adminsInfo.get(idx).put(KeyMessage.EMAIL, admin.getEmail());
 
         }
         return ResponseGenerator.genSuccessResult(emailTokens.get(opEmail), adminsInfo);
@@ -383,26 +383,26 @@ public class UserController {
     @SuperAdminLoginToken
     @ApiOperation("insert a admin")
     @PostMapping("insertAdmin")
-    public Response insertAdmin(@RequestHeader("Authorization") String token,
+    public Response insertAdmin(@RequestHeader(KeyMessage.TOKEN) String token,
             @ApiParam(name = "email", value = "email", required = true)
             @RequestBody Map<String, String> body) throws MessagingException {
-        String email = body.get("email");
-        String opEmail = JwtUtil.getUserInfo(token, "email");
+        String email = body.get(KeyMessage.EMAIL);
+        String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         logger.info("email " + email);
         logger.info("opEmail " + opEmail);
         if (userService.emailExists(email)) {
             User user = userService.getUserByEmail(email);
             if (!user.getUserRole().equals(UserRole.USER)) {
                 return ResponseGenerator.genFailResult(emailTokens.get(opEmail)
-                        , "This account is already an administrator account.");
+                        , OutputMessage.ALREADY_ADMIN);
             }
             userService.updateUserRole(user.getUserId(), UserRole.ADMIN);
             userService.updateAdminEmailSetting(user.getUserId(), true);
             notificationService.sendNotificationByTemplate(email, NotificationTemplate.BECOME_ADMIN
                     , user.getFullName());
-            return ResponseGenerator.genSuccessResult(emailTokens.get(opEmail), "SUCCESS");
+            return ResponseGenerator.genSuccessResult(emailTokens.get(opEmail), OutputMessage.SUCCEED);
         } else {
-            return ResponseGenerator.genFailResult(emailTokens.get(opEmail), "User does not exist");
+            return ResponseGenerator.genFailResult(emailTokens.get(opEmail), OutputMessage.USER_NOT_EXISTS);
         }
 
     }
@@ -410,30 +410,30 @@ public class UserController {
     @SuperAdminLoginToken
     @ApiOperation("revoke administrator privileges")
     @PostMapping("revokeAdmin")
-    public Response revokeAdmin(@RequestHeader("Authorization") String token,
+    public Response revokeAdmin(@RequestHeader(KeyMessage.TOKEN) String token,
                                 @ApiParam(name = "email", value = "email", required = true)
                                 @RequestBody Map<String, String> body) throws MessagingException {
-        String email = body.get("email");
-        String opEmail = JwtUtil.getUserInfo(token, "email");
+        String email = body.get(KeyMessage.EMAIL);
+        String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         logger.info("email " + email);
         logger.info("opEmail " + opEmail);
         if (userService.emailExists(email)) {
             User user = userService.getUserByEmail(email);
             if (user.getUserRole().equals(UserRole.USER)) {
                 return ResponseGenerator.genFailResult(emailTokens.get(opEmail)
-                        , "This account is already an visitor account.");
+                        , OutputMessage.ALREADY_USER);
             }
             if (user.getUserRole().equals(UserRole.SUPER_ADMIN)) {
                 return ResponseGenerator.genFailResult(emailTokens.get(opEmail)
-                        , "This account is super admin account, can not be revoked");
+                        , OutputMessage.CANNOT_REVOKE_SUPER_ADMIN);
             }
             userService.updateUserRole(user.getUserId(), UserRole.USER);
             userService.updateAdminEmailSetting(user.getUserId(), false);
             notificationService.sendNotificationByTemplate(email, NotificationTemplate.ADMIN_ROLE_REVOKED
                     , user.getFullName(), opEmail);
-            return ResponseGenerator.genSuccessResult(emailTokens.get(opEmail), "SUCCESS");
+            return ResponseGenerator.genSuccessResult(emailTokens.get(opEmail), OutputMessage.SUCCEED);
         } else {
-            return ResponseGenerator.genFailResult(emailTokens.get(opEmail), "User does not exist");
+            return ResponseGenerator.genFailResult(emailTokens.get(opEmail), OutputMessage.USER_NOT_EXISTS);
         }
 
     }
@@ -441,11 +441,11 @@ public class UserController {
     @AdminLoginToken
     @ApiOperation("Change email settings")
     @PostMapping("changeEmailSetting")
-    public Response changeEmailSetting(@RequestHeader("Authorization") String token,
+    public Response changeEmailSetting(@RequestHeader(KeyMessage.TOKEN) String token,
                                        @ApiParam(name = "isReceiveBulkEmail", value = "isReceiveBulkEmail", required = true)
                                        @RequestBody Map<String, String> body) {
-        String email = JwtUtil.getUserInfo(token, "email");
-        boolean newSetting = Boolean.valueOf(body.get("isReceiveBulkEmail"));
+        String email = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
+        boolean newSetting = Boolean.valueOf(body.get(KeyMessage.IS_ADMIN_RECEIVE_EMAIL));
         User admin = userService.getUserByEmail(email);
 
         userService.updateAdminEmailSetting(admin.getUserId(), newSetting);

@@ -13,7 +13,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * @version 1.0
+ * @author Siyan Li
+ *
+ * Implement of Time slot servise
+ */
 @Service
 public class TimeSlotServiceImpl implements TimeSlotService {
     @Autowired

@@ -1,5 +1,11 @@
 package com.example.LabSystemBackend.entity;
 
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li
+ *
+ * User account status
+ */
 public enum UserAccountStatus {
     PENDING("pending"),
     ACTIVE("active"),

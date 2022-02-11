@@ -9,7 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li
+ *
+ * Implement of User service
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -59,11 +64,6 @@ public class UserServiceImpl implements UserService {
         user.setLastName(lastName);
         user.setReceiveBulkEmail(false);
         return userDao.insertUser(user);
-    }
-
-    @Override
-    public int changeUserName(int userId, String newFirstName, String newLastName) {
-        return userDao.updateName(userId, newFirstName, newLastName);
     }
 
     @Override
