@@ -11,18 +11,18 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.LabSystemBackend.entity.User;
 import com.example.LabSystemBackend.entity.UserAccountStatus;
-
+/**
+ * @version 1.0
+ * @author Cong Liu
+ *
+ * Token util
+ */
 public class JwtUtil {
-    /**
-     * 密钥
-     */
     private static final String SECRET = "my_secret";
     private static final int EXPIRATION = 120;
     private static final int REFRESH = 90;
 
-    /**
-     * 过期时间
-     **/
+
     public static String createToken(User user) {
         try {
             Map<String, Object> header = new HashMap<>();
@@ -55,11 +55,7 @@ public class JwtUtil {
     }
 
 
-    /**
-     * 检验token是否正确
-     * @param token 需要校验的token
-     * @return 校验是否成功
-     */
+
     public static boolean verify(String token){
         try {
             Algorithm algorithm = Algorithm.HMAC256(SECRET);

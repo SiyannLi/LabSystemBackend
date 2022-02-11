@@ -7,6 +7,12 @@ import com.example.LabSystemBackend.ui.NotificationTemplate;
 import javax.mail.MessagingException;
 import java.util.List;
 
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li
+ *
+ * Notification Service
+ */
 public interface NotificationService {
 
     int sendNotification(Notification notification);
@@ -22,13 +28,13 @@ public interface NotificationService {
 
     int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, String opEmail
             , Order order) throws MessagingException;
-    public int sendNotificationAddOrDeleteAppointment(String email, NotificationTemplate template, String userName,
+    int sendNotificationAddOrDeleteAppointment(String email, NotificationTemplate template, String userName,
                                                       String timeSlot, String date, String operationName) throws MessagingException;
 
     List<Notification> getAllNotification();
 
     List<Notification> getUserAllNotification(int recipientId);
 
-    int sendToAllAdmin(String subject, String content);
+    int sendToAllAdmin(NotificationTemplate template) throws MessagingException;
 
 }

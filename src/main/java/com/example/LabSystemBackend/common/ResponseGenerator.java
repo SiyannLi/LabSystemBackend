@@ -2,16 +2,15 @@ package com.example.LabSystemBackend.common;
 
 import org.springframework.util.StringUtils;
 
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li
+ *
+ * Response generator
+ */
 public class ResponseGenerator {
     private static final String DEFAULT_SUCCESS_MESSAGE = "SUCCESS";
     private static final String DEFAULT_FAIL_MESSAGE = "FAIL";
-
-    public static Response genSuccessResult() {
-        Response response = new Response<>();
-        response.setResultCode(Constants.RESULT_CODE_SUCCESS);
-        response.setMessage(DEFAULT_SUCCESS_MESSAGE);
-        return response;
-    }
 
     public static Response genSuccessResult(String message) {
         Response<Object> response = new Response<>();
@@ -49,8 +48,6 @@ public class ResponseGenerator {
         return response;
     }
 
-
-
     public static Response genSuccessResult(String token, Object data) {
         Response<Object> response = new Response<>();
         response.setResultCode(Constants.RESULT_CODE_SUCCESS);
@@ -60,23 +57,6 @@ public class ResponseGenerator {
         return response;
     }
 
-    public static Response genSuccessResult(String token, boolean isReceiveBulkEmail) {
-        Response<Object> response = new Response<>();
-        response.setResultCode(Constants.RESULT_CODE_SUCCESS);
-        response.setMessage(DEFAULT_SUCCESS_MESSAGE);
-        response.setToken(token);
-        response.setReceiveBulkEmail(isReceiveBulkEmail);
-        return response;
-    }
-
-
-    public static Response genSuccessResult(Object data) {
-        Response<Object> response = new Response<>();
-        response.setResultCode(Constants.RESULT_CODE_SUCCESS);
-        response.setMessage(DEFAULT_SUCCESS_MESSAGE);
-        response.setData(data);
-        return response;
-    }
 
     public static Response genFailResult(String message) {
         Response<Object> response = new Response<>();
@@ -113,17 +93,4 @@ public class ResponseGenerator {
         return response;
     }
 
-    public static Response genNullResult(String message) {
-        Response<Object> response = new Response<>();
-        response.setResultCode(Constants.RESULT_CODE_BAD_REQUEST);
-        response.setMessage(message);
-        return response;
-    }
-
-    public static Response genErrorResult(int code, String message) {
-        Response response = new Response<>();
-        response.setResultCode(code);
-        response.setMessage(message);
-        return response;
-    }
 }

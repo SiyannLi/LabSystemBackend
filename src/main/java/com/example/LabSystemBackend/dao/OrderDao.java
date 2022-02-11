@@ -7,6 +7,12 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li
+ *
+ * Order Dao
+ */
 @Mapper
 public interface OrderDao {
     List<Order> getUserOrders(@Param("userId") int userId);
@@ -24,8 +30,6 @@ public interface OrderDao {
     List<Order> getAllActiveOrders();
 
     int changeOrderStatus(@Param("orderId") int orderId, @Param("orderStatus") OrderStatus orderStatus);
-
-    Order getLastOrder();
 
     Order getOrder(@Param("orderId") int orderId);
 }

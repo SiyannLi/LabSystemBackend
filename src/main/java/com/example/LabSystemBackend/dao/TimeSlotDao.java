@@ -8,7 +8,12 @@ import org.apache.ibatis.annotations.Param;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * @version 1.0
+ * @author Siyan Li
+ *
+ * Time slot Dao
+ */
 @Mapper
 public interface TimeSlotDao {
     List<TimeSlot> getAvailableTimeSlots(@Param("startDate") Date startDate);

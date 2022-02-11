@@ -17,7 +17,12 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li, Sheyang Li
+ *
+ * Implement of Notification Service
+ */
 @Service
 public class NotificationServiceImpl implements NotificationService {
     @Autowired
@@ -52,7 +57,7 @@ public class NotificationServiceImpl implements NotificationService {
         mHelper.setTo(email);
         mHelper.setSubject(notification.getSubject());
         String content = notification.getContent();
-        String htmlMsg = "<body>" + content + "</body>"; //style='border:2px solid black
+        String htmlMsg = "<body>" + content + "</body>";
         mHelper.setText(htmlMsg, true);
         mailSender.send(mimeMessage);
 
@@ -148,17 +153,15 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public int sendToAllAdmin(String subject, String content) {
+    public int sendToAllAdmin(NotificationTemplate template) throws MessagingException {
         int sendCounter = 0;
-        List<User> admins = userService.getAllAdministrators();
+        List<User> admins = userService.getAllAdminReceiveBulkEmail();
         for (User admin : admins) {
-            Notification noti = new Notification();
-            noti.setSubject(subject);
-            noti.setContent(content);
-            noti.setRecipientId(admin.getUserId());
-            noti.setSenderId(0);
-
-            sendCounter += sendNotification(noti);
+            String adminEmail = admin.getEmail();
+            String adminName = admin.getFullName();
+            sendNotificationByTemplate(adminEmail, template
+                    , adminName);
+            sendCounter++;
         }
         return sendCounter == admins.size() ? 1 : 0;
     }

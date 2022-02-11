@@ -8,21 +8,21 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li
+ */
 @Mapper
 public interface UserDao {
     List<User> getAllUsers();
 
     List<User> getAllAdministrators();
 
-    List<User> getAllVisitors();
-
     List<User> getAllAccountToBeConfirmed();
 
     List<User> getAllAdminReceiveBulkEmail();
 
     User getUser(@Param("userId") int userId);
-
-    User getUserByEmailAndPassword(@Param("email") String email, @Param("password") String password);
 
     User getUserByEmail(@Param("email") String email);
 
@@ -40,6 +40,5 @@ public interface UserDao {
 
     int updateAdminEmailSetting(@Param("userId") int userId, @Param("receiveBulkEmail") boolean receiveBulkEmail);
 
-    User getLastUser();
 }
 

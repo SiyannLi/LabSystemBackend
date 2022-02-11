@@ -7,8 +7,8 @@ import com.example.LabSystemBackend.entity.Order;
 import com.example.LabSystemBackend.entity.OrderStatus;
 import com.example.LabSystemBackend.entity.User;
 import com.example.LabSystemBackend.jwt.JwtUtil;
-import com.example.LabSystemBackend.jwt.comment.AdminLoginToken;
-import com.example.LabSystemBackend.jwt.comment.UserLoginToken;
+import com.example.LabSystemBackend.jwt.annotation.AdminLoginToken;
+import com.example.LabSystemBackend.jwt.annotation.UserLoginToken;
 import com.example.LabSystemBackend.service.ItemService;
 import com.example.LabSystemBackend.service.NotificationService;
 import com.example.LabSystemBackend.service.OrderService;
@@ -29,6 +29,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li
+ *
+ * Order Controller
+ */
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/orders")
@@ -135,13 +141,7 @@ public class OrderController {
         orderService.submitOrder(order);
         notificationService.sendNotificationByTemplate(contactEmail
                 , NotificationTemplate.ORDER_RECEIVED, user.getFullName(), order);
-        List<User> admins = userService.getAllAdminReceiveBulkEmail();
-        for (User admin : admins) {
-            String adminEmail = admin.getEmail();
-            String adminName = admin.getFullName();
-            notificationService.sendNotificationByTemplate(adminEmail, NotificationTemplate.NEW_ORDER_REQUEST
-                    , adminName);
-        }
+        notificationService.sendToAllAdmin(NotificationTemplate.NEW_ORDER_REQUEST);
         return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(email)
                 , OutputMessage.SUCCEED);
 

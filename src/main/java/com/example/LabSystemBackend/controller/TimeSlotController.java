@@ -5,9 +5,11 @@ import com.example.LabSystemBackend.common.ResponseGenerator;
 import com.example.LabSystemBackend.entity.TimeSlot;
 import com.example.LabSystemBackend.entity.TimeSlotStatus;
 import com.example.LabSystemBackend.jwt.JwtUtil;
-import com.example.LabSystemBackend.jwt.comment.AdminLoginToken;
+import com.example.LabSystemBackend.jwt.annotation.AdminLoginToken;
 import com.example.LabSystemBackend.service.TimeSlotService;
+import com.example.LabSystemBackend.ui.InputMessage;
 import com.example.LabSystemBackend.ui.KeyMessage;
+import com.example.LabSystemBackend.ui.OutputMessage;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * @version 1.0
+ * @author Siyan Li
+ *
+ * Time slot Controller
+ */
 @CrossOrigin
 @RestController
 @RequestMapping("/timeslots")
@@ -26,29 +34,24 @@ public class TimeSlotController {
     @Autowired
     private TimeSlotService timeSlotService;
 
-    @ApiOperation("get a list of all available Time slots from start date")
-    @GetMapping("getAvailableTimeSlots")
-    public Response getAvailableTimeFrames(Date startDate) {
-        return ResponseGenerator.genSuccessResult(timeSlotService.getAvailableTimeSlots(startDate));
-    }
-
     @AdminLoginToken
     @ApiOperation("setPeriodTimeSlotsNA")
     @PostMapping("setPeriodTimeSlotsNA")
     public Response setPeriodTimeSlotsNA(@RequestHeader(KeyMessage.TOKEN) String token,
                                        @RequestBody Map<String, String> body) throws ParseException {
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date startDate = sdf.parse(body.get("startDate"));
-        int slot = Integer.parseInt(body.get("slot"));
-        int endRepeatAfter = Integer.parseInt(body.get("endRepeatAfter"));
+        SimpleDateFormat sdf = new SimpleDateFormat(InputMessage.DATE_FORMAT);
+        Date startDate = sdf.parse(body.get(KeyMessage.START_DATE));
+        int slot = Integer.parseInt(body.get(KeyMessage.SLOT));
+        int endRepeatAfter = Integer.parseInt(body.get(KeyMessage.END_REPEAT_AFTER));
 
         int changedLine = timeSlotService.setPeriodTimeSlotsNA(startDate, slot, endRepeatAfter);
         if (changedLine == endRepeatAfter) {
-            return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(opEmail),"succeed");
+            return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(opEmail), OutputMessage.SUCCEED);
         }
         else {
-            return ResponseGenerator.genFailResult(UserController.emailTokens.get(opEmail),"only " + changedLine+" time slot set to not available.");
+            return ResponseGenerator.genFailResult(UserController.emailTokens.get(opEmail)
+                    ,String.format(OutputMessage.NOT_ALL_TIME_SET_TO_NA, changedLine));
         }
     }
 
@@ -58,17 +61,18 @@ public class TimeSlotController {
     public Response setPeriodTimeSlotsFREE(@RequestHeader(KeyMessage.TOKEN) String token,
                                          @RequestBody Map<String, String> body) throws ParseException {
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date startDate = sdf.parse(body.get("startDate"));
-        int slot = Integer.parseInt(body.get("slot"));
-        int endRepeatAfter = Integer.parseInt(body.get("endRepeatAfter"));
+        SimpleDateFormat sdf = new SimpleDateFormat(InputMessage.DATE_FORMAT);
+        Date startDate = sdf.parse(body.get(KeyMessage.START_DATE));
+        int slot = Integer.parseInt(body.get(KeyMessage.SLOT));
+        int endRepeatAfter = Integer.parseInt(body.get(KeyMessage.END_REPEAT_AFTER));
 
         int changedLine = timeSlotService.setPeriodTimeSlotsFREE(startDate, slot, endRepeatAfter);
         if (changedLine == endRepeatAfter) {
-            return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(opEmail),"succeed");
+            return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(opEmail),OutputMessage.SUCCEED);
         }
         else {
-            return ResponseGenerator.genFailResult(UserController.emailTokens.get(opEmail),"only " + changedLine+" time slot set to free.");
+            return ResponseGenerator.genFailResult(UserController.emailTokens.get(opEmail)
+                    , String.format(OutputMessage.NOT_ALL_TIME_SET_TO_FREE, changedLine));
         }
 
     }
@@ -78,8 +82,8 @@ public class TimeSlotController {
     public Response timeSlotCalender(@RequestHeader(KeyMessage.TOKEN) String token,
                                      @RequestBody Map<String, String> body) throws ParseException {
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date startDate = sdf.parse(body.get("startDate"));
+        SimpleDateFormat sdf = new SimpleDateFormat(InputMessage.DATE_FORMAT);
+        Date startDate = sdf.parse(body.get(KeyMessage.START_DATE));
         List<List<TimeSlot>> calender = new ArrayList<List<TimeSlot>>();
 
         Calendar cl = Calendar.getInstance();

@@ -1,9 +1,25 @@
 package com.example.LabSystemBackend.common;
 
+/**
+ * @version 1.0
+ * @author Siyan Li
+ *
+ * Result Codes
+ */
 public class Constants {
-    public static final int RESULT_CODE_SUCCESS = 200;  // 成功处理请求
-    public static final int RESULT_CODE_BAD_REQUEST = 412;  // 请求错误
-    public static final int RESULT_CODE_NOT_LOGIN = 402;  // 未登录
-    public static final int RESULT_CODE_PARAM_ERROR = 406;  // 传参错误
-    public static final int RESULT_CODE_SERVER_ERROR = 500;  // 服务器错误
+    /**
+     * Request processed successfully
+     */
+    public static final int RESULT_CODE_SUCCESS = 200;
+
+//  public static final int RESULT_CODE_BAD_REQUEST = 412;
+    /**
+     * Token error
+     */
+    public static final int RESULT_CODE_NOT_LOGIN = 402;
+//  public static final int RESULT_CODE_PARAM_ERROR = 406;
+    /**
+     * Server Error
+     */
+    public static final int RESULT_CODE_SERVER_ERROR = 500;
 }

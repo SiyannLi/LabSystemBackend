@@ -8,7 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li
+ *
+ * Implement of Order Service
+ */
 @Service
 public class OrderServiceImpl implements OrderService {
     @Autowired

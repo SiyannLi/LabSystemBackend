@@ -7,10 +7,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * @version 1.0
+ * @author Cong Liu
+ *
+ * Cross-domain configuration filter, called when the container is initialized.
+ */
 @Component
 public class CorsFilter implements Filter {
 
-    /*跨域请求配置*/
+
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) res;
@@ -24,9 +30,4 @@ public class CorsFilter implements Filter {
                 ", Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With,Authorization,Token,Authorization");
         chain.doFilter(req, res);
     }
-    @Override
-    public void init(FilterConfig filterConfig) {}
-
-    @Override
-    public void destroy() {}
 }

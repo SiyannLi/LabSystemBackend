@@ -5,10 +5,10 @@ import com.example.LabSystemBackend.controller.UserController;
 import com.example.LabSystemBackend.entity.User;
 import com.example.LabSystemBackend.entity.UserAccountStatus;
 import com.example.LabSystemBackend.entity.UserRole;
-import com.example.LabSystemBackend.jwt.comment.AdminLoginToken;
-import com.example.LabSystemBackend.jwt.comment.PassToken;
-import com.example.LabSystemBackend.jwt.comment.SuperAdminLoginToken;
-import com.example.LabSystemBackend.jwt.comment.UserLoginToken;
+import com.example.LabSystemBackend.jwt.annotation.AdminLoginToken;
+import com.example.LabSystemBackend.jwt.annotation.PassToken;
+import com.example.LabSystemBackend.jwt.annotation.SuperAdminLoginToken;
+import com.example.LabSystemBackend.jwt.annotation.UserLoginToken;
 import com.example.LabSystemBackend.service.UserService;
 import com.example.LabSystemBackend.ui.ExceptionMessage;
 import com.example.LabSystemBackend.ui.InputMessage;
@@ -22,10 +22,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.util.Date;
-
+/**
+ * @version 1.0
+ * @author Cong Liu
+ *
+ * Authentication interceptor
+ */
 public class AuthenticationInterceptor implements HandlerInterceptor {
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {

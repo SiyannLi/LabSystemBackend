@@ -6,6 +6,12 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li
+ *
+ * Order
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,6 +39,7 @@ public class Order implements Serializable {
                 ", amount=" + amount +
                 ", itemLink" + itemLink +
                 ", orderStatus=" + orderStatus +
+                ", contactEmail" + contactEmail +
                 '}';
     }
 }

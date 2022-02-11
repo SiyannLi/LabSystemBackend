@@ -6,6 +6,10 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li
+ */
 @Mapper
 public interface ItemDao {
     List<Item> getAllItems();
