@@ -3,6 +3,12 @@ package com.example.LabSystemBackend.service;
 import com.example.LabSystemBackend.entity.Item;
 
 import java.util.List;
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li
+ *
+ * Item Service
+ */
 
 public interface ItemService {
 
@@ -17,6 +23,4 @@ public interface ItemService {
     Boolean itemExists(String itemName);
 
     Item getItemByName(String itemName);
-
-    int mergeItem(int itemId, int targetItemId);
 }

@@ -9,8 +9,13 @@ import org.apache.ibatis.annotations.Param;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @version 1.0
+ * @author Siyan Li
+ *
+ * Appointment Dao
+ */
 @Mapper
-
 public interface AppointmentDao {
     List<Appointment> getUserAppointments(@Param("userId") int userId);
 

@@ -1,5 +1,11 @@
 package com.example.LabSystemBackend.ui;
 
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li, Sheyang Li
+ *
+ * Templetes for E-Mail
+ */
 public enum NotificationTemplate {
     //user
     VERIFICATION_CODE("Verification Code", "Dear visitor, <p>Your verification code is: " +

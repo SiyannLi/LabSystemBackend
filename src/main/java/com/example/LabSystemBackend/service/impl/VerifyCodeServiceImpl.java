@@ -11,7 +11,12 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import java.util.Random;
-
+/**
+ * @version 1.0
+ * @author Cong Liu
+ *
+ * Implement of Verification Code Service
+ */
 @Service
 public class VerifyCodeServiceImpl implements VerifyCodeService {
     @Autowired

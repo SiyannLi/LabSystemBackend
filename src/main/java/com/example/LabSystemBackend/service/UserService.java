@@ -6,6 +6,12 @@ import com.example.LabSystemBackend.entity.UserRole;
 
 import java.util.List;
 
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li
+ *
+ * User service
+ */
 public interface UserService {
 
     User getUser(int userId);
@@ -25,10 +31,7 @@ public interface UserService {
     int confirmUserRegistration(int userId);
 
     //reject the application of user to create a new account
-    int rejectUserRegistration(int userId);//拒绝用户申请后，直接在数据库里清除用户的信息
-
-    //change username
-    int changeUserName(int userId, String newFirstName, String newLastName);
+    int rejectUserRegistration(int userId);
 
     //activate or deactivate account
     int deactivateUser(int userId);

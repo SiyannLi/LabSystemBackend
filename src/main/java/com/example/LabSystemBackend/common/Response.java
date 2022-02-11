@@ -2,6 +2,12 @@ package com.example.LabSystemBackend.common;
 
 import java.io.Serializable;
 
+/**
+ * @version 1.0
+ * @author Cong Liu, Siyan Li
+ *
+ * Generic return data type
+ */
 public class Response<T> implements Serializable {
     private static final long serialVersionUID = 1L;
     private int resultCode;
@@ -10,7 +16,6 @@ public class Response<T> implements Serializable {
     private String email;
     private String firstName;
     private String lastName;
-    private boolean isReceiveBulkEmail;
     private boolean isUserLogged;
     private boolean isAdminLogged;
     private T data;
@@ -22,15 +27,6 @@ public class Response<T> implements Serializable {
         this.resultCode = resultCode;
         this.message = message;
     }
-
-    public boolean isReceiveBulkEmail() {
-        return isReceiveBulkEmail;
-    }
-
-    public void setReceiveBulkEmail(boolean receiveBulkEmail) {
-        isReceiveBulkEmail = receiveBulkEmail;
-    }
-
     public boolean isUserLogged() {
         return isUserLogged;
     }

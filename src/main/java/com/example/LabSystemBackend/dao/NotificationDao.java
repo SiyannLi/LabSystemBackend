@@ -6,6 +6,10 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+/**
+ * @version 1.0
+ * @author  Siyan Li
+ */
 @Mapper
 public interface NotificationDao {
     int insertNotification(@Param("noti") Notification notification);

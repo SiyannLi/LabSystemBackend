@@ -10,7 +10,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-
+/**
+ * @version 1.0
+ * @author Siyan Li
+ *
+ * Implement of Appointment Service
+ */
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
     @Autowired

@@ -2,7 +2,12 @@ package com.example.LabSystemBackend.jwt;
 
 import java.util.Calendar;
 import java.util.Date;
-
+/**
+ * @version 1.0
+ * @author Cong Liu
+ *
+ * Date util
+ */
 public class DateUtil {
     public static Date getNextMinute(Date date, int minute){
         Calendar calendar = Calendar.getInstance();

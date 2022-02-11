@@ -7,7 +7,12 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.web.bind.annotation.RestController;
 
-//@ServletComponentScan
+/**
+ * @version 1.0
+ * @author Siyan Li
+ *
+ * Springboot Application Class
+ */
 @SpringBootApplication
 @RestController
 public class SpringbootTestApplication {

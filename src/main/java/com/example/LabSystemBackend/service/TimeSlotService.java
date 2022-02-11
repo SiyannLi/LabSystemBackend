@@ -9,12 +9,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @version 1.0
+ * @author Siyan Li
+ *
+ * Time slot servise
+ */
 public interface TimeSlotService {
-    //返回从 startDate 开始所有的空闲时间.
     List<TimeSlot> getAvailableTimeSlots(Date startDate);
 
-
-    //设置可预约时间段
     int setPeriodTimeSlotsFREE(Date availableDate, int slot, int endRepeatAfter);
 
     int setPeriodTimeSlotsNA(Date availableDate, int slot, int endRepeatAfter);

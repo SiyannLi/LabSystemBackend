@@ -1,5 +1,11 @@
 package com.example.LabSystemBackend.ui;
 
+/**
+ * @version 1.0
+ * @author Cong Liu
+ *
+ * Exception messages
+ */
 public class ExceptionMessage {
     public static final String TOKEN_NULL = "token is null";
     public static final String TOKEN_WRONG = "invalid token";
