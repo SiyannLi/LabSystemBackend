@@ -33,5 +33,4 @@ build/
 .vscode/
 
 .github
-src/test
 src/main/resources/application.yml
