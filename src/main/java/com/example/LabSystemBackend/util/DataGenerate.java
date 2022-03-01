@@ -25,7 +25,10 @@ public class DataGenerate {
         int role = new Random().nextInt(UserRole.values().length);
         user.setUserRole(UserRole.values()[role]);
         user.setEmail(faker.internet().emailAddress(name[0].toLowerCase() + name[1].toLowerCase()));
-        user.setUserAccountStatus(UserAccountStatus.PENDING);
+        int status = new Random().nextInt(UserAccountStatus.values().length);
+        user.setUserAccountStatus(UserAccountStatus.values()[status]);
+        boolean receiveEmail = new Random().nextInt(2) == 1 ? true : false;
+        user.setReceiveBulkEmail(receiveEmail);
         return user;
     }
 

@@ -8,6 +8,7 @@ import java.io.Serializable;
  *
  * Generic return data type
  */
+
 public class Response<T> implements Serializable {
     private static final long serialVersionUID = 1L;
     private int resultCode;

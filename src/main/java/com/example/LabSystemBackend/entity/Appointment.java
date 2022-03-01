@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -12,16 +13,20 @@ import java.io.Serializable;
  *
  * Appointment
  */
+@Entity
+@Table(name = "appointment")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class Appointment implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "appointmentId", insertable=false, updatable=false, nullable = false)
     private Integer appointmentId;
-
+    @Column(name = "userId", nullable = false)
     private Integer userId;
-
+    @Column(name = "timeSlotId", nullable = false)
     private Integer timeSlotId;
 
 

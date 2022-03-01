@@ -18,8 +18,6 @@ public interface UserService {
 
     int deleteUser(int userId);
 
-    int insertUser(User user);
-
 
     //register one account
     int register(String email, String password, String firstName, String lastName);
@@ -53,8 +51,6 @@ public interface UserService {
     Boolean emailExists(String email);
 
     int updateUserRole(int userId, UserRole role);
-
-    int updateUserAccountStatus(int userId, UserAccountStatus status);
 
     int updateName(int userId, String firstName, String lastName);
 

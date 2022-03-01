@@ -1,5 +1,6 @@
 package com.example.LabSystemBackend.ui;
 
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.example.LabSystemBackend.common.Response;
 import com.example.LabSystemBackend.common.ResponseGenerator;
 import org.springframework.web.bind.annotation.ExceptionHandler;

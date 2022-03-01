@@ -32,12 +32,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int insertUser(User user) {
-        return userDao.insertUser(user);
-    }
-
-
-    @Override
     public int resetPassword(String email, String newPassword) {
         User user = userDao.getUserByEmail(email);
         return userDao.updatePassword(user.getUserId(), newPassword);
@@ -110,11 +104,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public int updateUserRole(int userId, UserRole role) {
         return userDao.updateUserRole(userId, role);
-    }
-
-    @Override
-    public int updateUserAccountStatus(int userId, UserAccountStatus status) {
-        return userDao.updateUserAccountStatus(userId, status);
     }
 
     @Override
