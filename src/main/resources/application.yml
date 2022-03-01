@@ -2,7 +2,7 @@ server:
   port: 8086
 spring:
   profiles:
-    active: unittest
+    active: dev
   jpa:
     hibernate:
       naming:
