@@ -94,6 +94,7 @@ public class UserController {
             send = false;
             return ResponseGenerator.genSuccessResult(message);
         }
+
         return ResponseGenerator.genFailResult(message);
     }
 
@@ -211,7 +212,9 @@ public class UserController {
         logger.info("password " + newPassword);
         logger.info("verificationCode " + verCode);
 
-
+        if (!userService.emailExists(email)) {
+            return ResponseGenerator.genFailResult(OutputMessage.USER_NOT_EXISTS);
+        }
         if (verifyCodeService.checkVerifyCode(verCode, verifyCode)) {
             User user = userService.getUserByEmail(email);
             notificationService.sendNotificationByTemplate(email, NotificationTemplate.PASSWORD_RESET_SUCCESS
@@ -246,7 +249,7 @@ public class UserController {
             }
             return ResponseGenerator.genSuccessResult(emailTokens.get(opEmail), usersInfo);
         } else {
-            return ResponseGenerator.genFailResult(emailTokens.get(opEmail), OutputMessage.NO_USER_TO_CONFIRM);
+            return ResponseGenerator.genSuccessResult(emailTokens.get(opEmail), OutputMessage.NO_USER_TO_CONFIRM);
 
         }
     }
@@ -447,9 +450,7 @@ public class UserController {
         String email = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         boolean newSetting = Boolean.valueOf(body.get(KeyMessage.IS_ADMIN_RECEIVE_EMAIL));
         User admin = userService.getUserByEmail(email);
-
         userService.updateAdminEmailSetting(admin.getUserId(), newSetting);
-
         return ResponseGenerator.genSuccessResult(emailTokens.get(email), OutputMessage.SUCCEED);
 
     }

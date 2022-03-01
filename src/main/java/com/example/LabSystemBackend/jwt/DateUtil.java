@@ -15,4 +15,11 @@ public class DateUtil {
         calendar.add(Calendar.MINUTE, minute);
         return calendar.getTime();
     }
+
+    public static Date getNextSecond(Date date, int second){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.SECOND, second);
+        return calendar.getTime();
+    }
 }

@@ -19,8 +19,8 @@ import com.example.LabSystemBackend.entity.UserAccountStatus;
  */
 public class JwtUtil {
     private static final String SECRET = "my_secret";
-    private static final int EXPIRATION = 120;
-    private static final int REFRESH = 90;
+    private static int EXPIRATION = 120;
+    private static int REFRESH = 90;
 
 
     public static String createToken(User user) {
@@ -51,6 +51,42 @@ public class JwtUtil {
 
             return null;
         }
+
+
+
+    }
+
+    //for test
+    public static String createToken(User user, int exp, int refresh) {
+        try {
+            Map<String, Object> header = new HashMap<>();
+
+            header.put("alg", "HS256");//alg为header和payload的加密方式
+
+            header.put("typ","JWT");
+
+            Date nowDate = new Date();
+            Date expireDate =   DateUtil.getNextSecond(nowDate, exp);
+            Date refreshDate =   DateUtil.getNextSecond(nowDate, refresh);
+            Algorithm algorithm = Algorithm.HMAC256(SECRET);
+
+            String token = JWT.create()
+
+                    .withHeader(header)
+                    .withClaim("email",user.getEmail())
+                    .withClaim("expireDate", expireDate)
+                    .withClaim("refreshDate", refreshDate)
+                    .withIssuedAt(nowDate)
+                    .sign(algorithm);
+            return token;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
+
+
 
     }
 

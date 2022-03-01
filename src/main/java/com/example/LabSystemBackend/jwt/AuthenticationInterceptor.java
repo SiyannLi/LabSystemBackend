@@ -52,20 +52,19 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         if (token == null) {
             throw new RuntimeException(ExceptionMessage.TOKEN_NULL);
         }
-        Date exp = JwtUtil.getExpiresTime(token);
-        Date ref = JwtUtil.getRefreshTime(token);
-        String email = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
-        if (!JwtUtil.verify(token) || exp == null || ref == null ||  email == null) {
-            UserController.emailTokens.remove(email);
+        if (!JwtUtil.verify(token) || JwtUtil.getExpiresTime(token) == null || JwtUtil.getRefreshTime(token) == null
+                ||  JwtUtil.getUserInfo(token, KeyMessage.EMAIL) == null) {
             throw new RuntimeException(ExceptionMessage.TOKEN_WRONG);
         }
+        String email = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
+        Date exp = JwtUtil.getExpiresTime(token);
+        Date ref = JwtUtil.getRefreshTime(token);
         String tokenServer = UserController.emailTokens.get(email);
         if(!token.equals(tokenServer)) {
             UserController.emailTokens.remove(email);
             throw new RuntimeException(ExceptionMessage.TOKEN_CONFLICT);
 
         }
-
         if (!userService.emailExists(email)) {
             UserController.emailTokens.remove(email);
             throw new RuntimeException(ExceptionMessage.USER_NOT_EXISTS);
@@ -80,7 +79,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             String newToken = JwtUtil.createToken(user);
             UserController.emailTokens.put(email, newToken);
         }
-
         if (method.isAnnotationPresent(UserLoginToken.class)) {
             UserLoginToken userLoginToken = method.getAnnotation(UserLoginToken.class);
             if (userLoginToken.required()) {
@@ -88,7 +86,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     UserController.emailTokens.remove(email);
                     throw new RuntimeException(ExceptionMessage.INACTIVE_ACCOUNT);
                 }
-
                 return true;
             }
         }
@@ -99,7 +96,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     UserController.emailTokens.remove(email);
                     throw new RuntimeException(ExceptionMessage.NOT_ADMIN);
                 }
-
                 return true;
             }
         }
@@ -111,13 +107,10 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     UserController.emailTokens.remove(email);
                     throw new RuntimeException(ExceptionMessage.NOT_SUPER_ADMIN);
                 }
-
                 return true;
             }
         }
         return true;
     }
-
-
 }
 
