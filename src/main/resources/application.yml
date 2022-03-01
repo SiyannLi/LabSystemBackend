@@ -29,7 +29,7 @@ jackson:
   date-format: yyyy-MM-dd
   time-zone: GMT+1
 web:
-  upload-path: /Users/cong/Desktop/BackEnd/files/
+  upload-path: /labSysBackend
 #    spring.mvc.static-path-pattern: /**
 #    resources_path: /Users/cong/Desktop/BackEnd/files/
 #    spring.resources.static-locations=classpath: /META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.resources.resources_path}
@@ -79,8 +79,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/labSystem
-    username: labSystem
-    password: labSystem
+    username: labsystem
+    password: labsystem
   resources:
     static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}
   jackson:
