@@ -19,6 +19,10 @@ target/
 *.iml
 *.ipr
 
+# OS generated files #
+######################
+.DS_Store
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
