@@ -132,10 +132,14 @@ public class AppointmentController {
     @ApiOperation("User create one new appointment")
     @PostMapping("adminAddAppointment")
     public Response adminAddAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
-                                   @RequestBody Map<String, String> body) throws ParseException, MessagingException {
+                                        @RequestBody Map<String, String> body) throws ParseException, MessagingException {
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         User opUser = userService.getUserByEmail(opEmail);
         String email = body.get(KeyMessage.EMAIL);
+        if (!userService.emailExists(email)) {
+            return ResponseGenerator.genFailResult(UserController.emailTokens.get(opEmail)
+                    , OutputMessage.USER_NOT_EXISTS);
+        }
         User user = userService.getUserByEmail(body.get(KeyMessage.EMAIL));
         SimpleDateFormat sdf = new SimpleDateFormat(InputMessage.DATE_FORMAT);
         Date date = sdf.parse(body.get(KeyMessage.DATE));
@@ -152,7 +156,7 @@ public class AppointmentController {
     @ApiOperation("User create one new appointment")
     @PostMapping("userAddAppointment")
     public Response userAddAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
-                                        @RequestBody Map<String, String> body) throws ParseException, MessagingException {
+                                       @RequestBody Map<String, String> body) throws ParseException, MessagingException {
         String email = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         User user = userService.getUserByEmail(email);
         SimpleDateFormat sdf = new SimpleDateFormat(InputMessage.DATE_FORMAT);
@@ -173,11 +177,12 @@ public class AppointmentController {
                     , OutputMessage.TIME_SLOT_NOT_FREE);
         }
         User user = userService.getUserByEmail(email);
-
+        /*
+        user chechen no exists can begin
         if (user == null) {
             return ResponseGenerator.genFailResult(UserController.emailTokens.get(opEmail)
                     , OutputMessage.USER_NOT_EXISTS);
-        }
+        }*/
 
         timeSlotService.updateTimeSlotStatus(timeSlot.getTimeSlotId(), TimeSlotStatus.BOOKED);
 
@@ -192,7 +197,7 @@ public class AppointmentController {
     @AdminLoginToken
     @PostMapping("adminDeleteAppointment")
     public Response adminDeleteAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
-                                      @RequestBody Map<String, String> body) throws ParseException, MessagingException {
+                                           @RequestBody Map<String, String> body) throws ParseException, MessagingException {
         logger.info("deleteToken: " + token);
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         User opUser = userService.getUserByEmail(opEmail);
@@ -221,7 +226,7 @@ public class AppointmentController {
     @UserLoginToken
     @PostMapping("userDeleteAppointment")
     public Response userDeleteAppointment(@RequestHeader(KeyMessage.TOKEN) String token,
-                                      @RequestBody Map<String, String> body) throws ParseException, MessagingException {
+                                          @RequestBody Map<String, String> body) throws ParseException, MessagingException {
         String opEmail = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         User opUser = userService.getUserByEmail(opEmail);
 
