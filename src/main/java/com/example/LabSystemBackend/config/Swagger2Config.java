@@ -30,9 +30,7 @@ public class Swagger2Config{
                 .build();
     }
 
-    /**
-     * 设置api文档的详细信息
-     */
+
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Spring Boot Swagger2")
