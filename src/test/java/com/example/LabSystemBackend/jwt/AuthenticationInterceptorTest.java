@@ -1,7 +1,5 @@
 package com.example.LabSystemBackend.jwt;
 
-import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.example.LabSystemBackend.common.ResponseGenerator;
 import com.example.LabSystemBackend.controller.UserController;
 import com.example.LabSystemBackend.entity.User;
 import com.example.LabSystemBackend.entity.UserAccountStatus;
@@ -36,21 +34,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("unittest")
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserController.class)
 class AuthenticationInterceptorTest {
-    @Autowired
-    private MockMvc mockMvc;
-    @MockBean
-    private UserService userService;
-    @MockBean
-    private NotificationService notificationService;
-    @MockBean
-    private VerifyCodeService verifyCodeService;
-    //pass token
-    private final String passTokenTestUrl = "/users/visitorLogin";
+        @Autowired
+        private MockMvc mockMvc;
+        @MockBean
+        private UserService userService;
+        @MockBean
+        private NotificationService notificationService;
+        @MockBean
+        private VerifyCodeService verifyCodeService;
+        //pass token
+        private final String passTokenTestUrl = "/users/visitorLogin";
     private final String needTokenUrl = "/users/logout";
     private final String adminTokenUrl = "/users/getAllAccountToBeConfirmed";
     private final String superAdminTokenUrl = "/users/getAllAdministrator";

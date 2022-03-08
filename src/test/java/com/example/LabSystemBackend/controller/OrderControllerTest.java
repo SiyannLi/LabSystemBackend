@@ -51,8 +51,6 @@ class OrderControllerTest {
     MockMvc mockMvc;
     @MockBean
     AuthenticationInterceptor interceptor;
-    @Mock
-    UserController userController;
     @MockBean
     OrderService orderService;
     @MockBean
