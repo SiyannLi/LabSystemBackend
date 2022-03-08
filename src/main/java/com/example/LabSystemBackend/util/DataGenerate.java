@@ -27,7 +27,7 @@ public class DataGenerate {
         user.setEmail(faker.internet().emailAddress(name[0].toLowerCase() + name[1].toLowerCase()));
         int status = new Random().nextInt(UserAccountStatus.values().length);
         user.setUserAccountStatus(UserAccountStatus.values()[status]);
-        boolean receiveEmail = new Random().nextInt(2) == 1 ? true : false;
+        boolean receiveEmail = new Random().nextInt(2) == 1;
         user.setReceiveBulkEmail(receiveEmail);
         return user;
     }
@@ -63,8 +63,15 @@ public class DataGenerate {
         Order order = new Order();
         order.setUserId(faker.random().nextInt(1, 100));
         order.setAmount(faker.random().nextInt(1, 100));
-        int status = new Random().nextInt(OrderStatus.values().length);
-        order.setOrderStatus(OrderStatus.values()[status]);
+        order.setOrderStatus(OrderStatus.PENDING);
+        String[] name;
+        do {
+            name = faker.harryPotter().character().toLowerCase().split(" ");
+
+        } while (name.length != 1);
+        order.setItemName(name[0]);
+        order.setItemLink("www.ebay.de");
+        order.setContactEmail(faker.internet().emailAddress(name[0].toLowerCase()));
         return order;
     }
 

@@ -152,6 +152,7 @@ public class OrderController {
     @ApiOperation("get all active orders")
     @GetMapping("getAllActiveOrders")
     public Response getAllActiveOrders(@RequestHeader(KeyMessage.TOKEN) String token) {
+
         String email = JwtUtil.getUserInfo(token, KeyMessage.EMAIL);
         List<Order> activeOrders = orderService.getAllActiveOrders();
         if (activeOrders.isEmpty()) {
@@ -160,10 +161,12 @@ public class OrderController {
         }
         List<Map<String, String>> ordersInfo = new ArrayList<>();
         logger.info("size: " + activeOrders.size());
+
         for (Order order : activeOrders) {
             int idx = activeOrders.indexOf(order);
             logger.info("UserId: " + order.getUserId());
             User user = userService.getUser(order.getUserId());
+            System.out.println(user);
             ordersInfo.add(new HashMap<>());
             ordersInfo.get(idx).put(KeyMessage.USER_EMAIL, user.getEmail());
             ordersInfo.get(idx).put(KeyMessage.USER_NAME, user.getFullName());
@@ -172,7 +175,7 @@ public class OrderController {
             ordersInfo.get(idx).put(KeyMessage.ORDER_STATUS, order.getOrderStatus().name());
             ordersInfo.get(idx).put(KeyMessage.ITEM_LINK, order.getItemLink());
             ordersInfo.get(idx).put(KeyMessage.ORDER_ID, order.getOrderId().toString());
-
+            System.out.println(ordersInfo.get(idx));
 
         }
         return ResponseGenerator.genSuccessResult(UserController.emailTokens.get(email), ordersInfo);
@@ -289,7 +292,6 @@ public class OrderController {
                 return ResponseGenerator.genFailResult(UserController.emailTokens.get(opEmail)
                         , OutputMessage.IN_STOCK_ITEM_NAME_NOT_EXIST);
             }
-
 
         } else {
             return ResponseGenerator.genFailResult(UserController.emailTokens.get(opEmail)
