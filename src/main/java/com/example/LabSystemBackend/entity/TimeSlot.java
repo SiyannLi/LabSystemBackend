@@ -10,7 +10,7 @@ import java.util.Date;
 
 /**
  * @version 1.0
- * @author Siyan Li
+ * @author Siyan Li, Cong Liu
  *
  * Time slot
  */

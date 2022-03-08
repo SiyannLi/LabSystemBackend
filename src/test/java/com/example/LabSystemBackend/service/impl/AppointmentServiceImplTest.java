@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
@@ -22,6 +24,9 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * AppointmentServiceImpl Test
  */
+@ActiveProfiles("unittest")
+@Transactional
+@Rollback(value = true)
 @SpringBootTest
 class AppointmentServiceImplTest {
     @Autowired
@@ -48,7 +53,6 @@ class AppointmentServiceImplTest {
     }
 
     @Test
-    @Transactional
     void deleteAppointment() throws ParseException {
         Appointment appointment = DataGenerate.generateAppointment();
         appointmentDao.addAppointment(appointment);
@@ -60,7 +64,6 @@ class AppointmentServiceImplTest {
     }
 
     @Test
-    @Transactional
     void deleteAppointmentByTimeSlotId() throws ParseException {
         Appointment appointment = DataGenerate.generateAppointment();
         appointmentDao.addAppointment(appointment);
@@ -73,7 +76,6 @@ class AppointmentServiceImplTest {
     }
 
     @Test
-    @Transactional
     void addAppointment() throws ParseException {
         int userId = 1000;
         int timeSlotId = 1001;

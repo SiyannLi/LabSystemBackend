@@ -6,6 +6,8 @@ import com.example.LabSystemBackend.service.TimeSlotService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
@@ -20,7 +22,9 @@ import static org.junit.jupiter.api.Assertions.*;
  * @Date:2022/02/19
  * TimeSlotServiceImpl Test
  */
-
+@ActiveProfiles("unittest")
+@Transactional
+@Rollback(value = true)
 @SpringBootTest
 class TimeSlotServiceImplTest {
 
@@ -37,7 +41,6 @@ class TimeSlotServiceImplTest {
     }
 
     @Test
-    @Transactional
     void setPeriodTimeSlotsFREE() throws InterruptedException, ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = sdf.parse("2030-01-01");
@@ -50,7 +53,6 @@ class TimeSlotServiceImplTest {
         assertEquals(repeat,after-before+1);
     }
     @Test
-    @Transactional
     void setPeriodTimeSlotsFREEbyNA() throws InterruptedException, ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = sdf.parse("2030-01-01");
@@ -70,7 +72,6 @@ class TimeSlotServiceImplTest {
     }
 
     @Test
-    @Transactional
     void setPeriodTimeSlotsNA() {
         TimeSlot timeSlot = timeSlotDao.getLastTimeSlot();
         Date date = timeSlot.getTimeSlotDate();
@@ -82,7 +83,6 @@ class TimeSlotServiceImplTest {
     }
 
     @Test
-    @Transactional
     void setPeriodTimeSlotsNAbyFREE() throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = sdf.parse("2030-01-01");
@@ -102,7 +102,6 @@ class TimeSlotServiceImplTest {
     }
 
     @Test
-    @Transactional
     void updateTimeSlotStatus() throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = sdf.parse("2030-01-01");
@@ -119,7 +118,6 @@ class TimeSlotServiceImplTest {
     }
 
     @Test
-    @Transactional
     void timeSlotPeriod() throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date starDate = sdf.parse("2022-01-01");
@@ -129,7 +127,6 @@ class TimeSlotServiceImplTest {
     }
 
     @Test
-    @Transactional
     void timeSlotOneDay() throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = sdf.parse("2030-01-01");
@@ -144,18 +141,17 @@ class TimeSlotServiceImplTest {
         assertEquals(4,timeSlots.size());
     }
 
-    @Test
-    void getBookedTimeSlot() throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        String s = sdf.format(date);
-        Date today = sdf.parse(s);
-        List<Map<String, Object>> timeSlots = timeSlotService.getBookedTimeSlot(today);
-        assertNotNull(timeSlots);
-    }
+//    @Test
+//    void getBookedTimeSlot() throws ParseException {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        Date date = new Date();
+//        String s = sdf.format(date);
+//        Date today = sdf.parse(s);
+//        List<Map<String, Object>> timeSlots = timeSlotService.getBookedTimeSlot(today);
+//        assertNotNull(timeSlots);
+//    }
 
     @Test
-    @Transactional
     void getTimeSlot() throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         TimeSlot timeSlot = new TimeSlot();
@@ -173,7 +169,6 @@ class TimeSlotServiceImplTest {
     }
 
     @Test
-    @Transactional
     void  getTimeSlotById() throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         TimeSlot timeSlot = new TimeSlot();
@@ -199,7 +194,6 @@ class TimeSlotServiceImplTest {
     }
 
     @Test
-    @Transactional
     void TimeSlotExists() throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         TimeSlot timeSlot = new TimeSlot();
