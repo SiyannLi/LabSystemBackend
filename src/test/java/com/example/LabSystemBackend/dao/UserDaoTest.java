@@ -6,22 +6,20 @@ import com.example.LabSystemBackend.entity.UserRole;
 import com.example.LabSystemBackend.util.DataGenerate;
 import com.github.javafaker.Faker;
 import org.junit.Assert;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("unittest")
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -201,7 +199,7 @@ class UserDaoTest {
     @Test
     void updateAdminEmailSetting() {
         int id = new Random().nextInt(fullNames.length) + 1;
-        boolean stetting = new Random().nextInt(2) == 1 ? true : false;
+        boolean stetting = new Random().nextInt(2) == 1;
         Assert.assertTrue("fail to update email setting", 1 == userDao.updateAdminEmailSetting(id, stetting));
 
     }

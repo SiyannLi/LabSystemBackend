@@ -9,7 +9,10 @@ import com.example.LabSystemBackend.jwt.JwtUtil;
 import com.example.LabSystemBackend.service.NotificationService;
 import com.example.LabSystemBackend.service.UserService;
 import com.example.LabSystemBackend.service.VerifyCodeService;
-import com.example.LabSystemBackend.ui.*;
+import com.example.LabSystemBackend.ui.InputMessage;
+import com.example.LabSystemBackend.ui.KeyMessage;
+import com.example.LabSystemBackend.ui.NotificationTemplate;
+import com.example.LabSystemBackend.ui.OutputMessage;
 import com.example.LabSystemBackend.util.DataGenerate;
 import com.github.javafaker.Faker;
 import org.junit.Assert;
@@ -31,8 +34,17 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
+/**
+ * @version 1.0
+ * @author  cong Liu
+ *
+ * UserController Test
+ */
 @ActiveProfiles("unittest")
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserController.class)
@@ -707,7 +719,7 @@ class UserControllerTest {
 
     @Test
     void resetUserInfoEmailNotExist() {
-        boolean isStatusCorrect = new Random().nextInt(2) == 1 ? true : false;
+        boolean isStatusCorrect = new Random().nextInt(2) == 1;
         resetUserInfo(false, isStatusCorrect, 500, OutputMessage.USER_NOT_EXISTS);
     }
 
@@ -718,7 +730,7 @@ class UserControllerTest {
 
     private void checkAdminHandle(String url, boolean isEmailExist, boolean isAdmin, boolean isSuperAdmin
             , int resultCode, String message) {
-        boolean checkInput = isSuperAdmin && !isAdmin ? false : true;
+        boolean checkInput = !isSuperAdmin || isAdmin;
         Assert.assertTrue("Super admin must be an admin", checkInput);
         try {
             User opUser = DataGenerate.generateUser();
@@ -784,7 +796,7 @@ class UserControllerTest {
 
     @Test
     void insertAdminAlreadyAdmin() {
-        boolean isSuperAdmin = new Random().nextInt(2) == 1 ? true : false;
+        boolean isSuperAdmin = new Random().nextInt(2) == 1;
         checkAdminHandle("/users/insertAdmin", true, true, isSuperAdmin
                 , 500
                 , OutputMessage.ALREADY_ADMIN);

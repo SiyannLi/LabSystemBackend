@@ -49,7 +49,6 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public int sendNotification(String email, Notification notification) throws MessagingException {
-        System.out.print(notification);
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper mHelper = new MimeMessageHelper(mimeMessage,
                 MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
@@ -60,14 +59,14 @@ public class NotificationServiceImpl implements NotificationService {
         String htmlMsg = "<body>" + content + "</body>";
         mHelper.setText(htmlMsg, true);
         mailSender.send(mimeMessage);
-
-        return notificationDao.insertNotification(notification);
+        System.out.print(notification);
+        int i = notificationDao.insertNotification(notification);
+        return i;//notificationDao.insertNotification(notification);
     }
 
     @Override
     public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName)
             throws MessagingException {
-        System.out.print(userName);
         Notification notification = new Notification();
         notification.setSenderId(User.ID_OF_SYSTEM);
         if (userService.emailExists(email)) {
@@ -78,11 +77,13 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setSubject(template.getSubject());
         notification.setContent(String.format(template.getContent()
                 , userName));
+        int i= sendNotification(email, notification);
         return sendNotification(email, notification);
     }
 
     @Override
-    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, String opEmail) throws MessagingException {
+    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName,
+                                          String opEmail) throws MessagingException {
         Notification notification = new Notification();
         notification.setSenderId(User.ID_OF_SYSTEM);
         if (userService.emailExists(email)) {
@@ -97,7 +98,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, Order order) throws MessagingException {
+    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName,
+                                          Order order) throws MessagingException {
         Notification notification = new Notification();
         notification.setSenderId(User.ID_OF_SYSTEM);
         if (userService.emailExists(email)) {
@@ -112,7 +114,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, String opEmail, Order order) throws MessagingException {
+    public int sendNotificationByTemplate(String email, NotificationTemplate template, String userName, String opEmail,
+                                          Order order) throws MessagingException {
         Notification notification = new Notification();
         notification.setSenderId(User.ID_OF_SYSTEM);
         if (userService.emailExists(email)) {
@@ -128,7 +131,8 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public int sendNotificationAddOrDeleteAppointment(String email, NotificationTemplate template, String userName,
-                                                      String timeSlot, String date, String operatorName) throws MessagingException {
+                                                      String timeSlot, String date, String operatorName)
+            throws MessagingException {
         Notification notification = new Notification();
         notification.setSenderId(User.ID_OF_SYSTEM);
         if (userService.emailExists(email)) {
