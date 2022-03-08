@@ -40,9 +40,9 @@ class UserDaoTest {
 
     @BeforeAll
     public void initArray() {
-        fullNames = new String[]{"TECO TECO", "Cong Liu", "Siyan Li", "Cong Liu"};
+        fullNames = new String[]{"TECO TECO", "Sheyang Li", "Siyan Li", "Cong Liu"};
         emails = new String[]{"teco@teco.com"
-                , "cong.liu@outlook.de"
+                , "sheyang-li@hotmail.com"
                 , "siyannLi@outlook.com"
                 , "fraucong@gmail.com"};
         roles = new UserRole[]{UserRole.SUPER_ADMIN, UserRole.USER, UserRole.ADMIN, UserRole.USER};
