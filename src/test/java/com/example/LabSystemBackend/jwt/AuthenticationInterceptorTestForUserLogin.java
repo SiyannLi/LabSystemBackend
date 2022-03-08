@@ -2,12 +2,14 @@ package com.example.LabSystemBackend.jwt;
 
 import com.example.LabSystemBackend.controller.ItemController;
 import com.example.LabSystemBackend.controller.UserController;
+import com.example.LabSystemBackend.controller.WebcamController;
 import com.example.LabSystemBackend.entity.User;
 import com.example.LabSystemBackend.entity.UserAccountStatus;
 import com.example.LabSystemBackend.service.ItemService;
 import com.example.LabSystemBackend.service.UserService;
 import com.example.LabSystemBackend.ui.ExceptionMessage;
 import com.example.LabSystemBackend.ui.KeyMessage;
+import com.example.LabSystemBackend.ui.OutputMessage;
 import com.example.LabSystemBackend.util.DataGenerate;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,16 +32,14 @@ import java.util.Random;
 
 @ActiveProfiles("unittest")
 @RunWith(SpringRunner.class)
-@WebMvcTest(ItemController.class)
+@WebMvcTest(WebcamController.class)
 public class AuthenticationInterceptorTestForUserLogin {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private ItemService itemService;
-    @MockBean
     private UserService userService;
     //user token url
-    private final String passTokenTestUrl = "/stocks/userGetAllItems";
+    private final String passTokenTestUrl = "/webcam/userWebcamAccess";
 
     private void checkTokenPermission(User user, int expectedCode, String expectMessage) {
         String token = JwtUtil.createToken(user);
@@ -81,7 +81,7 @@ public class AuthenticationInterceptorTestForUserLogin {
         user.setUserId(id);
         //set role
         user.setUserAccountStatus(UserAccountStatus.ACTIVE);
-        checkTokenPermission(user, 200, "SUCCESS");
+        checkTokenPermission(user, 200, OutputMessage.SUCCEED);
     }
 
 

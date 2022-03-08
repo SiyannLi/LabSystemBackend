@@ -52,13 +52,13 @@ class NotificationServiceImplTest {
     @Autowired
     NotificationDao notificationDao;
     // registeredUser email
-    String email = "cong.liu@outlook.de";
+    String email = "sheyang-li@hotmail.com";
     // admin email
     String opEmail = "Labsystem22@outlook.com";
     String userName = "testName";
     // not registeredUser
     String email_Not = "test_Not@hotmail11023-not.com";
-    Notification notificationTest = new Notification(1, 0, 1, "test subject", "test content");
+    Notification notificationTest = new Notification(1, 0, 2, "test subject", "test content");
 
     @Test
     void sendNotification() {
