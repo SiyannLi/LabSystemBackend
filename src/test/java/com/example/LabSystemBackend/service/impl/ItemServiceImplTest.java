@@ -8,6 +8,8 @@ import com.github.javafaker.Faker;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -20,7 +22,9 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * ItemServiceImpl Test
  */
-
+@ActiveProfiles("unittest")
+@Transactional
+@Rollback(value = true)
 @SpringBootTest
 class ItemServiceImplTest {
     @Autowired
@@ -37,7 +41,6 @@ class ItemServiceImplTest {
     }
 
     @Test
-    @Transactional
     void addItem() {
         Item item ;
         String itemName = faker.food().spice();
@@ -77,7 +80,6 @@ class ItemServiceImplTest {
     }
 
     @Test
-    @Transactional
     void itemExists() {
         Item item = DataGenerate.generateItem();
         itemDao.addItem(item);
@@ -85,7 +87,6 @@ class ItemServiceImplTest {
     }
 
     @Test
-    @Transactional
     void getItemByName() {
         Item item = DataGenerate.generateItem();
         itemDao.addItem(item);

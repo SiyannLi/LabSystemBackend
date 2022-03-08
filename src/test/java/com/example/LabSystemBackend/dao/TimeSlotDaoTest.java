@@ -142,15 +142,15 @@ class TimeSlotDaoTest {
         assertEquals(sum,timeSlots.size());
     }
 
-    @Test
-    void getBookedTimeSlot() throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        String s = sdf.format(date);
-        Date today = sdf.parse(s);
-        List<Map<String, Object>> timeSlots = timeSlotDao.getBookedTimeSlot(today);
-        assertNotNull(timeSlots);
-    }
+//    @Test
+//    void getBookedTimeSlot() throws ParseException {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        Date date = new Date();
+//        String s = sdf.format(date);
+//        Date today = sdf.parse(s);
+//        List<Map<String, Object>> timeSlots = timeSlotDao.getBookedTimeSlot(today);
+//        assertNotNull(timeSlots);
+//    }
 
     @Test
     void getUserBookedTimeSlot() {

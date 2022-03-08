@@ -64,14 +64,10 @@ public class DataGenerate {
         order.setUserId(faker.random().nextInt(1, 100));
         order.setAmount(faker.random().nextInt(1, 100));
         order.setOrderStatus(OrderStatus.PENDING);
-        String[] name;
-        do {
-            name = faker.harryPotter().character().toLowerCase().split(" ");
-
-        } while (name.length != 1);
-        order.setItemName(name[0]);
+        String name = faker.business().creditCardType();
+        order.setItemName(name);
         order.setItemLink("www.ebay.de");
-        order.setContactEmail(faker.internet().emailAddress(name[0].toLowerCase()));
+        order.setContactEmail(faker.internet().emailAddress(name.toLowerCase()));
         return order;
     }
 

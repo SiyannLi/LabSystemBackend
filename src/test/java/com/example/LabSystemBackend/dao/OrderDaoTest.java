@@ -127,6 +127,7 @@ class OrderDaoTest {
     @Test
     void insertOrder() {
         Order newOrder = DataGenerate.generateOrder();
+        System.out.println(newOrder.toString());
         orderDao.insertOrder(newOrder);
         Assert.assertTrue("Fail to insert", 6 + 1 == newOrder.getOrderId());
     }
