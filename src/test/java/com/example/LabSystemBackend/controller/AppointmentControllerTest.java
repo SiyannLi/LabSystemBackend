@@ -65,11 +65,14 @@ class AppointmentControllerTest {
     private String email;
     private String testEmail;
     List<Appointment> appointments = new ArrayList<>();
+    List<Appointment> e = new ArrayList<>();
     List<Appointment> userAppointments = new ArrayList<>();
     List<TimeSlot> userTimeSlots = new ArrayList<>();
     List<TimeSlot> timeSlots = new ArrayList<>();
+    List<TimeSlot> timeSlotsBeforeNowDate = new ArrayList<>();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     Date date = sdf.parse("2030-01-01");
+    Date beforeNowDate = sdf.parse("2022-01-01");
     String testDate = "2030-01-01";
 
     //test data
@@ -87,6 +90,7 @@ class AppointmentControllerTest {
     TimeSlot timeSlot2 = new TimeSlot(2,date,4,TimeSlotStatus.BOOKED);
     TimeSlot timeSlot3 = new TimeSlot(3,date,5,TimeSlotStatus.BOOKED);
     TimeSlot timeSlot4 = new TimeSlot(4,date,1,TimeSlotStatus.FREE);
+    TimeSlot timeSlot5 = new TimeSlot(4,beforeNowDate,1,TimeSlotStatus.FREE);
 
     AppointmentControllerTest() throws ParseException {
     }
@@ -105,6 +109,8 @@ class AppointmentControllerTest {
         timeSlots.add(timeSlot1);
         timeSlots.add(timeSlot2);
         timeSlots.add(timeSlot4);
+        timeSlotsBeforeNowDate.add(timeSlot5);
+
     }
 
     @Test
@@ -353,7 +359,7 @@ class AppointmentControllerTest {
 
         List<TimeSlot> timeSlots1 = new ArrayList<>(6);
 
-        when(timeSlotService.timeSlotOneDay(Mockito.any())).thenReturn(timeSlots,timeSlotsNull,
+        when(timeSlotService.timeSlotOneDay(Mockito.any())).thenReturn(timeSlotsBeforeNowDate,timeSlots,
                 timeSlotsNull,timeSlotsNull,timeSlotsNull,timeSlotsNull,timeSlotsNull);
         when(timeSlotService.getUserBookedTimeSlot(email)).thenReturn(userTimeSlots);
         try {
