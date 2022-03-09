@@ -628,8 +628,8 @@ class UserControllerTest {
             User user = DataGenerate.generateUser();
             users.add(user);
         }
-        Mockito.when(userService.getAllUsers()).thenReturn(users);
-        checkGetUsers("/users/getAllUsers", users);
+        Mockito.when(userService.getAllAccountToBeConfirmed()).thenReturn(users);
+        checkGetUsers("/users/getAllAccountToBeConfirmed", users);
 
     }
 
@@ -659,8 +659,11 @@ class UserControllerTest {
         checkGetUsers("/users/getAllAdministrator", admins);
     }
 
-    private void resetUserInfo(boolean isEmailExist, boolean isStatusCorrect, int resultCode, String message) {
+    private void resetUserInfo(boolean isEmailExist, boolean isStatusCorrect, UserAccountStatus status
+            , int resultCode, String message) {
         try {
+            Assert.assertTrue("Parameters conflict"
+                    ,!isStatusCorrect || !status.equals(UserAccountStatus.PENDING));
             User opUser = DataGenerate.generateUser();
             String token = JwtUtil.createToken(opUser);
             UserController.emailTokens.put(opUser.getEmail(), token);
@@ -672,8 +675,7 @@ class UserControllerTest {
             String lastName = faker.name().lastName();
             String userStatus;
             if (isStatusCorrect) {
-                userStatus = Arrays.stream(UserAccountStatus.values())
-                        .filter(e -> !e.equals(UserAccountStatus.PENDING)).map(UserAccountStatus::name).findAny().get();
+                userStatus = status.name();
             } else {
                 userStatus = "Pending";
             }
@@ -712,20 +714,29 @@ class UserControllerTest {
     }
 
     @Test
-    void resetUserInfoSucceed() {
-        resetUserInfo(true, true, 200, OutputMessage.SUCCEED);
+    void resetUserInfoSucceedInactive() {
+        resetUserInfo(true, true, UserAccountStatus.INACTIVE, 200, OutputMessage.SUCCEED);
+
+    }
+
+    @Test
+    void resetUserInfoSucceedActive() {
+        resetUserInfo(true, true, UserAccountStatus.ACTIVE, 200, OutputMessage.SUCCEED);
 
     }
 
     @Test
     void resetUserInfoEmailNotExist() {
         boolean isStatusCorrect = new Random().nextInt(2) == 1;
-        resetUserInfo(false, isStatusCorrect, 500, OutputMessage.USER_NOT_EXISTS);
+        UserAccountStatus status = Arrays.stream(UserAccountStatus.values())
+                .filter(e -> !e.equals(UserAccountStatus.PENDING)).findAny().get();
+        resetUserInfo(false, isStatusCorrect, status, 500, OutputMessage.USER_NOT_EXISTS);
     }
 
     @Test
     void resetUserInfoEmailStatusIncorrect() {
-        resetUserInfo(true, false, 500, OutputMessage.INPUT_ERROR);
+        UserAccountStatus status = Arrays.stream(UserAccountStatus.values()).findAny().get();
+        resetUserInfo(true, false, status, 500, OutputMessage.INPUT_ERROR);
     }
 
     private void checkAdminHandle(String url, boolean isEmailExist, boolean isAdmin, boolean isSuperAdmin
