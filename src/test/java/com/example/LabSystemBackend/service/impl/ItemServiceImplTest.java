@@ -3,18 +3,21 @@ package com.example.LabSystemBackend.service.impl;
 import com.example.LabSystemBackend.dao.ItemDao;
 import com.example.LabSystemBackend.entity.Item;
 import com.example.LabSystemBackend.service.ItemService;
-import com.example.LabSystemBackend.util.DataGenerate;
 import com.github.javafaker.Faker;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @version 1.0
@@ -23,73 +26,63 @@ import static org.junit.jupiter.api.Assertions.*;
  * ItemServiceImpl Test
  */
 @ActiveProfiles("unittest")
-@Transactional
-@Rollback(value = true)
 @SpringBootTest
 class ItemServiceImplTest {
     @Autowired
     ItemService itemService;
-    @Autowired
+    @MockBean
     ItemDao itemDao;
 
     private static final Faker faker = new Faker();
+    Item item = new Item(1,"Handy",20,"Huawei");
+    List<Item> items = new ArrayList<>();
 
     @Test
     void getAllItemsAndAmount() {
-        List<Item> items = itemService.getAllItemsAndAmount();
-        assertNotNull(items);
+        items.add(item);
+        Mockito.when(itemDao.getAllItems()).thenReturn(items);
+        List<Item> testItems = itemService.getAllItemsAndAmount();
+        assertNotNull(testItems);
+        Assert.assertEquals(item, items.get(0));
     }
 
     @Test
+    @Transactional
     void addItem() {
         Item item ;
         String itemName = faker.food().spice();
         int amount = faker.random().nextInt(1, 100);
         String itemDescri = faker.ancient().primordial();
-        itemService.addItem(itemName,amount,itemDescri);
-        Item get = itemService.getItemByName(itemName);
-        assertAll("item",
-                () -> assertEquals(itemName, get.getItemName()) ,
-                () -> assertEquals(itemDescri, get.getItemDescri())
-        );
+        Mockito.when(itemDao.addItem(Mockito.any())).thenReturn(2);
+        assertEquals(2,itemService.addItem(itemName,amount,itemDescri));
     }
 
     @Test
     void deleteItem() {
-        Item item = new Item();
-        String itemName = faker.food().spice();
-        int amount = faker.random().nextInt(1, 100);
-        String itemDescri = faker.ancient().primordial();
-        itemService.addItem(itemName,amount,itemDescri);
-        int itemId = itemService.getItemByName(itemName).getItemId();
-        itemService.deleteItem(itemId);
-        Item get = itemDao.getItemById(itemId);
-        assertNull(get);
+      Mockito.when(itemDao.deleteItem(Mockito.anyInt())).thenReturn(2);
+       int num = itemService.deleteItem(item.getItemId());
+       assertEquals(2, num);
     }
 
     @Test
     @Transactional
     void changeItemAmount() {
-        Item item = DataGenerate.generateItem();
-        itemDao.addItem(item);
-        int itemId = item.getItemId();
-        String itemName = item.getItemName();
-        itemService.changeItemAmount(itemId,30);
-        Item get = itemService.getItemByName(itemName);
-        assertEquals(30, get.getAmount());
+        Mockito.when(itemDao.changeItemAmount(Mockito.anyInt(),Mockito.anyInt())).thenReturn(2);
+        int num = itemService.changeItemAmount(item.getItemId(),30);
+        assertEquals(2, num);
     }
 
     @Test
+    @Transactional
     void itemExists() {
-        Item item = DataGenerate.generateItem();
-        itemDao.addItem(item);
-        assertTrue(itemService.itemExists(item.getItemName()));
+        Mockito.when(itemDao.getItemByName(Mockito.anyString())).thenReturn(item);
+        Assert.assertEquals(true, itemService.itemExists(item.getItemName()));
     }
 
     @Test
+    @Transactional
     void getItemByName() {
-        Item item = DataGenerate.generateItem();
-        itemDao.addItem(item);
+        Mockito.when(itemDao.getItemByName(Mockito.anyString())).thenReturn(item);
         Item get = itemService.getItemByName(item.getItemName());
         assertEquals(item, get);
     }

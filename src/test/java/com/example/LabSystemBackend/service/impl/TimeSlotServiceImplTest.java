@@ -2,11 +2,16 @@ package com.example.LabSystemBackend.service.impl;
 
 import com.example.LabSystemBackend.dao.TimeSlotDao;
 import com.example.LabSystemBackend.entity.TimeSlot;
+import com.example.LabSystemBackend.entity.User;
+import com.example.LabSystemBackend.entity.UserAccountStatus;
+import com.example.LabSystemBackend.entity.UserRole;
 import com.example.LabSystemBackend.service.TimeSlotService;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,98 +28,83 @@ import static org.junit.jupiter.api.Assertions.*;
  * TimeSlotServiceImpl Test
  */
 @ActiveProfiles("unittest")
-@Transactional
-@Rollback(value = true)
 @SpringBootTest
 class TimeSlotServiceImplTest {
 
     @Autowired
     TimeSlotService timeSlotService;
-    @Autowired
+    @MockBean
     TimeSlotDao timeSlotDao;
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    Date starDate = sdf.parse("2030-01-01");
+    TimeSlot timeSlot = new TimeSlot(1,starDate,2,FREE);
+    TimeSlot timeSlot1 = new TimeSlot(2,starDate,2,NA);
+    TimeSlot timeSlotNull =null;// new TimeSlot();
+    List<TimeSlot> timeSlots = new ArrayList<>();
+
+    TimeSlotServiceImplTest() throws ParseException {
+    }
+
     @Test
     void getAvailableTimeSlots() throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date starDate = sdf.parse("2022-01-01");
-        List<TimeSlot> timeSlots = timeSlotService.getAvailableTimeSlots(starDate);
-        assertNotNull(timeSlots);
+        timeSlots.add(timeSlot);
+        Mockito.when(timeSlotDao.getAvailableTimeSlots(Mockito.any())).thenReturn(timeSlots);
+        List<TimeSlot> testTimeSlots = timeSlotService.getAvailableTimeSlots(starDate);
+        Assert.assertEquals(timeSlots, testTimeSlots);
     }
 
-    @Test
-    void setPeriodTimeSlotsFREE() throws InterruptedException, ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = sdf.parse("2030-01-01");
-        int before = timeSlotService.getAvailableTimeSlots(date).size();
-        Random random = new Random();
-        int slot = random.nextInt(6);
-        int repeat = random.nextInt(10);
-        timeSlotService.setPeriodTimeSlotsFREE(date,slot,repeat);
-        int after = timeSlotService.getAvailableTimeSlots(date).size();
-        assertEquals(repeat,after-before+1);
+    private void setPeriodTimeSlotsFREE(Boolean oldTimeSlot) throws InterruptedException, ParseException {
+        if (oldTimeSlot) {
+            Mockito.when(timeSlotDao.getTimeSlot(Mockito.any(), Mockito.anyInt())).thenReturn(timeSlot1);
+        }else {Mockito.when(timeSlotDao.getTimeSlot(Mockito.any(), Mockito.anyInt())).thenReturn(timeSlotNull);
+        }
+        Mockito.when(timeSlotDao.updateTimeSlotStatus(Mockito.anyInt(), Mockito.any())).thenReturn(1);
+        Mockito.when(timeSlotDao.addTimeSlot(Mockito.any())).thenReturn(1);
+        int after = timeSlotService.setPeriodTimeSlotsFREE(starDate,2,1);
+        assertEquals(1,after);
     }
     @Test
-    void setPeriodTimeSlotsFREEbyNA() throws InterruptedException, ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = sdf.parse("2030-01-01");
-        int before = timeSlotService.getAvailableTimeSlots(date).size();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        int slot = 5;
-        int repeat = 1;
-        TimeSlot timeSlot1 = new TimeSlot();
-        timeSlot1.setTimeSlotStatus(NA);
-        timeSlot1.setTimeSlotDate(calendar.getTime());
-        timeSlot1.setSlot(5);
-        timeSlotDao.addTimeSlot(timeSlot1);
-        timeSlotService.setPeriodTimeSlotsFREE(date,slot,repeat);
-        int after = timeSlotService.getAvailableTimeSlots(date).size();
-        assertEquals(repeat,after-before+1);
+    void  setPeriodTimeSlotsFREE() throws ParseException, InterruptedException {
+        setPeriodTimeSlotsFREE(true);
+    }
+    @Test
+    void  setPeriodTimeSlotsFREEByNA() throws ParseException, InterruptedException {
+        setPeriodTimeSlotsFREE(false);
     }
 
+    private void setPeriodTimeSlotsNA(Boolean oldTimeSlot, Boolean isStatusFree) throws InterruptedException, ParseException {
+        if (oldTimeSlot) {
+            if (isStatusFree){
+            Mockito.when(timeSlotDao.getTimeSlot(Mockito.any(), Mockito.anyInt())).thenReturn(timeSlot);
+            }else {Mockito.when(timeSlotDao.getTimeSlot(Mockito.any(), Mockito.anyInt())).thenReturn(timeSlot1);
+            }
+        }else {Mockito.when(timeSlotDao.getTimeSlot(Mockito.any(), Mockito.anyInt())).thenReturn(timeSlotNull);
+        }
+        Mockito.when(timeSlotDao.updateTimeSlotStatus(Mockito.anyInt(), Mockito.any())).thenReturn(1);
+        Mockito.when(timeSlotDao.addTimeSlot(Mockito.any())).thenReturn(1);
+        int after = timeSlotService.setPeriodTimeSlotsNA(starDate,2,2);
+        if (isStatusFree){
+        assertEquals(2,after);
+        }else{assertEquals(0,after);}
+    }
     @Test
-    void setPeriodTimeSlotsNA() {
-        TimeSlot timeSlot = timeSlotDao.getLastTimeSlot();
-        Date date = timeSlot.getTimeSlotDate();
-        Random random = new Random();
-        int slot = random.nextInt(6);
-        int repeat = random.nextInt(10);
-        int resultCounter = timeSlotService.setPeriodTimeSlotsNA(date,slot,repeat);
-        assertEquals(repeat,resultCounter);
+    void  setPeriodTimeSlotsNA() throws ParseException, InterruptedException {
+        setPeriodTimeSlotsNA(true, true);
+    }
+    @Test
+    void  setPeriodTimeSlotsNAByFree() throws ParseException, InterruptedException {
+        setPeriodTimeSlotsNA(false, true);
+    }
+    @Test
+    void  setPeriodTimeSlotsNAByNoFree() throws ParseException, InterruptedException {
+        setPeriodTimeSlotsNA(true, false);
     }
 
-    @Test
-    void setPeriodTimeSlotsNAbyFREE() throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = sdf.parse("2030-01-01");
-        int before = timeSlotService.getAvailableTimeSlots(date).size();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        int slot = 5;
-        int repeat = 1;
-        TimeSlot timeSlot1 = new TimeSlot();
-        timeSlot1.setTimeSlotStatus(FREE);
-        timeSlot1.setTimeSlotDate(calendar.getTime());
-        timeSlot1.setSlot(slot);
-        timeSlotDao.addTimeSlot(timeSlot1);
-        int resultCounter = timeSlotService.setPeriodTimeSlotsNA(date,slot,repeat);
-        int after = timeSlotService.getAvailableTimeSlots(date).size();
-        assertEquals(repeat,after-before+1);
-    }
 
     @Test
     void updateTimeSlotStatus() throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = sdf.parse("2030-01-01");
-
-        TimeSlot timeSlot = new TimeSlot();
-        timeSlot.setSlot(2);
-        timeSlot.setTimeSlotDate(date);
-        timeSlot.setTimeSlotStatus(FREE);
-        timeSlotDao.addTimeSlot(timeSlot);
-        TimeSlot testTimeSlot = timeSlotDao.getTimeSlot(date,2);
-        timeSlotService.updateTimeSlotStatus(testTimeSlot.getTimeSlotId(), BOOKED);
-        testTimeSlot = timeSlotDao.getTimeSlot(date,2);
-        assertEquals(BOOKED,testTimeSlot.getTimeSlotStatus());
+        Mockito.when(timeSlotDao.updateTimeSlotStatus(Mockito.anyInt(), Mockito.any())).thenReturn(2);
+        assertEquals(2, timeSlotService.updateTimeSlotStatus(1, BOOKED));
     }
 
     @Test
@@ -122,87 +112,88 @@ class TimeSlotServiceImplTest {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date starDate = sdf.parse("2022-01-01");
         Date endDate = sdf.parse("2022-02-30");
-        List<TimeSlot> timeSlots = timeSlotService.timeSlotPeriod(starDate, endDate);
-        assertNotNull(timeSlots);
+        timeSlots.add(timeSlot);
+        Mockito.when(timeSlotDao.timeSlotPeriod(Mockito.any(), Mockito.any())).thenReturn(timeSlots);
+        List<TimeSlot> testTimeSlots = timeSlotService.timeSlotPeriod(starDate, endDate);
+        Assert.assertEquals(timeSlot, testTimeSlots.get(0));
     }
 
     @Test
     void timeSlotOneDay() throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = sdf.parse("2030-01-01");
-        for (int i=0; i<4; i++) {
-            TimeSlot timeSlot = new TimeSlot();
-            timeSlot.setSlot(i);
-            timeSlot.setTimeSlotDate(date);
-            timeSlot.setTimeSlotStatus(FREE);
-            timeSlotDao.addTimeSlot(timeSlot);
-        }
-        List<TimeSlot> timeSlots = timeSlotService.timeSlotOneDay(date);
-        assertEquals(4,timeSlots.size());
+        timeSlots.add(timeSlot);
+        Mockito.when(timeSlotDao.timeSlotOneDay(Mockito.any())).thenReturn(timeSlots);
+        List<TimeSlot> testTimeSlots = timeSlotService.timeSlotOneDay(date);
+        assertEquals(timeSlots,testTimeSlots);
     }
 
-//    @Test
-//    void getBookedTimeSlot() throws ParseException {
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//        Date date = new Date();
-//        String s = sdf.format(date);
-//        Date today = sdf.parse(s);
-//        List<Map<String, Object>> timeSlots = timeSlotService.getBookedTimeSlot(today);
-//        assertNotNull(timeSlots);
-//    }
+    @Test
+    void getBookedTimeSlot() throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String s = sdf.format(date);
+        Date today = sdf.parse(s);
+        User user = new User(1,"pse","pse","pse", UserRole.USER,
+                "123456", UserAccountStatus.ACTIVE,true);
+        Map<String, Object> testMap  = new HashMap<String ,Object>();
+        testMap.put("1", user);
+        List<Map<String, Object>> testList = new ArrayList<Map<String, Object>>();
+        testList.add(testMap);
+        Mockito.when(timeSlotDao.getBookedTimeSlot(today)).thenReturn(testList);
+
+        List<Map<String, Object>> timeSlots = timeSlotService.getBookedTimeSlot(today);
+        assertNotNull(timeSlots);
+    }
 
     @Test
+    @Transactional
     void getTimeSlot() throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        TimeSlot timeSlot = new TimeSlot();
-        timeSlot.setSlot(1);
         Date date = sdf.parse("2030-01-01");
-        timeSlot.setTimeSlotDate(date);
-        timeSlot.setTimeSlotStatus(FREE);
-        timeSlotDao.addTimeSlot(timeSlot);
-
+        Mockito.when(timeSlotDao.getTimeSlot(Mockito.any(), Mockito.anyInt())).thenReturn(timeSlot);
         TimeSlot testTimeSlot = timeSlotService.getTimeSlot(date,1);
-        assertAll("timeSlot",
-                () -> assertEquals(1, testTimeSlot.getSlot()) ,
-                () -> assertEquals(date, testTimeSlot.getTimeSlotDate())
-        );
+        Assert.assertEquals(timeSlot, testTimeSlot);
     }
 
     @Test
     void  getTimeSlotById() throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        TimeSlot timeSlot = new TimeSlot();
-        timeSlot.setSlot(1);
-        Date date = sdf.parse("2030-01-01");
-        timeSlot.setTimeSlotDate(date);
-        timeSlot.setTimeSlotStatus(FREE);
-        timeSlotDao.addTimeSlot(timeSlot);
-        TimeSlot testTimeSlot = timeSlotService.getTimeSlot(date, 1);
-        TimeSlot testTimeSlot1 = timeSlotService.getTimeSlotById(testTimeSlot.getTimeSlotId());
-
-        assertAll("timeSlot",
-                () -> assertEquals(1, testTimeSlot1.getSlot()),
-                () -> assertEquals(date, testTimeSlot1.getTimeSlotDate())
-        );
+        Mockito.when(timeSlotDao.getTimeSlotById(Mockito.anyInt())).thenReturn(timeSlot);
+        TimeSlot testTimeSlot = timeSlotService.getTimeSlotById(1);
+        Assert.assertEquals(timeSlot, testTimeSlot);
     }
 
     @Test
     void getUserBookedTimeSlot() {
         String email = "test@hotmail.com";//set a test user and his BOOKED appointment
-        List<TimeSlot> timeSlots = timeSlotService.getUserBookedTimeSlot(email);
-        assertNotNull(timeSlots);
+        timeSlots.add(timeSlot);
+        Mockito.when(timeSlotDao.getUserBookedTimeSlot(Mockito.anyString())).thenReturn(timeSlots);
+        List<TimeSlot> testTimeSlots = timeSlotService.getUserBookedTimeSlot(email);
+        Assert.assertEquals(timeSlots, testTimeSlots);
     }
 
+
+    private void TimeSlotExists(Boolean isTure) throws ParseException {
+        if(isTure){
+        Mockito.when(timeSlotDao.getTimeSlot(Mockito.any(), Mockito.anyInt())).thenReturn(timeSlot);
+        }else {
+            Mockito.when(timeSlotDao.getTimeSlot(Mockito.any(), Mockito.anyInt())).thenReturn(timeSlotNull);
+            }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = sdf.parse("2030-01-01");
+        int slot = 1;
+        timeSlotService.TimeSlotExists(date,slot);
+        if (isTure){
+        assertTrue(timeSlotService.TimeSlotExists(date,1));
+        }else {
+            assertFalse(timeSlotService.TimeSlotExists(date,1));}
+    }
     @Test
     void TimeSlotExists() throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        TimeSlot timeSlot = new TimeSlot();
-        timeSlot.setSlot(1);
-        Date date = sdf.parse("2030-01-01");
-        timeSlot.setTimeSlotDate(date);
-        timeSlot.setTimeSlotStatus(FREE);
-        timeSlotDao.addTimeSlot(timeSlot);
-
-        assertTrue(timeSlotService.TimeSlotExists(date,1));
+        TimeSlotExists(true);
+    }
+    @Test
+    void TimeSlotExistsNo() throws ParseException {
+        TimeSlotExists(false);
     }
 }
