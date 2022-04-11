@@ -54,8 +54,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentDao.addAppointment(appointment);
     }
 
-    @Override
-    public Appointment getAppointmentByTimeSlotId(int timeSlotId){
-        return appointmentDao.getAppointmentByTimeSlotId(timeSlotId);
-    }
+//    @Override
+//    public Appointment getAppointmentByTimeSlotId(int timeSlotId){
+//        return appointmentDao.getAppointmentByTimeSlotId(timeSlotId);
+//    }
 }
